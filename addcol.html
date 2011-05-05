@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Adding columns to table</title>
+<style>
+    td { border: 1px; margin: 5px; }
+</style>
+</head>
+<body>
+<script>
+    
+    function info()
+    {
+        return {
+            name: 'add columns',
+            description: 'Adding columns to a table.',
+            tests: [
+                ['10 rows', 10],
+                ['100 rows', 100],
+                ['1000 rows', 1000],
+            ]
+        };
+    }
+
+    var tableElement;
+    
+    function setUp(rowCount)
+    {
+        var tableBody = document.createElement('tbody');
+        for (var i = 0; i < rowCount; i++) {
+            var tableRow = document.createElement('tr');
+            tableBody.appendChild(tableRow);
+            var tableCell = document.createElement('td');
+            tableCell.appendChild(document.createTextNode(i));
+            tableRow.appendChild(tableCell);
+        }
+
+        tableElement = document.createElement('table');
+        tableElement.appendChild(tableBody);
+        document.body.appendChild(tableElement);
+    }
+
+    function tearDown()
+    {
+        tableElement.parentNode.removeChild(tableElement);
+        tableElement = null;
+    }
+
+    function reset() {
+        for (var i = 0; i < tableElement.rows.length; i++) {
+            var tableRow = tableElement.rows[i];
+            if (tableRow.lastChild != tableRow.firstChild) {
+                tableRow.removeChild(tableRow.lastChild);
+            }
+        }
+    }
+
+    function test(rowCount)
+    {
+        for (var i = 0; i < tableElement.rows.length; i++) {
+            var tableRow = tableElement.rows[i];
+            var tableCell = document.createElement('td');
+            tableCell.appendChild(document.createTextNode(i));
+            tableRow.appendChild(tableCell);
+        }
+    }
+</script>
+</body>
+</html>

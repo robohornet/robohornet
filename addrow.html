@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Adding rows to table</title>
+</head>
+<body>
+<script>
+
+    function info()
+    {
+        return {
+            name: 'add rows',
+            description: 'Adding rows to a table.',
+            tests: [
+                ['10 rows', 10],
+                ['100 rows', 100],
+                ['1000 rows', 100]
+            ]
+        };
+    }
+    
+    var tableElement;
+    function setUp(rowCount)
+    {
+        var tableBody = document.createElement('tbody');
+        tableElement = document.createElement('table');
+        tableElement.appendChild(tableBody);
+        document.body.appendChild(tableElement);
+    }
+
+    function tearDown()
+    {
+        tableElement.parentNode.removeChild(tableElement);
+        tableElement = null;
+    }
+
+    function test(rowCount)
+    {
+        var tableBody = tableElement.tBodies[0];
+        for (var i = 0; i < rowCount; i++) {
+            var tableRow = document.createElement('tr');
+            tableBody.appendChild(tableRow);
+            tableRow.appendChild(document.createElement('td'));
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Calling select() on input forces layout</title>
+<style>
+.test div { float: left; width: 10em; height: 2em; }
+</style>
+</head>
+<body>
+<input type="text" value="test" id="input">
+<script>
+
+    function info()
+    {
+        return {
+            name: 'input select',
+            description: 'Calling select() on input forces layout',
+            tests: [
+                ['10 deep', 10],
+                ['100 deep', 100],
+                ['1000 deep', 100]
+            ]
+        };
+    }
+    
+    var rootElement, inputElement = document.getElementById('input');
+    function setUp(depth)
+    {
+        rootElement = document.createElement('div');
+        rootElement.className = 'test';
+        for (var i = 0; i < depth; i++) {
+            var element = document.createElement('div');
+            rootElement.appendChild(element);
+        }
+        document.body.appendChild(rootElement);
+    }
+
+    function tearDown()
+    {
+        rootElement.parentNode.removeChild(rootElement);
+        rootElement = null;
+    }
+
+    function test()
+    {
+        inputElement.focus();
+        inputElement.select();
+        inputElement.blur();
+    }
+</script>
+</body>
+</html>

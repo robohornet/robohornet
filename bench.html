@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>bench</title>
+<script src="Benchmark.js/benchmark.js"></script>
+<script src="tests.js"></script>
+<style>
+body {
+    margin: 0;
+    padding: 5px;
+}
+table {
+    border-spacing: 0;
+}
+th, td {
+    padding: 0 1ex;
+}
+thead > tr > td {
+    background: #C0C0C0;
+}
+tbody > tr > th {
+    font-weight: normal;
+    text-align: left;
+    background: #DEDEDE;
+    border-top: 1px solid black;
+}
+tbody > tr > td {
+    border-top: 1px solid silver;
+}
+tbody > tr > td.name {
+    padding-left: 2ex;
+}
+td.number {
+    text-align: right;
+}
+#testSection {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 300px;
+    height: 290px;
+}
+#logSection {
+    height: 290px;
+    margin-left: 305px;
+}
+#console {
+    height: 250px;
+    padding: 5px;
+    border: 1px solid silver;
+    overflow-y: scroll;
+}
+#testFrame {
+    width: 290px;
+    height: 260px;
+    border: 1px solid silver;
+}
+section > header {
+    font-weight: bold;
+}
+</style>
+</head>
+<body>
+<section id="testSection">
+    <header>Test Frame</header>
+    <iframe id="testFrame" src="javascript:void(0)"></iframe>
+</section>
+<section id="logSection">
+    <header>Log</header>
+    <div id="console"></div>
+</section>
+
+<div id="status">Loading...</div>
+<button id="runbtn" onclick="run()">run</button>
+
+<section>
+    <header>Results</header>
+    <table id="results">
+        <thead>
+            <td>Name</td>
+            <td class="number">Runs</td>
+            <td class="number">Margin of Error</td>
+            <td class="number">Mean</td>
+            <td class="number">Baseline</td>
+            <td class="number">Difference</td>
+            <td class="number">Weight</td>
+            <td class="number">Score</td>
+        </thead>
+        <tbody></tbody>
+    </table>
+</section>
+
+
+<script>
+
+var currentIndex, currentTest;
+
+var testFrame = document.getElementById('testFrame');
+testFrame.addEventListener('load', onFrameLoaded, false);
+testFrame.addEventListener('error', onFrameLoaded, false);
+var counter = 0;
+
+var resultsElement = document.getElementById('results').tBodies[0];
+var statusElement = document.getElementById('status');
+var runButton = document.getElementById('runbtn');
+
+
+function run() {
+    runButton.disabled = true;
+    currentIndex = -1;
+    runNextTest();
+}
+
+function runNextTest()
+{
+    if (++currentIndex < tests.length) {
+        currentTest = tests[currentIndex];
+        loadTest(currentTest[0]);
+    } else {
+        testFrame.src = 'javascript:void(0)';
+        log('Finished running all tests.');
+        runButton.disabled = false;
+    }
+}
+
+
+function onFrameLoaded(e)
+{
+    var win = testFrame.contentWindow;
+    if (!win.test || !win.info) {
+        if (tests[currentIndex]) {
+            log('ERROR: No tests found in "' + tests[currentIndex] + '".');
+        }
+        return;
+    }
+
+    var testInfo = win.info();
+
+    suite = new Benchmark.Suite(testInfo.name, {
+        onComplete: function() { onComplete(testInfo, this); }
+    });
+
+    var tests = testInfo.tests;
+    for (var test, i = 0; test = tests[i]; i++) {
+        var argument = test[1];
+        suite.add(test[0], bind(win.test, win, test[1]), {
+            setup: bind(win.setUp, win, test[1]),
+            teardown: bind(win.tearDown, win, test[1])
+        });
+    }
+    log('Running test "' + testInfo.name + '"...');
+    suite.run(true);
+}
+
+
+function onComplete(testInfo, suite)
+{
+    var results = [];
+    for (var benchmark, i = 0; benchmark = suite[i]; i++) {
+        results.push({
+            name: benchmark.name,
+            mean: benchmark.stats.mean,
+            rme: benchmark.stats.RME,
+            runs: benchmark.stats.size
+        });
+    }
+    addResult(testInfo.name, results);
+    log('Finished running test "' + testInfo.name + '".');
+    runNextTest();
+}
+
+
+function bind(fn, opt_scope, var_args)
+{
+    var scope = opt_scope || window;
+    var len = arguments.length;
+    var args = [];
+    for (var i = 2; i < len; i++) {
+        args.push(arguments[i]);
+    };
+
+    return function() {
+        fn.apply(scope, args);
+    };
+}
+
+
+function loadTest(src)
+{
+    log('Loading test from "' + src + '"...');
+    testFrame.src = src;
+}
+
+function addResult(testName, results)
+{
+    var row = document.createElement('tr');
+    var cell = document.createElement('th');
+    cell.appendChild(document.createTextNode(testName));
+    cell.colSpan = 8;
+    row.appendChild(cell);
+    resultsElement.appendChild(row);
+
+    var totalTime = 0;
+    for (var result, i = 0; result = results[i]; i++) {
+        row = document.createElement('tr');
+        addCell(row, result.name, 'name');
+        addCell(row, result.runs, 'number');
+        addCell(row, String.fromCharCode(177) + result.rme.toFixed(2) + '%', 'number');
+        addCell(row, result.mean.toFixed(5) + 'ms', 'number');
+        resultsElement.appendChild(row);
+        totalTime += result.mean;
+    }
+
+    var diff = totalTime - currentTest[1];
+    var score = currentTest[1] * currentTest[2] / totalTime;
+
+    row = document.createElement('tr');
+    addCell(row, 'Total', 'name');
+    addCell(row, '');
+    addCell(row, '');
+    addCell(row, totalTime.toFixed(5) + 'ms', 'number');
+    addCell(row, currentTest[1].toFixed(5) + 'ms', 'number');
+    addCell(row, diff.toFixed(5) + 'ms', 'number');
+    addCell(row, currentTest[2], 'number');
+    addCell(row, score.toFixed(2), 'number');
+    resultsElement.appendChild(row);
+}
+
+
+function addCell(rowElement, textContent, opt_className)
+{
+    var cell = document.createElement('td');
+    if (opt_className)
+        cell.className = opt_className;
+    cell.appendChild(document.createTextNode(textContent));
+    rowElement.appendChild(cell);
+}
+
+function log(str)
+{
+    var element = document.createElement('div');
+    element.appendChild(document.createTextNode(str));
+    document.getElementById('console').appendChild(element);
+    element.scrollIntoView();
+    setStatus(str);
+}
+
+function setStatus(str)
+{
+    statusElement.firstChild.nodeValue = str;
+}
+
+setStatus('Ready, click "run" to start.');
+</script>
+</body>
+</html>

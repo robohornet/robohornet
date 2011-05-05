@@ -1,0 +1,75 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+<title>Canvas painting benchmark</title> 
+<script> 
+
+function info()
+{
+    return {
+        name: 'canvas drawing',
+        description: 'Canvas painting benchmark.',
+        tests: [
+            ['100 lines', 100],
+            ['1000 lines', 1000],
+            ['10000 lines', 10000]
+        ]
+    };
+}
+
+var canvas, vertices;
+
+function setUp(numberOfVertices)
+{
+    var container = document.getElementById('container');
+    container.style.overflow = 'hidden';
+
+    vertices = makeRandomPath(512, 512, numberOfVertices);
+
+    canvas = document.createElement('canvas');
+    var canvasStyle = canvas.style;
+    canvasStyle.position = 'absolute';
+    canvasStyle.left = '0px';
+    canvasStyle.top = '0px';
+    canvas.width = canvas.height = 512;
+    canvasStyle.width = canvasStyle.height = '512px';
+
+    container.appendChild(canvas);
+}
+
+function tearDown()
+{
+  var container = document.getElementById('container');
+  while (container.firstChild) { container.removeChild(container.lastChild); }
+}
+ 
+function test(numberOfVertices) {
+    var path = vertices;
+    var context = canvas.getContext('2d');
+
+    context.lineCap = context.lineJoin = 'round';
+
+    context.moveTo(path[0], path[1]);
+    for (var i = 2, I = path.length; i < I; ) {
+        context.lineTo(path[i++], path[i++]);
+    }
+    context.strokeStyle = 'rgba(255, 170, 85, 0.2)';
+    context.lineWidth = 1;
+    context.stroke();
+}
+ 
+function makeRandomPath(width, height, numVerts) {
+  var path = [];
+  for (var i = 0; i < numVerts; ++i) {
+    path.push(Math.round(Math.random() * width),
+              Math.round(Math.random() * height));
+  }
+  return path;
+}
+
+</script> 
+</head> 
+<body 
+<div id="container" style="position: absolute; width:512px; height: 512px; overflow:hidden; border: 1px solid black;"></div> 
+</body> 
+</html> 
