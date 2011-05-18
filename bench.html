@@ -104,10 +104,12 @@ var resultsElement = document.getElementById('results').tBodies[0];
 var statusElement = document.getElementById('status');
 var runButton = document.getElementById('runbtn');
 
+var overallScore;
 
 function run() {
     runButton.disabled = true;
     currentIndex = -1;
+    overallScore = 0;
     runNextTest();
 }
 
@@ -213,6 +215,8 @@ function addResult(testName, results)
 
     var diff = totalTime - currentTest[1];
     var score = currentTest[1] * currentTest[2] / totalTime;
+
+    overallScore += score;
 
     row = document.createElement('tr');
     addCell(row, 'Total', 'name');
