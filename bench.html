@@ -120,7 +120,7 @@ function runNextTest()
         loadTest(currentTest[0]);
     } else {
         testFrame.src = 'javascript:void(0)';
-        log('Finished running all tests.');
+        log('Finished running all tests. Overall score: ' + overallScore);
         runButton.disabled = false;
     }
 }
