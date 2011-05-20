@@ -48,9 +48,32 @@ td.number {
     border: 1px solid silver;
 }
 
+#mainResults {
+  background-color: #CCCCCC;
+  border: 1px solid black;
+  padding: 5px;
+  margin-bottom:15px;
+}
+
+#mainResults h5 {
+  font-size:10px;
+  color: #666666;
+  margin:0;
+}
+
+#overallScore {
+  font-size:26px;
+  text-align:center;
+}
+
+#overallScore em {
+  color: #666666;
+}
+
 .left-panel {
   float:left;
-  width: 200px;
+  width: 300px;
+  margin-right:10px;
 }
 section > header {
     font-weight: bold;
@@ -60,6 +83,10 @@ section > header {
 <body>
 <div class='left-panel'>
   <section id='mainResults'>
+    <h5>Overall Score</h5>
+    <div id='overallScore'>
+      <em>Run the test to see the score</em>
+    </div>
     <span id="status">Loading...</span>
     <button id="runbtn" onclick="run()">run</button>
   </section>
@@ -101,11 +128,13 @@ var counter = 0;
 var resultsElement = document.getElementById('results').tBodies[0];
 var statusElement = document.getElementById('status');
 var runButton = document.getElementById('runbtn');
+var overallScoreElement = document.getElementById('overallScore');
 
 var overallScore;
 
 function run() {
     runButton.disabled = true;
+    overallScoreElement.innerHTML = "<em>Running...</em>";
     currentIndex = -1;
     overallScore = 0;
     runNextTest();
@@ -118,7 +147,8 @@ function runNextTest()
         loadTest(currentTest[0]);
     } else {
         testFrame.src = 'javascript:void(0)';
-        log('Finished running all tests. Overall score: ' + overallScore);
+        log('Finished running all tests.');
+        overallScoreElement.innerHTML = overallScore;
         runButton.disabled = false;
     }
 }
