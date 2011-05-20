@@ -33,27 +33,24 @@ tbody > tr > td.name {
 td.number {
     text-align: right;
 }
-#testSection {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    width: 300px;
-    height: 290px;
-}
-#logSection {
-    height: 290px;
-    margin-left: 305px;
-}
 #console {
-    height: 250px;
-    padding: 5px;
-    border: 1px solid silver;
-    overflow-y: scroll;
+    color:silver;
+    font-size:10px;
+    overflow-y: auto;
+    min-height:200px;
+}
+#testSection {
+  clear:both;
 }
 #testFrame {
     width: 290px;
     height: 260px;
     border: 1px solid silver;
+}
+
+.left-panel {
+  float:left;
+  width: 200px;
 }
 section > header {
     font-weight: bold;
@@ -61,18 +58,16 @@ section > header {
 </style>
 </head>
 <body>
-<section id="testSection">
-    <header>Test Frame</header>
-    <iframe id="testFrame" src="javascript:void(0)"></iframe>
-</section>
-<section id="logSection">
-    <header>Log</header>
-    <div id="console"></div>
-</section>
-
-<div id="status">Loading...</div>
-<button id="runbtn" onclick="run()">run</button>
-
+<div class='left-panel'>
+  <section id='mainResults'>
+    <span id="status">Loading...</span>
+    <button id="runbtn" onclick="run()">run</button>
+  </section>
+  <section id="logSection">
+      <header>Log</header>
+      <div id="console"></div>
+  </section>
+</div>
 <section>
     <header>Results</header>
     <table id="results">
@@ -89,7 +84,10 @@ section > header {
         <tbody></tbody>
     </table>
 </section>
-
+<section id="testSection">
+    <header>Test Frame</header>
+    <iframe id="testFrame" src="javascript:void(0)"></iframe>
+</section>
 
 <script>
 
