@@ -118,6 +118,8 @@ section > header {
 
 <script>
 
+var BENCHMARK_VERSION = "RH111"
+
 var currentIndex, currentTest;
 
 var testFrame = document.getElementById('testFrame');
@@ -148,7 +150,7 @@ function runNextTest()
     } else {
         testFrame.src = 'javascript:void(0)';
         log('Finished running all tests.');
-        overallScoreElement.innerHTML = overallScore;
+        overallScoreElement.innerHTML = BENCHMARK_VERSION + ":" + Math.round(overallScore * 100) / 100;
         runButton.disabled = false;
     }
 }
