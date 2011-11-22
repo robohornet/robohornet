@@ -4,19 +4,6 @@
 <title>Canvas painting benchmark</title> 
 <script> 
 
-function info()
-{
-    return {
-        name: 'canvas drawing',
-        description: 'Canvas painting benchmark.',
-        tests: [
-            ['100 lines', 100],
-            ['1000 lines', 1000],
-            ['10000 lines', 10000]
-        ]
-    };
-}
-
 var canvas, vertices;
 
 function setUp(numberOfVertices)

@@ -9,19 +9,6 @@
 <body>
 <input type="text" value="test" id="input">
 <script>
-
-    function info()
-    {
-        return {
-            name: 'input select',
-            description: 'Calling select() on input forces layout',
-            tests: [
-                ['10 deep', 10],
-                ['100 deep', 100],
-                ['1000 deep', 100]
-            ]
-        };
-    }
     
     var rootElement, inputElement = document.getElementById('input');
     function setUp(depth)

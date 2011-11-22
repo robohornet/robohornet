@@ -10,20 +10,6 @@ div { padding: 1px; }
 <body>
 <script>
 
-    function info()
-    {
-        return {
-            name: 'descendant selectors',
-            description: 'Reflow of deep dom tree matching a descendant selector.',
-            tests: [
-                ['10 deep', 10],
-                ['100 deep', 100],
-                ['500 deep', 500],
-                ['1000 deep', 1000]
-            ]
-        };
-    }
-    
     var rootElement;
     function setUp(depth)
     {

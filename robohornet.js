@@ -1,6 +1,6 @@
 var robohornet = {};
 
-robohornet.BENCHMARK_VERSION = 'RH111';
+robohornet.BENCHMARK_VERSION = 'RH100';
 
 robohornet.Runner = function(benchmarks) {
     this.testFrame_ = document.getElementById('testFrame');
