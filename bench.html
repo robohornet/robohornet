@@ -5,82 +5,7 @@
 <script src="third_party/Benchmark.js/benchmark.js"></script>
 <script src="tests.js"></script>
 <link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-<style>
-body {
-    margin: 0;
-    padding: 5px;
-    font-family: 'Lato', sans-serif;
-}
-table {
-    border-spacing: 0;
-}
-th, td {
-    padding: 0 1ex;
-}
-thead > tr > td {
-    background: #C0C0C0;
-}
-tbody > tr > th {
-    font-weight: normal;
-    text-align: left;
-    background: #DEDEDE;
-    border-top: 1px solid black;
-}
-tbody > tr > td {
-    border-top: 1px solid silver;
-}
-tbody > tr > td.name {
-    padding-left: 2ex;
-}
-td.number {
-    text-align: right;
-}
-#console {
-    color:silver;
-    font-size:10px;
-    overflow-y: auto;
-    min-height:200px;
-}
-#testSection {
-  clear:both;
-}
-#testFrame {
-    width: 290px;
-    height: 260px;
-    border: 1px solid silver;
-}
-
-#mainResults {
-  background-color: #CCCCCC;
-  border: 1px solid black;
-  padding: 5px;
-  margin-bottom:15px;
-}
-
-#mainResults h5 {
-  font-size:10px;
-  color: #666666;
-  margin:0;
-}
-
-#overallScore {
-  font-size:26px;
-  text-align:center;
-}
-
-#overallScore em {
-  color: #666666;
-}
-
-.left-panel {
-  float:left;
-  width: 300px;
-  margin-right:10px;
-}
-section > header {
-    font-weight: bold;
-}
-</style>
+<link href="main.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <div class='left-panel'>
@@ -287,6 +212,9 @@ function setStatus(str)
 }
 
 setStatus('Ready, click "run" to start.');
+
+
+
 </script>
 </body>
 </html>
