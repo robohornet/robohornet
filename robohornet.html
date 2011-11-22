@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>RoboHornet</title>
+        <script src="third_party/Benchmark.js/benchmark.js"></script>
+        <script src="benchmarks.js"></script>
+        <script src="robohornet.js"></script>
+        <link href="main.css" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+        <section id="sidebar">
+            <section id='mainResults'>
+                <header>Overall Score</header>
+                <div id="score">
+                    <em>Run the test to see the score</em>
+                </div>
+                <div id="status">Loading...</div>
+                <button id="runButton" onclick="rh.run()" disabled="true">Run</button>
+            </section>
+
+            <section id="testSection">
+                <header>Test Frame</header>
+                <iframe id="testFrame" src="javascript:void(0)"></iframe>
+            </section>
+        </section>
+
+        <section>
+            <table id="tests">
+                <thead>
+                    <td>Benchmark</td>
+                    <td>Status</td>
+                    <td class="number">Time</td>
+                    <td class="number">Baseline</td>
+                    <td class="number">Weight</td>
+                    <td class="number">Score</td>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+
+        <script>
+            var rh = new robohornet.Runner(benchmarks);
+            rh.init();
+        </script>
+    </body>
+</html>

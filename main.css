@@ -1,0 +1,130 @@
+body {
+  margin: 0;
+  padding: 5px;
+  font-family: Tahoma, sans-serif;
+}
+
+table {
+  border-spacing: 0;
+}
+
+th, td {
+  padding: 0 1ex;
+}
+
+#sidebar {
+  float: left;
+  width: 300px;
+  margin-right: 10px;
+}
+
+#tests > thead > tr > td {
+  border-bottom: 1px solid black;
+}
+
+#tests > tbody > tr > td {
+  font-weight: normal;
+}
+
+#tests > tbody > tr > td.name {
+  padding-left: 2ex;
+}
+
+#tests > thead > tr > td.number, #tests > tbody > tr > td.number {
+    width: 10ex;
+}
+
+#tests > tbody > tr > td.details {
+    border-top: none;
+    padding: 0.5ex 5ex 2ex 5ex;
+}
+
+.details-container {
+    border: 1px dotted black;
+    background: #FBFCC5;
+}
+
+.details-container.disabled {
+    border-color: white;
+    background: white;
+    color: silver;
+}
+
+.runs {
+    margin-top: 0.5ex;
+    table-layout: fixed;
+}
+
+.runs > thead > tr > td.number, .runs > tbody > tr > td.number {
+    width: 10ex;
+}
+
+.runs > thead > tr > td.name, .runs > tbody > tr > td.name {
+    width: 30ex;
+}
+
+.runs > tbody > tr > td {
+  font-weight: normal;
+  border-top: 1px solid silver;
+}
+
+td.number {
+  text-align: right;
+}
+
+#console {
+  color: silver;
+  font-size: 10px;
+  overflow-y: auto;
+  min-height: 200px;
+}
+
+#testSection {
+  clear: both;
+}
+
+#testFrame {
+  width: 300px;
+  height: 300px;
+  border: 1px solid silver;
+}
+
+#mainResults {
+  background-color: #CCCCCC;
+  border: 1px solid black;
+  padding: 5px;
+  margin-bottom: 15px;
+}
+
+#mainResults > header {
+  font-size: 10px;
+  color: #666666;
+  margin: 0;
+}
+
+#score {
+  font-size: 26px;
+  text-align: center;
+}
+
+#score > em {
+  color: #666666;
+}
+
+#score > .version {
+  color: #666666;
+  font-size: 0.5em;
+  padding-right: 0.5ex;
+}
+
+.left-panel {
+
+}
+
+section > header {
+  font-weight: bold;
+}
+
+#results > thead > tr > td {
+  border-bottom: 1px solid black;
+}
