@@ -272,8 +272,6 @@ robohornet.Benchmark = function(runner, details) {
     _p.removeListeners_ = function() {
         this.runner.testFrame.removeEventListener('load', this.loadCallback_, false);
         this.runner.testFrame.removeEventListener('error', this.errorCallback_, false);
-        delete this.loadCallback_;
-        delete this.errorCallback_;
     };
 
     _p.setResults = function(results) {
