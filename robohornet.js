@@ -24,7 +24,7 @@ robohornet.Runner = function(benchmarkDetails) {
   var benchmarks = [];
   var benchmarksMap = {};
   for (var details, i = 0; details = benchmarkDetails[i]; i++) {
-    benchmark = new robohornet.Benchmark(this, details)
+    benchmark = new robohornet.Benchmark(this, details);
     benchmarks.push(benchmark);
     benchmarksMap[benchmark.id] = benchmark;
   }
@@ -34,6 +34,7 @@ robohornet.Runner = function(benchmarkDetails) {
   this.overallScore_ = 0;
   this.benchmarkCount_ = 0;
   this.benchmarksRun_ = 0;
+  this.benchmarksFailed_ = 0;
 };
 
 (function() {
@@ -70,6 +71,7 @@ robohornet.Runner = function(benchmarkDetails) {
       benchmark.setStatus_('Waiting...');
     }
     this.benchmarksRun_ = 0;
+    this.benchmarksFailed_ = 0;
     this.next_();
   };
 
@@ -78,7 +80,9 @@ robohornet.Runner = function(benchmarkDetails) {
     this.next_();
   }
 
-  _p.benchmarkSkipped = function() {
+  _p.benchmarkSkipped = function(failed) {
+    if (failed)
+      this.benchmarksFailed_++;
     this.next_();
   }
 
@@ -106,6 +110,12 @@ robohornet.Runner = function(benchmarkDetails) {
       score.appendChild(document.createTextNode(
           Math.round(this.overallScore_ * 100) / 100));
       this.scoreElement_.appendChild(score);
+    } else if (this.benchmarksFailed_ == this.benchmarkCount_) {
+      var message = document.createElement('em');
+      message.appendChild(document.createTextNode(
+          'Test failed'));
+      this.scoreElement_.appendChild(message);
+      alert('To run RoboHornet locally you need to run Chrome with the --allow-file-access-from-files flag.');
     } else {
       var message = document.createElement('em');
       message.appendChild(document.createTextNode(
@@ -133,22 +143,22 @@ robohornet.Runner = function(benchmarkDetails) {
         disabledBenchmarkIDs.push(benchmark.id);
     }
     if (disabledBenchmarkIDs.length) {
-      window.location.hash = "#d=" + disabledBenchmarkIDs.join(",");
+      window.location.hash = '#d=' + disabledBenchmarkIDs.join(',');
     } else {
-      window.location.hash = "";
+      window.location.hash = '';
     }
   }
-  
+
   _p.digestHash_ = function() {
     var hash = window.location.hash;
     if (!hash)
       return;
-    hash = hash.replace("#", "").toLowerCase().split("&");
+    hash = hash.replace('#', '').toLowerCase().split('&');
     for (var segment, i = 0; segment = hash[i]; i++) {
-      hash[i] = hash[i].split("=");
+      hash[i] = hash[i].split('=');
       switch (hash[i][0]) {
-        case "d":
-          var ids = hash[i][1].split(",");
+        case 'd':
+          var ids = hash[i][1].split(',');
           for (var benchmarkID, j = 0; benchmarkID = ids[j]; j++) {
             var benchmark = this.benchmarksMap_[benchmarkID];
             if (!benchmark)
@@ -290,7 +300,7 @@ robohornet.Benchmark = function(runner, details) {
   _p.load = function() {
     if (!this.enabled) {
       this.setStatus_('Skipped');
-      this.runner.benchmarkSkipped();
+      this.runner.benchmarkSkipped(false);
       return;
     }
 
@@ -321,7 +331,7 @@ robohornet.Benchmark = function(runner, details) {
     var win = this.runner.testFrame.contentWindow;
     if (!win.test) {
       this.setStatus_('Invalid file.');
-      this.runner.benchmarkSkipped();
+      this.runner.benchmarkSkipped(true);
       return;
     }
 
@@ -345,7 +355,7 @@ robohornet.Benchmark = function(runner, details) {
   _p.onFrameError_ = function() {
     this.removeListeners_();
     this.setStatus_('Unable to load file.');
-    this.runner.benchmarkSkipped();
+    this.runner.benchmarkSkipped(true);
   };
 
   _p.removeListeners_ = function() {
