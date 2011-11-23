@@ -20,11 +20,16 @@ robohornet.Runner = function(benchmarkDetails) {
   this.statusElement_ = document.getElementById('status');
   this.scoreElement_ = document.getElementById('score');
   this.runElement_ = document.getElementById('runButton');
+  var benchmark;
   var benchmarks = [];
+  var benchmarksMap = {};
   for (var details, i = 0; details = benchmarkDetails[i]; i++) {
-    benchmarks.push(new robohornet.Benchmark(this, details));
+    benchmark = new robohornet.Benchmark(this, details)
+    benchmarks.push(benchmark);
+    benchmarksMap[benchmark.id] = benchmark;
   }
   this.benchmarks_ = benchmarks;
+  this.benchmarksMap_ = benchmarksMap;
   this.currentIndex_ = -1;
   this.overallScore_ = 0;
   this.benchmarkCount_ = 0;
@@ -45,6 +50,7 @@ robohornet.Runner = function(benchmarkDetails) {
       benchmark.register();
     }
     this.benchmarkCount_ = this.benchmarks_.length;
+    this.digestHash_();
     this.runElement_.disabled = false;
     this.setStatus_('Ready');
   };
@@ -119,6 +125,40 @@ robohornet.Runner = function(benchmarkDetails) {
   _p.setStatus_ = function(textContent) {
     this.statusElement_.textContent = textContent;
   };
+
+  _p.updateHash = function() {
+    var disabledBenchmarkIDs = [];
+    for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
+      if (!benchmark.enabled)
+        disabledBenchmarkIDs.push(benchmark.id);
+    }
+    if (disabledBenchmarkIDs.length) {
+      window.location.hash = "#d=" + disabledBenchmarkIDs.join(",");
+    } else {
+      window.location.hash = "";
+    }
+  }
+  
+  _p.digestHash_ = function() {
+    var hash = window.location.hash;
+    if (!hash)
+      return;
+    hash = hash.replace("#", "").toLowerCase().split("&");
+    for (var segment, i = 0; segment = hash[i]; i++) {
+      hash[i] = hash[i].split("=");
+      switch (hash[i][0]) {
+        case "d":
+          var ids = hash[i][1].split(",");
+          for (var benchmarkID, j = 0; benchmarkID = ids[j]; j++) {
+            var benchmark = this.benchmarksMap_[benchmarkID];
+            if (!benchmark)
+              continue;
+            benchmark.setEnabled(false, true);
+          }
+          break;
+      }
+    }
+  }
 })();
 
 
@@ -139,9 +179,11 @@ robohornet.Benchmark = function(runner, details) {
   this.weight = details.weight;
   this.baselineTime = details.baselineTime;
 
+  this.id = this.filename.match(/\/([A-z]+)\./)[1].toLowerCase();
+
   this.loadCallback_ = bind(this.onFrameLoaded_, this);
   this.errorCallback_ = bind(this.onFrameError_, this);
-  this.toggleCallback_ = bind(this.onToggle_, this);
+  this.toggleCallback_ = bind(this.enabledClicked_, this);
 };
 
 (function() {
@@ -226,6 +268,18 @@ robohornet.Benchmark = function(runner, details) {
     row.appendChild(cell);
     this.runner.testsContainer.tBodies[0].appendChild(row);
   };
+
+  _p.enabledClicked_ = function() {
+    this.onToggle_();
+    this.runner.updateHash();
+  }
+
+  _p.setEnabled = function(enabled, opt_skipUpdateHash) {
+    this.toggleElement_.checked = enabled;
+    this.onToggle_();
+    if (!opt_skipUpdateHash)
+      this.runner.updateHash();
+  }
 
   _p.onToggle_ = function() {
     this.enabled = this.toggleElement_.checked;
