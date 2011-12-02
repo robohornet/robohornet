@@ -1,20 +1,14 @@
 var robohornet = {};
 
 /**
- * Benchmark version.
- *
- * @type {string}
- */
-robohornet.BENCHMARK_VERSION = 'RH100';
-
-
-/**
  * Class representing a the RoboHornet test runner.
  *
+ * @param {string} version String describing this version of the benchmark.
  * @param {Array.<Object>} benchmarkDetails Array of benchmark json objects.
  * @constructor
  */
-robohornet.Runner = function(benchmarkDetails) {
+robohornet.Runner = function(version, benchmarkDetails) {
+  this.version = version;
   this.testFrame = document.getElementById('testFrame');
   this.testsContainer = document.getElementById('tests');
   this.statusElement_ = document.getElementById('status');
@@ -104,7 +98,7 @@ robohornet.Runner = function(benchmarkDetails) {
       var version = document.createElement('span');
       version.className = 'version';
       version.appendChild(document.createTextNode(
-          robohornet.BENCHMARK_VERSION));
+          this.version));
       this.scoreElement_.appendChild(version);
       var score = document.createElement('span');
       score.appendChild(document.createTextNode(

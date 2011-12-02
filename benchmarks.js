@@ -1,3 +1,10 @@
+/**
+ * Benchmark version.
+ *
+ * @type {string}
+ */
+var BENCHMARK_VERSION = 'RH100';
+
 /*
  * List of benchmakrs. Array of objects.
  *
