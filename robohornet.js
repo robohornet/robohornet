@@ -12,7 +12,6 @@ robohornet.Runner = function(version, benchmarkDetails) {
   this.testFrame = document.getElementById('testFrame');
   this.testsContainer = document.getElementById('tests');
   this.statusElement_ = document.getElementById('status');
-  this.scoreElement_ = document.getElementById('score');
   this.runElement_ = document.getElementById('runButton');
   var benchmark;
   var benchmarks = [];
@@ -47,18 +46,14 @@ robohornet.Runner = function(version, benchmarkDetails) {
     this.benchmarkCount_ = this.benchmarks_.length;
     this.digestHash_();
     this.runElement_.disabled = false;
-    this.setStatus_('Ready');
+    this.setRunStatus_(true);
   };
 
   _p.run = function() {
     this.currentIndex_ = -1;
     this.overallScore_ = 0;
-    this.setStatus_('Running...');
-    this.scoreElement_.textContent = '';
-    var message = document.createElement('em');
-    message.appendChild(document.createTextNode('Please wait...'));
-    this.scoreElement_.appendChild(message);
-    this.runElement_.disabled = true;
+    this.setRunStatus_(false);
+    this.setFinalStatus_('Please wait...', false);
     for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
       var identifier = 'benchmark-' + benchmark.index;
       document.getElementById(identifier + '-toggle').disabled = true;
@@ -93,42 +88,31 @@ robohornet.Runner = function(version, benchmarkDetails) {
 
   _p.done_ = function() {
     this.testFrame.src = 'javascript:void(0)';
-    this.scoreElement_.textContent = '';
     if (this.benchmarksRun_ == this.benchmarkCount_) {
-      var version = document.createElement('span');
-      version.className = 'version';
-      version.appendChild(document.createTextNode(
-          this.version));
-      this.scoreElement_.appendChild(version);
-      var score = document.createElement('span');
-      score.appendChild(document.createTextNode(
-          Math.round(this.overallScore_ * 100) / 100));
-      this.scoreElement_.appendChild(score);
+      this.setFinalStatus_('<span>' + this.version + '</span>' + (Math.round(this.overallScore_ * 100) / 100).toString(), true);
     } else if (this.benchmarksFailed_ == this.benchmarkCount_) {
-      var message = document.createElement('em');
-      message.appendChild(document.createTextNode(
-          'Test failed'));
-      this.scoreElement_.appendChild(message);
+      this.setFinalStatus_('Test failed', false);
       alert('To run RoboHornet locally you need to run Chrome with the --allow-file-access-from-files flag.');
     } else {
-      var message = document.createElement('em');
-      message.appendChild(document.createTextNode(
-          'Enable all tests to see the score'));
-      this.scoreElement_.appendChild(message);
+      this.setFinalStatus_('Enable all tests to see the score. Ran ' + this.benchmarksRun_ + ' out of ' + this.benchmarkCount_ + ' benchmarks.');
     }
     this.runElement_.disabled = false;
     for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
       var identifier = 'benchmark-' + benchmark.index;
       document.getElementById(identifier + '-toggle').disabled = false;
     }
-
-    this.setStatus_('Ran ' + this.benchmarksRun_ + ' out of ' +
-        this.benchmarkCount_ + ' benchmarks.');
+    this.setRunStatus_(true);
   };
 
-  _p.setStatus_ = function(textContent) {
-    this.statusElement_.textContent = textContent;
+  _p.setRunStatus_ = function(enabled) {
+    this.runElement_.textContent = enabled ? 'Run' : 'Running...';
+    this.runElement_.disabled = !enabled;
   };
+
+  _p.setFinalStatus_ = function(message, strong) {
+    this.statusElement_.innerHTML = message;
+    this.statusElement_.className = strong ? 'score' : '';
+  }
 
   _p.updateHash = function() {
     var disabledBenchmarkIDs = [];
