@@ -21,6 +21,7 @@ body {
   background-color: #FEF1CA;
   background-image: -webkit-linear-gradient(top, #FDE7A7, #FEF1CA 300px);
   font-size: 14px;
+  overflow-x: hidden;
 }
 
 table {
