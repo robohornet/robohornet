@@ -133,13 +133,23 @@ robohornet.Runner = function(version, benchmarkDetails) {
   }
 
   _p.updateHash = function() {
+    var enabledBenchmarkIDs = [];
     var disabledBenchmarkIDs = [];
     for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
-      if (!benchmark.enabled)
+      if (benchmark.enabled)
+        enabledBenchmarkIDs.push(benchmark.id);
+      else
         disabledBenchmarkIDs.push(benchmark.id);
     }
+    //We want to encode as few IDs as possible in the hash.
+    //This also gives us a good default to follow for new benchmarks.
     if (disabledBenchmarkIDs.length) {
-      window.location.hash = '#d=' + disabledBenchmarkIDs.join(',');
+      //At least one benchmark is disabled.  Are the majority disabled??
+      if (disabledBenchmarkIDs.length < enabledBenchmarkIDs.length) {
+        window.location.hash = '#d=' + disabledBenchmarkIDs.join(',');
+      } else {
+        window.location.hash = '#e=' + enabledBenchmarkIDs.join(',');
+      }
     } else {
       window.location.hash = '';
     }
@@ -150,16 +160,25 @@ robohornet.Runner = function(version, benchmarkDetails) {
     if (!hash)
       return;
     hash = hash.replace('#', '').toLowerCase().split('&');
+    var enableBenchmarks;
+    var benchmark;
     for (var segment, i = 0; segment = hash[i]; i++) {
       hash[i] = hash[i].split('=');
+      enableBenchmarks = false;
       switch (hash[i][0]) {
+        case 'e':
+          enableBenchmarks = true;
+          //We set all benchmarks to disable and then only enable some.
+          for (var k = 0; benchmark = this.benchmarks_[k]; k++) {
+            benchmark.setEnabled(false, true);
+          }
         case 'd':
           var ids = hash[i][1].split(',');
           for (var benchmarkID, j = 0; benchmarkID = ids[j]; j++) {
-            var benchmark = this.benchmarksMap_[benchmarkID];
+            benchmark = this.benchmarksMap_[benchmarkID];
             if (!benchmark)
               continue;
-            benchmark.setEnabled(false, true);
+            benchmark.setEnabled(enableBenchmarks, true);
           }
           break;
       }
