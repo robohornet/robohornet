@@ -13,6 +13,7 @@ robohornet.Runner = function(version, benchmarkDetails) {
   this.testsContainer = document.getElementById('tests');
   this.statusElement_ = document.getElementById('status');
   this.runElement_ = document.getElementById('runButton');
+  this.progressElement_ = document.getElementById('progress');
   var benchmark;
   var benchmarks = [];
   var benchmarksMap = {};
@@ -28,6 +29,8 @@ robohornet.Runner = function(version, benchmarkDetails) {
   this.benchmarkCount_ = 0;
   this.benchmarksRun_ = 0;
   this.benchmarksFailed_ = 0;
+  
+  this.progressCallback_ = bind(this.progressTransitionDone_, this);
 };
 
 (function() {
@@ -54,6 +57,8 @@ robohornet.Runner = function(version, benchmarkDetails) {
     this.overallScore_ = 0;
     this.setRunStatus_(false);
     this.setFinalStatus_('Please wait...', false);
+    this.progressElement_.style.opacity = "0.1";
+    this.progressElement_.style.webkitTransitionDelay = "";
     for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
       var identifier = 'benchmark-' + benchmark.index;
       document.getElementById(identifier + '-toggle').disabled = true;
@@ -76,8 +81,11 @@ robohornet.Runner = function(version, benchmarkDetails) {
   }
 
   _p.next_ = function() {
-     if (++this.currentIndex_ < this.benchmarks_.length) {
+    this.currentIndex_++;
+    this.progressElement_.style.marginLeft = "-" + (100 - (this.currentIndex_ / this.benchmarkCount_ * 100)).toString() + "%";
+     if (this.currentIndex_ < this.benchmarks_.length) {
        this.benchmarks_[this.currentIndex_].load();
+       
     } else
       this.done_();
   };
@@ -88,6 +96,7 @@ robohornet.Runner = function(version, benchmarkDetails) {
 
   _p.done_ = function() {
     this.testFrame.src = 'javascript:void(0)';
+    this.progressElement_.addEventListener("webkitTransitionEnd", this.progressCallback_, false);
     if (this.benchmarksRun_ == this.benchmarkCount_) {
       this.setFinalStatus_('<span>' + this.version + '</span>' + (Math.round(this.overallScore_ * 100) / 100).toString(), true);
     } else if (this.benchmarksFailed_ == this.benchmarkCount_) {
@@ -103,6 +112,14 @@ robohornet.Runner = function(version, benchmarkDetails) {
     }
     this.setRunStatus_(true);
   };
+  
+  _p.progressTransitionDone_ = function() {
+    /* Temporarily have the margin lag while we wait for it to fade out. */
+    this.progressElement_.style.webkitTransitionDelay = "3s,0s";
+    this.progressElement_.style.opacity = '0.0';
+    this.progressElement_.style.marginLeft = "-100%";
+    this.progressElement_.removeEventListener("webkitTransitionEnd", this.progressCallback_, false);
+  }
 
   _p.setRunStatus_ = function(enabled) {
     this.runElement_.textContent = enabled ? 'Run' : 'Running...';

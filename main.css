@@ -127,11 +127,25 @@ header {
   border-bottom: 1px solid #454545;
   margin-bottom: 15px;
   padding:15px;
+  position: relative;
 }
 
 header img {
   height: 40px;
   width: 40px;
+}
+
+#progress {
+  position: absolute;
+  background-color: #F05A2A;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+  margin-left: -100%;
+  /* progressTransitionDone_ has the 3s hard-coded as well */
+  -webkit-transition: margin-left 3s ease, opacity 3s ease;
 }
 
 #mainResults {
@@ -199,7 +213,7 @@ header img {
   /* Trigger compositing now so we don't get a flash when it does */
   -webkit-transform: translate(0,0,0);
   /* Show over top of the Run button */
-  zindex:1;
+  z-index:1;
 }
 
 body.ready header img {
