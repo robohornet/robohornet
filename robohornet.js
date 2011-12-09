@@ -107,6 +107,7 @@ robohornet.Runner = function(version, benchmarkDetails) {
   _p.setRunStatus_ = function(enabled) {
     this.runElement_.textContent = enabled ? 'Run' : 'Running...';
     this.runElement_.disabled = !enabled;
+    document.body.className = enabled ? 'ready' : 'running';
   };
 
   _p.setFinalStatus_ = function(message, strong) {

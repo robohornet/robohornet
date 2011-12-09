@@ -69,9 +69,7 @@ th, td {
 }
 
 .details-container.disabled {
-    border-color: white;
-    background: white;
-    color: silver;
+  opacity: 0.5;
 }
 
 .runs {
@@ -152,6 +150,12 @@ header img {
   border: 1px solid #FCCF4D;
   cursor: pointer;
   box-shadow: 0px 2px 5px 0px #454545;
+  -webkit-animation-name: button-flourish;
+  -webkit-animation-duration: 2s;
+  -webkit-animation-iteration-count: 1;
+  -webkit-animation-timing-function: ease;
+  /* we ideally want to flourish just as the logo crosses on load. */
+  -webkit-animation-delay: 0.75s;
 }
 
 #runButton:active {
@@ -188,4 +192,84 @@ header img {
 
 #results > thead > tr > td {
   border-bottom: 1px solid black;
+}
+
+header img {
+  -webkit-transform-origin: 30% 65%;
+  /* Trigger compositing now so we don't get a flash when it does */
+  -webkit-transform: translate(0,0,0);
+  /* Show over top of the Run button */
+  zindex:1;
+}
+
+body.ready header img {
+  -webkit-animation-name: logo-ready;
+  -webkit-animation-duration: 3s;
+  -webkit-animation-iteration-count: 1;
+  -webkit-animation-timing-function: ease;
+}
+
+body.running header img {
+  -webkit-animation-name: logo-running;
+  -webkit-animation-duration: 3s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: ease-in;
+}
+
+@-webkit-keyframes logo-ready {
+  from {
+    -webkit-transform: translate(0, 0);
+  }
+  10% {
+    -webkit-transform: translate(0, 0) rotate(34deg);
+  }
+  17% {
+    -webkit-transform: translate(-50%, 0) rotate(45deg);
+  }
+  50% {
+    -webkit-transform: translate(10000%, 0) rotate(45deg);
+    opacity: 1.0;
+  }
+  51% {
+    opacity: 0.0;
+  }
+  52% {
+    -webkit-transform: translate(0, 0);
+  }
+  to {
+    opacity: 1.0;
+  }
+}
+
+@-webkit-keyframes logo-running {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  40% {
+    -webkit-transform: rotate(50deg);
+  }
+  52% {
+    -webkit-transform: translate(-25%, 0) rotate(45deg);
+  }
+  54% {
+    -webkit-transform: translate(50%, 0) rotate(45deg);
+  }
+  70% {
+    -webkit-transform: rotate(46deg);
+  }
+  to {
+    -webkit-transform: rotate(0deg);
+  }
+}
+
+@-webkit-keyframes button-flourish {
+  from {
+   -webkit-transform: scale(1.0); 
+  }
+  10% {
+    -webkit-transform: scale(1.15);
+  }
+  to {
+    -webkit-transform: scale(1.0);
+  }
 }
