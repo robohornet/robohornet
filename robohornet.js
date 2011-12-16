@@ -25,7 +25,7 @@ robohornet.Runner = function(version, benchmarkDetails) {
   this.benchmarks_ = benchmarks;
   this.benchmarksMap_ = benchmarksMap;
   this.currentIndex_ = -1;
-  this.overallScore_ = 0;
+  this.overallIndex_ = 0;
   this.benchmarkCount_ = 0;
   this.benchmarksRun_ = 0;
   this.benchmarksFailed_ = 0;
@@ -54,7 +54,7 @@ robohornet.Runner = function(version, benchmarkDetails) {
 
   _p.run = function() {
     this.currentIndex_ = -1;
-    this.overallScore_ = 0;
+    this.overallIndex_ = 0;
     this.setRunStatus_(false);
     this.setFinalStatus_('Please wait...', false);
     this.progressElement_.style.opacity = "0.1";
@@ -85,25 +85,24 @@ robohornet.Runner = function(version, benchmarkDetails) {
     this.progressElement_.style.marginLeft = "-" + (100 - (this.currentIndex_ / this.benchmarkCount_ * 100)).toString() + "%";
      if (this.currentIndex_ < this.benchmarks_.length) {
        this.benchmarks_[this.currentIndex_].load();
-       
     } else
       this.done_();
   };
 
-  _p.incrementOverallScore = function(score) {
-    this.overallScore_ += score;
+  _p.incrementOverallIndex = function(index) {
+    this.overallIndex_ += index;
   }
 
   _p.done_ = function() {
     this.testFrame.src = 'javascript:void(0)';
     this.progressElement_.addEventListener("webkitTransitionEnd", this.progressCallback_, false);
     if (this.benchmarksRun_ == this.benchmarkCount_) {
-      this.setFinalStatus_('<span>' + this.version + '</span>' + (Math.round(this.overallScore_ * 100) / 100).toString(), true);
+      this.setFinalStatus_('<span>' + this.version + '</span>' + (Math.round(this.overallIndex_ * 100) / 100).toString(), true);
     } else if (this.benchmarksFailed_ == this.benchmarkCount_) {
       this.setFinalStatus_('Test failed', false);
       alert('To run RoboHornet locally you need to run Chrome with the --allow-file-access-from-files flag.');
     } else {
-      this.setFinalStatus_('Enable all tests to see the score. Ran ' + this.benchmarksRun_ + ' out of ' + this.benchmarkCount_ + ' benchmarks.');
+      this.setFinalStatus_('Enable all tests to see the index. Ran ' + this.benchmarksRun_ + ' out of ' + this.benchmarkCount_ + ' benchmarks.');
     }
     this.runElement_.disabled = false;
     for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
@@ -129,7 +128,7 @@ robohornet.Runner = function(version, benchmarkDetails) {
 
   _p.setFinalStatus_ = function(message, strong) {
     this.statusElement_.innerHTML = message;
-    this.statusElement_.className = strong ? 'score' : '';
+    this.statusElement_.className = strong ? 'index' : '';
   }
 
   _p.updateHash = function() {
@@ -382,7 +381,7 @@ robohornet.Benchmark = function(runner, details) {
 
   _p.setResults = function(results) {
     var row = this.rowElement_;
-    row.cells[1].textContent = 'Computing Score...';
+    row.cells[1].textContent = 'Computing Index...';
 
     var accumulatedMean = 0;
     var runsTable = document.getElementById(row.id + '-runs');
@@ -396,12 +395,12 @@ robohornet.Benchmark = function(runner, details) {
     }
 
     var diff = accumulatedMean - this.baselineTime;
-    var score = this.baselineTime * this.computedWeight / accumulatedMean;
-    this.runner.incrementOverallScore(score);
+    var index = this.baselineTime * this.computedWeight / accumulatedMean;
+    this.runner.incrementOverallIndex(index);
 
     row.cells[1].textContent = 'Completed successfully ';
     row.cells[2].textContent = accumulatedMean.toFixed(2) + 'ms';
-    row.cells[5].textContent = score.toFixed(2);
+    row.cells[5].textContent = index.toFixed(2);
   };
 
   _p.setStatus_ = function(statusText) {
