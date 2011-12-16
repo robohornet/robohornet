@@ -208,6 +208,7 @@ robohornet.Benchmark = function(runner, details) {
   this.loadCallback_ = bind(this.onFrameLoaded_, this);
   this.errorCallback_ = bind(this.onFrameError_, this);
   this.toggleCallback_ = bind(this.enabledClicked_, this);
+  this.collapseCallback_ = bind(this.toggleCollapse_, this);
 };
 
 (function() {
@@ -236,9 +237,10 @@ robohornet.Benchmark = function(runner, details) {
     this.toggleElement_.addEventListener('click', this.toggleCallback_, false);
     cell.appendChild(checkbox);
 
-    var label = document.createElement('label');
+    var label = document.createElement('span');
     label.htmlFor = checkbox.id;
     label.appendChild(document.createTextNode(this.name));
+    label.addEventListener('click', this.collapseCallback_, false);
     cell.appendChild(label);
 
     row.appendChild(cell);
@@ -291,6 +293,8 @@ robohornet.Benchmark = function(runner, details) {
 
     row.appendChild(cell);
     this.runner.testsContainer.tBodies[0].appendChild(row);
+    row.className = "details";
+    this.detailsRowElement_ = row;
   };
 
   _p.enabledClicked_ = function() {
@@ -307,8 +311,13 @@ robohornet.Benchmark = function(runner, details) {
 
   _p.onToggle_ = function() {
     this.enabled = this.toggleElement_.checked;
-    this.detailsElement_.className = 'details-container ' + (this.enabled ?
-        'enabled' : 'disabled');
+    if (this.enabled) {
+      this.rowElement_.classList.remove("disabled");
+      this.detailsElement_.classList.remove("disabled");
+    } else {
+      this.detailsElement_.classList.add("disabled");
+      this.rowElement_.classList.add("disabled");
+    }
   };
 
   _p.load = function() {
@@ -371,6 +380,11 @@ robohornet.Benchmark = function(runner, details) {
     this.setStatus_('Unable to load file.');
     this.runner.benchmarkSkipped(true);
   };
+
+  _p.toggleCollapse_ = function() {
+    this.rowElement_.classList.toggle("expanded");
+    this.detailsRowElement_.classList.toggle("expanded");
+  }
 
   _p.removeListeners_ = function() {
     this.runner.testFrame.removeEventListener('load', this.loadCallback_,

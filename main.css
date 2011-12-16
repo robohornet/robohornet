@@ -7,6 +7,32 @@
  * Dark-Gray: #454545
  */
 
+@font-face {
+  font-family: 'Lato';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Lato Italic'), local('Lato-Italic'), url('fonts/Lato-Italic.woff') format('woff');
+}
+@font-face {
+  font-family: 'Lato';
+  font-style: italic;
+  font-weight: 700;
+  src: local('Lato Bold Italic'), local('Lato-BoldItalic'), url('fonts/Lato-BoldItalic.woff') format('woff');
+}
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Lato Bold'), local('Lato-Bold'), url('fonts/Lato-Bold.woff') format('woff');
+}
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lato Regular'), local('Lato-Regular'), url('fonts/Lato-Regular.woff') format('woff');
+}
+
+
 html {
   height: 100%;
   margin: 0;
@@ -16,7 +42,7 @@ html {
 body {
   margin: 0;
   height: 100%;
-  font-family: Tahoma, sans-serif;
+  font-family: Lato, Tahoma, sans-serif;
   color: #454545;
   background-color: #FEF1CA;
   background-image: -webkit-linear-gradient(top, #FDE7A7, #FEF1CA 300px);
@@ -62,6 +88,38 @@ th, td {
 #tests > tbody > tr > td.details {
     border-top: none;
     padding: 0.5ex 5ex 2ex 5ex;
+}
+
+#tests > tbody > tr.disabled {
+  color: rgba(69, 69, 69, 0.5);
+}
+
+#tests > tbody > tr span {
+  font-size: 16px;
+  margin-left: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#tests > tbody > tr span::before {
+  content: "\25BA";
+  font-size: 10px;
+  margin-right: 10px;
+  position: relative;
+  top: -2px;
+  cursor: pointer;
+}
+
+#tests > tbody > tr.expanded span::before {
+  content: "\25BC";
+}
+
+#tests > tbody > tr.details {
+  display: none;
+}
+
+#tests > tbody > tr.details.expanded {
+  display: block;
 }
 
 .details-container {
