@@ -98,5 +98,19 @@ var benchmarks = [
       ],
       weight: 2,
       baselineTime: 500
+  },
+
+  {
+      name: 'Table scrolling',
+      description: 'Test scrolling speed using scrollTop',
+      filename: 'tests/table_scrolltop.html',
+      runs: [
+        ['500x10', [500, 10]],
+        ['500x50', [500, 50]],
+        ['1000,10', [1000, 10]],
+        ['1000,50', [1000, 50]]
+      ],
+      weight: 1,
+      baselineTime: 80
   }
 ];
