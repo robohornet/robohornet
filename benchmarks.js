@@ -112,5 +112,18 @@ var benchmarks = [
       ],
       weight: 1,
       baselineTime: 80
+  },
+
+  {
+      name: 'Resize columns',
+      description: 'Test resizing columns in a table',
+      filename: 'tests/resizecol.html',
+      runs: [
+        ['500x10', [500, 10]],
+        ['500x50', [500, 50]],
+        ['500x100', [500, 100]]
+      ],
+      weight: 2,
+      baselineTime: 100
   }
 ];
