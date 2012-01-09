@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Adding a large table</title>
+<style>
+    td { border: 1px; margin: 5px; overflow:hidden; }
+</style>
+</head>
+<body>
+<table id="main-table"><tbody></tbody></table>
+<script>
+    
+    var tableBody;
+    var tableString;
+    
+    function setUp(size)
+    {
+        var rowCount = size[0];
+        var colCount = size[1];
+
+        tableBody = document.getElementById('main-table').firstChild;
+        var htmlBuffer = [];
+        htmlBuffer.push('<tr>');
+        for (var col = 0; col < colCount; col++) {
+            // Build table headers
+            htmlBuffer.push('<th style="width:200px;">H</th>');
+        }
+        htmlBuffer.push('</tr>');
+        for (var i = 0; i < rowCount; i++) {
+            htmlBuffer.push('<tr>');
+            for (var j = 0; j < colCount; j++) {
+                htmlBuffer.push('<td>');
+                htmlBuffer.push(i + ', ' + j);
+                htmlBuffer.push('</td>');
+            }
+            htmlBuffer.push('</tr>');
+        }
+        tableString = htmlBuffer.join('');
+    }
+
+    function reset() {
+        tableBody.innerHTML = '';
+    }
+
+    function tearDown()
+    {
+        tableBody.innerHTML = '';
+        tableBody = null;
+        tableString = null;
+    }
+
+    function test(size)
+    {
+        tableBody.innerHTML = tableString;
+    }
+</script>
+</body>
+</html>
