@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Resizing columns in a table</title>
+<style>
+    td { border: 1px; margin: 5px; }
+</style>
+</head>
+<body>
+<script>
+    
+    var tableElement;
+    
+    function setUp(size)
+    {
+        var rowCount = size[0];
+        var colCount = size[1];
+
+        var buff = [];
+        buff.push('<tbody>');
+        buff.push('<tr>');
+        for (var col = 0; col < colCount; col++) {
+            // Build table headers
+            buff.push('<th style="width:200px;">H</th>');
+        }
+        buff.push('</tr>');
+        for (var i = 0; i < rowCount; i++) {
+            buff.push('<tr>');
+            for (var j = 0; j < colCount; j++) {
+                buff.push('<td>');
+                buff.push(i + ', ' + j);
+                buff.push('</td>');
+            }
+            buff.push('</tr>');
+        }
+        buff.push('</tbody>');
+
+        tableElement = document.createElement('table');
+        tableElement.innerHTML = buff.join('');
+        document.body.appendChild(tableElement);
+    }
+
+    function tearDown()
+    {
+        tableElement.parentNode.removeChild(tableElement);
+        tableElement = null;
+    }
+
+    function reset() {
+        var tbody = tableElement.firstChild;
+        var firstRow = tbody.firstChild;
+        for (var i = 0; i < size[1] /** colCount */; i++) {
+            firstRow.cells[i].style.width = '200px';
+            var forceLayout = tbody.offsetTop;
+        }
+    }
+
+    function test(size)
+    {
+        var tbody = tableElement.firstChild;
+        var firstRow = tbody.firstChild;
+        for (var i = 0; i < size[1] /** colCount */; i++) {
+            firstRow.cells[i].style.width = '50px';
+            var forceLayout = tbody.offsetTop;
+        }
+    }
+</script>
+</body>
+</html>
