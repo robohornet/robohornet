@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Scrolling a large table with scrollTop</title>
+<style>
+    td { border: 1px; margin: 5px; overflow:hidden; }
+    #container { height: 284px; width: 284px; overflow: auto; }
+    #main-table { table-layout: fixed; width: 0; }
+</style>
+</head>
+<body>
+<div id="container"><table id="main-table"><tbody></tbody></table></div>
+<script>
+
+    var container;
+    var tableBody;
+
+    function setUp(size)
+    {
+        var rowCount = size[0];
+        var colCount = size[1];
+
+        tableBody = document.getElementById('main-table').firstChild;
+        var htmlBuffer = [];
+        htmlBuffer.push('<tr>');
+        for (var col = 0; col < colCount; col++) {
+            // Build table headers
+            htmlBuffer.push('<th style="width:200px;">H</th>');
+        }
+        htmlBuffer.push('</tr>');
+        for (var i = 0; i < rowCount; i++) {
+            htmlBuffer.push('<tr>');
+            for (var j = 0; j < colCount; j++) {
+                htmlBuffer.push('<td>');
+                htmlBuffer.push(i + ', ' + j);
+                htmlBuffer.push('</td>');
+            }
+            htmlBuffer.push('</tr>');
+        }
+        tableBody.innerHTML = htmlBuffer.join('');
+    }
+
+    function reset() {
+        tableBody.innerHTML = '';
+        container.scrollTop = 0;
+    }
+
+    function tearDown()
+    {
+        tableBody.innerHTML = '';
+        tableBody = null;
+        container.scrollTop = 0;
+    }
+
+    function test(size)
+    {
+        var maxScroll = container.firstChild.offsetHeight - container.offsetHeight;
+        while (container.scrollTop < maxScroll) {
+            container.scrollTop = container.scrollTop + 1000;
+        }
+    }
+</script>
+</body>
+</html>
