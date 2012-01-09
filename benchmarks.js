@@ -85,5 +85,18 @@ var benchmarks = [
       ],
       weight: 3,
       baselineTime: 250
+  },
+
+  {
+      name: 'innerHTML Table',
+      description: 'Test table render speed after innerHTML.',
+      filename: 'tests/createtable.html',
+      runs: [
+        ['200x10', [200, 10]],
+        ['200x50', [200, 50]],
+        ['200x100', [200, 100]]
+      ],
+      weight: 2,
+      baselineTime: 500
   }
 ];
