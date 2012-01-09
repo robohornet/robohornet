@@ -124,6 +124,6 @@ var benchmarks = [
         ['500x100', [500, 100]]
       ],
       weight: 2,
-      baselineTime: 100
+      baselineTime: 250
   }
 ];
