@@ -125,5 +125,18 @@ var benchmarks = [
       ],
       weight: 2,
       baselineTime: 250
+  },
+
+  {
+      name: 'SVG resize',
+      description: 'Test resizing SVGs',
+      filename: 'tests/svgresize.html',
+      runs: [
+        ['50 SVGs', 50],
+        ['100 SVGs', 100],
+        ['500 SVGs', 500]
+      ]
+      weight: 5,
+      baselineTime: 100
   }
 ];
