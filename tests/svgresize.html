@@ -36,9 +36,7 @@
 
     var container;
     var contentContainer;
-    var svgList;
     var template;
-    var renderedContent;
     
     function setUp(numSvgs)
     {
@@ -51,21 +49,29 @@
     }
 
     function reset() {
-        tableBody.innerHTML = '';
+        contentContainer.innerHTML = '';
     }
 
     function tearDown()
     {
-        tableBody.innerHTML = '';
-        tableBody = null;
-        tableString = null;
+        while(contentContainer.firstChild) {
+            contentContainer.firstChild.parentNode.removeChild(contentContainer.firstChild);
+        }
+        container = null;
+        contentContainer = null;
+        template = null;
     }
 
-    function test(size)
+    function test(numSvgs)
     {
-        tableBody.innerHTML = tableString;
+        for (var i = 0; i < 1000; i++) {
+            var size = Math.random() * 300 + 100;
+            container.style.width = size + 'px';
+            contentContainer.setAttribute('transform', 'scale(' + (size / 180) + ')');
+        }
     }
 
+    // Utility functions below
     function render(index) {
         var copy = template.cloneNode(true);
         // The number being multipled by the index should match the height in the .slide class above.

@@ -135,7 +135,7 @@ var benchmarks = [
         ['50 SVGs', 50],
         ['100 SVGs', 100],
         ['500 SVGs', 500]
-      ]
+      ],
       weight: 5,
       baselineTime: 100
   }
