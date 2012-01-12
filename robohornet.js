@@ -97,7 +97,7 @@ robohornet.Runner = function(version, benchmarkDetails) {
     this.testFrame.src = 'javascript:void(0)';
     this.progressElement_.addEventListener("webkitTransitionEnd", this.progressCallback_, false);
     if (this.benchmarksRun_ == this.benchmarkCount_) {
-      this.setFinalStatus_('<span>' + this.version + '</span>' + (Math.round(this.overallIndex_ * 100) / 100).toString(), true);
+      this.setFinalStatus_('<span>' + this.version + ':</span>' + (Math.round(this.overallIndex_ * 100) / 100).toString(), true);
     } else if (this.benchmarksFailed_ == this.benchmarkCount_) {
       this.setFinalStatus_('Test failed', false);
       alert('To run RoboHornet locally you need to run Chrome with the --allow-file-access-from-files flag.');
