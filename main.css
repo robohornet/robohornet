@@ -241,21 +241,13 @@ header > div > div {
   margin-bottom: -12px;
 }
 
-body.running div.results {
-  -webkit-animation-name: index-running;
-  -webkit-animation-duration: 1s;
-  -webkit-animation-direction: alternate;
-  -webkit-animation-iteration-count: infinite;
-  -webkit-animation-timing-function: ease;
-}
-
 #index-prefix {
   color: #FCCF4D;
   font-weight: 100;
 }
 
 #index {
-  opacity: 0.3;
+  opacity: 0.1;
   -webkit-transition: opacity 2s;
 }
 
@@ -327,13 +319,6 @@ body.ready header img {
   -webkit-animation-timing-function: ease;
 }
 
-body.running header img {
-  -webkit-animation-name: logo-running;
-  -webkit-animation-duration: 3s;
-  -webkit-animation-iteration-count: infinite;
-  -webkit-animation-timing-function: ease-in;
-}
-
 @-webkit-keyframes logo-ready {
   from {
     -webkit-transform: translate(0, 0);
@@ -359,27 +344,6 @@ body.running header img {
   }
 }
 
-@-webkit-keyframes logo-running {
-  from {
-    -webkit-transform: rotate(0deg);
-  }
-  40% {
-    -webkit-transform: rotate(50deg);
-  }
-  52% {
-    -webkit-transform: translate(-25%, 0) rotate(45deg);
-  }
-  54% {
-    -webkit-transform: translate(50%, 0) rotate(45deg);
-  }
-  70% {
-    -webkit-transform: rotate(46deg);
-  }
-  to {
-    -webkit-transform: rotate(0deg);
-  }
-}
-
 @-webkit-keyframes button-flourish {
   from {
    -webkit-transform: scale(1.0); 
@@ -389,14 +353,5 @@ body.running header img {
   }
   to {
     -webkit-transform: scale(1.0);
-  }
-}
-
-@-webkit-keyframes index-running {
-  from {
-    opacity: 1.0;
-  }
-  to {
-    opacity: 0.5;
   }
 }
