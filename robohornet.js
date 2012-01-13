@@ -156,7 +156,21 @@ robohornet.Runner = function(version, benchmarkDetails) {
   };
 
   _p.setIndex_ = function(index, final) {
-    this.indexElement_.innerHTML = (Math.round(index * 100) / 100).toString();
+    //Ensure that we have 4 digits in front of the dot and 2 after.
+    var parts = (Math.round(index * 100) / 100).toString().split('.');
+    if (parts.length < 2) parts.push('00');
+    while (parts[0].length < 4) {
+      parts[0] = "0" + parts[0];
+    }
+    while (parts[1].length < 2) {
+      parts[1] = parts[1] + "0";
+    /* In Chrome Canary (18.0.1005.0) if we put in a string that starts with the 
+     * same prefix then the DOM gets updated (as seen in Web Inspector) but it
+     * doesn't update in the layout for some reason. If this ceases to be a
+     * problem, we can remove the double-set.
+     */
+    this.indexElement_.innerHTML = "";
+    this.indexElement_.innerHTML = parts.join(".");
     this.indexElement_.className = final ? 'final' : "";
   }
 
