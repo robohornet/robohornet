@@ -164,6 +164,7 @@ robohornet.Runner = function(version, benchmarkDetails) {
     }
     while (parts[1].length < 2) {
       parts[1] = parts[1] + "0";
+    }
     /* In Chrome Canary (18.0.1005.0) if we put in a string that starts with the 
      * same prefix then the DOM gets updated (as seen in Web Inspector) but it
      * doesn't update in the layout for some reason. If this ceases to be a
