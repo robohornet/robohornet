@@ -31,6 +31,18 @@
   font-weight: 400;
   src: local('Lato Regular'), local('Lato-Regular'), url('fonts/Lato-Regular.woff') format('woff');
 }
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 100;
+  src: local('Lato Hairline'), local('Lato-Hairline'), url('fonts/Lato-Hairline.woff') format('woff');
+}
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 900;
+  src: local('Lato Black'), local('Lato-Black'), url('fonts/Lato-Black.woff') format('woff');
+}
 
 
 html {
@@ -239,12 +251,13 @@ body.running div.results {
 
 #index-prefix {
   color: #FCCF4D;
-  font-weight: normal;
+  font-weight: 100;
 }
 
 #index {
   opacity: 0.3;
   -webkit-transition: opacity 2s;
+  font-weight: 900;
 }
 
 #index.final {
