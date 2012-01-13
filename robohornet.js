@@ -29,7 +29,9 @@ robohornet.Runner = function(version, benchmarkDetails) {
   this.benchmarkCount_ = 0;
   this.benchmarksRun_ = 0;
   this.benchmarksFailed_ = 0;
-  
+  this.nextProgressLocation_ = 0;
+  this.progressLocation_ = 0;
+  this.timerID_ = 0;
   this.progressCallback_ = bind(this.progressTransitionDone_, this);
 };
 
@@ -66,8 +68,22 @@ robohornet.Runner = function(version, benchmarkDetails) {
     }
     this.benchmarksRun_ = 0;
     this.benchmarksFailed_ = 0;
+    this.setProgressLocation_(0);
+    this.nextProgressLocation_ = 0;
+    this.timerID_ = window.setInterval(this.timerHit.bind(this), 1000);
     this.next_();
   };
+
+  _p.timerHit = function() {
+    //Only add bits every so often.
+    if(Math.random() < 0.8) return;
+    var newValue = this.progressLocation_ + (Math.random() * 2.0);
+    if (newValue < this.nextProgressLocation_) {
+      //We don't want to set the progress bar to be farther than it could
+      //possibly be for this test.
+      this.setProgressLocation_(newValue);
+    }
+  }
 
   _p.benchmarkSucceeded = function() {
     this.benchmarksRun_++;
@@ -82,12 +98,19 @@ robohornet.Runner = function(version, benchmarkDetails) {
 
   _p.next_ = function() {
     this.currentIndex_++;
-    this.progressElement_.style.marginLeft = "-" + (100 - (this.currentIndex_ / this.benchmarkCount_ * 100)).toString() + "%";
-     if (this.currentIndex_ < this.benchmarks_.length) {
+    this.setProgressLocation_(this.nextProgressLocation_);
+    this.nextProgressLocation_ = ((this.currentIndex_ + 1) / this.benchmarkCount_) * 100;
+    if (this.nextProgressLocation_ > 100) this.nextProgressLocation_ = 100;
+    if (this.currentIndex_ < this.benchmarks_.length) {
        this.benchmarks_[this.currentIndex_].load();
     } else
       this.done_();
   };
+
+  _p.setProgressLocation_ = function(location) {
+    this.progressLocation_ = location;
+    this.progressElement_.style.marginLeft = "-" + (100 - this.progressLocation_).toString() + "%";
+  }
 
   _p.incrementOverallIndex = function(index) {
     this.overallIndex_ += index;
@@ -110,6 +133,7 @@ robohornet.Runner = function(version, benchmarkDetails) {
       document.getElementById(identifier + '-toggle').disabled = false;
     }
     this.setRunStatus_(true);
+    window.clearInterval(this.timerID_);
   };
   
   _p.progressTransitionDone_ = function() {
