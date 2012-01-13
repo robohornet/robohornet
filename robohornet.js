@@ -14,6 +14,9 @@ robohornet.Runner = function(version, benchmarkDetails) {
   this.statusElement_ = document.getElementById('status');
   this.runElement_ = document.getElementById('runButton');
   this.progressElement_ = document.getElementById('progress');
+  this.indexElement_ = document.getElementById('index');
+  var ele = document.getElementById('index-prefix');
+  if (ele) ele.innerHTML = version + ":";
   var benchmark;
   var benchmarks = [];
   var benchmarksMap = {};
@@ -58,7 +61,7 @@ robohornet.Runner = function(version, benchmarkDetails) {
     this.currentIndex_ = -1;
     this.overallIndex_ = 0;
     this.setRunStatus_(false);
-    this.setFinalStatus_('Please wait...', false);
+    this.setStatusMessage_('Please wait...', false);
     this.progressElement_.style.opacity = "0.1";
     this.progressElement_.style.webkitTransitionDelay = "";
     for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
@@ -114,18 +117,20 @@ robohornet.Runner = function(version, benchmarkDetails) {
 
   _p.incrementOverallIndex = function(index) {
     this.overallIndex_ += index;
+    this.setIndex_(this.overallIndex_, false);
   }
 
   _p.done_ = function() {
     this.testFrame.src = 'javascript:void(0)';
     this.progressElement_.addEventListener("webkitTransitionEnd", this.progressCallback_, false);
     if (this.benchmarksRun_ == this.benchmarkCount_) {
-      this.setFinalStatus_('<span>' + this.version + ':</span>' + (Math.round(this.overallIndex_ * 100) / 100).toString(), true);
+      this.setIndex_(this.overallIndex_, true);
+      this.setStatusMessage_("The RoboHornet index is normalized to 100 and roughly shows your browser's performance compared to other modern browsers. <a target='_blank' href='http://code.google.com/p/robohornet/wiki/BenchmarkScoring'>Learn more</a>.");
     } else if (this.benchmarksFailed_ == this.benchmarkCount_) {
-      this.setFinalStatus_('Test failed', false);
+      this.setStatusMessage_('Test failed', false);
       alert('To run RoboHornet locally you need to run Chrome with the --allow-file-access-from-files flag.');
     } else {
-      this.setFinalStatus_('Enable all tests to see the index. Ran ' + this.benchmarksRun_ + ' out of ' + this.benchmarkCount_ + ' benchmarks.');
+      this.setStatusMessage_('Enable all tests to see the index. Ran ' + this.benchmarksRun_ + ' out of ' + this.benchmarkCount_ + ' benchmarks.');
     }
     this.runElement_.disabled = false;
     for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
@@ -150,9 +155,13 @@ robohornet.Runner = function(version, benchmarkDetails) {
     document.body.className = enabled ? 'ready' : 'running';
   };
 
-  _p.setFinalStatus_ = function(message, strong) {
+  _p.setIndex_ = function(index, final) {
+    this.indexElement_.innerHTML = (Math.round(index * 100) / 100).toString();
+    this.indexElement_.className = final ? 'final' : "";
+  }
+
+  _p.setStatusMessage_ = function(message) {
     this.statusElement_.innerHTML = message;
-    this.statusElement_.className = strong ? 'index' : '';
   }
 
   _p.updateHash = function() {

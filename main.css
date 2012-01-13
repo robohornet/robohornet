@@ -187,6 +187,11 @@ header {
   margin-bottom: 15px;
   padding:15px;
   position: relative;
+  text-align: center;
+}
+
+header .logo {
+  float:left;
 }
 
 header img {
@@ -207,11 +212,47 @@ header img {
   -webkit-transition: margin-left 3s ease, opacity 3s ease;
 }
 
-#mainResults {
-  float:right;
+header > div {
+  display: inline-block;
+
+}
+
+div.results {
+  margin: 120px auto;
+}
+
+header > div > div {
+  color: #454545;
+  font-weight: bold;
+  font-size: 108px;
+  font-style: normal;
+  margin-bottom: -12px;
+}
+
+body.running div.results {
+  -webkit-animation-name: index-running;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-direction: alternate;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: ease;
+}
+
+#index-prefix {
+  color: #FCCF4D;
+  font-weight: normal;
+}
+
+#index {
+  opacity: 0.3;
+  -webkit-transition: opacity 2s;
+}
+
+#index.final {
+  opacity: 1.0;
 }
 
 #runButton {
+  float: right;
   margin-left: 10px;
   padding: 5px;
   border-radius: 5px;
@@ -228,7 +269,7 @@ header img {
   -webkit-animation-iteration-count: 1;
   -webkit-animation-timing-function: ease;
   /* we ideally want to flourish just as the logo crosses on load. */
-  -webkit-animation-delay: 0.75s;
+  -webkit-animation-delay: 1s;
 }
 
 #runButton:active {
@@ -251,16 +292,8 @@ header img {
   font-style: italic;
 }
 
-#status.index {
-  color: #454545;
-  font-weight: bold;
-  font-size: 36px;
-  font-style: normal;
-}
-
-#status > span {
-  color: #FCCF4D;
-  font-weight: normal;
+#status a {
+  color: inherit;
 }
 
 #results > thead > tr > td {
@@ -277,7 +310,7 @@ header img {
 
 body.ready header img {
   -webkit-animation-name: logo-ready;
-  -webkit-animation-duration: 3s;
+  -webkit-animation-duration: 4s;
   -webkit-animation-iteration-count: 1;
   -webkit-animation-timing-function: ease;
 }
@@ -344,5 +377,14 @@ body.running header img {
   }
   to {
     -webkit-transform: scale(1.0);
+  }
+}
+
+@-webkit-keyframes index-running {
+  from {
+    opacity: 1.0;
+  }
+  to {
+    opacity: 0.5;
   }
 }

@@ -10,13 +10,18 @@
     </head>
     <body>
         <header>
-          <section id='mainResults'>
+          <button id="runButton" onclick="rh.run()" disabled="true">Loading...</button>
+          <div class='logo'>
+            <h1>RoboHornet</h1><img src='robohornet.png'>
+          </div>
+          <div class='results'>
+              <div>
+                  <span id="index-prefix">RH:</span><span id='index'>0000.00</span>
+              </div>
               <span id="status">
-                  Run the test to see the RoboHornet Index
+                  RoboHornet is a benchmark designed around peformance pain points real web developers care about. Run the test to see the index.
               </span>
-              <button id="runButton" onclick="rh.run()" disabled="true">Loading...</button>
-          </section>
-          <h1>RoboHornet</h1><img src='robohornet.png'>
+          </div>
           <div id='progress'></div>
         </header>
         <section id="sidebar">
