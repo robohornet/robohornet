@@ -159,7 +159,7 @@ robohornet.Runner = function(version, benchmarkDetails) {
     //Ensure that we have 4 digits in front of the dot and 2 after.
     var parts = (Math.round(index * 100) / 100).toString().split('.');
     if (parts.length < 2) parts.push('00');
-    while (parts[0].length < 4) {
+    while (!final && parts[0].length < 3) {
       parts[0] = "0" + parts[0];
     }
     while (parts[1].length < 2) {
