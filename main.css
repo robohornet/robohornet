@@ -257,7 +257,6 @@ body.running div.results {
 #index {
   opacity: 0.3;
   -webkit-transition: opacity 2s;
-  font-weight: 900;
 }
 
 #index.final {
