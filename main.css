@@ -199,11 +199,10 @@ header {
   margin-bottom: 15px;
   padding:15px;
   position: relative;
-  text-align: center;
 }
 
 header .logo {
-  float:left;
+  display: inline-block;
 }
 
 header img {
@@ -224,21 +223,21 @@ header img {
   -webkit-transition: margin-left 3s ease, opacity 3s ease;
 }
 
-header > div {
-  display: inline-block;
-
-}
-
 div.results {
-  margin: 120px auto;
+  margin: 120px 0;
+  text-align: center;
+  width: 100%;
 }
 
 header > div > div {
+
+}
+
+.results div {
   color: #454545;
   font-weight: bold;
   font-size: 108px;
   font-style: normal;
-  margin-bottom: -12px;
 }
 
 #index-prefix {
