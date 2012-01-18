@@ -61,7 +61,7 @@ robohornet.Runner = function(version, benchmarkDetails) {
     this.currentIndex_ = -1;
     this.overallIndex_ = 0;
     this.setRunStatus_(false);
-    this.setStatusMessage_('Please wait...', false);
+    this.setStatusMessage_('Please wait while the benchmark runs. For best results, close all other programs and pages while the test is running.', false);
     this.progressElement_.style.opacity = "0.1";
     this.progressElement_.style.webkitTransitionDelay = "";
     for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
