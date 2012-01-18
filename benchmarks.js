@@ -33,7 +33,7 @@ var benchmarks = [
         ['1000 rows', 1000]
       ],
       weight: 2,
-      baselineTime: 5
+      baselineTime: 7.37
   },
 
   {
@@ -46,7 +46,7 @@ var benchmarks = [
         ['1000 columns', 1000]
       ],
       weight: 1,
-      baselineTime: 25
+      baselineTime: 39.37
   },
 
   {
@@ -59,7 +59,7 @@ var benchmarks = [
         ['1000 nodes deep', 1000]
       ],
       weight: 2,
-      baselineTime: 10
+      baselineTime: 47.99
   },
 
   {
@@ -72,7 +72,7 @@ var benchmarks = [
         ['1000 nodes deep', 1000]
       ],
       weight: 1,
-      baselineTime: 1.5
+      baselineTime: 2.75
   },
 
   {
@@ -84,7 +84,7 @@ var benchmarks = [
         ['10000 lines', 10000]
       ],
       weight: 3,
-      baselineTime: 250
+      baselineTime: 461.02
   },
 
   {
@@ -97,7 +97,7 @@ var benchmarks = [
         ['200x100', [200, 100]]
       ],
       weight: 2,
-      baselineTime: 500
+      baselineTime: 209.895
   },
 
   {
@@ -111,7 +111,7 @@ var benchmarks = [
         ['1000,50', [1000, 50]]
       ],
       weight: 1,
-      baselineTime: 80
+      baselineTime: 204.36
   },
 
   {
@@ -124,7 +124,7 @@ var benchmarks = [
         ['500x100', [500, 100]]
       ],
       weight: 2,
-      baselineTime: 250
+      baselineTime: 1892.655
   },
 
   {
@@ -137,6 +137,6 @@ var benchmarks = [
         ['500 SVGs', 500]
       ],
       weight: 5,
-      baselineTime: 100
+      baselineTime: 41.43
   }
 ];
