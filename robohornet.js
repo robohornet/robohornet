@@ -110,6 +110,8 @@ robohornet.Runner = function(version, benchmarkDetails) {
   _p.done_ = function() {
     this.testFrame.src = 'javascript:void(0)';
     this.progressElement_.addEventListener("webkitTransitionEnd", this.progressCallback_, false);
+    this.progressElement_.addEventListener("transitionend", this.progressCallback_, false);
+    this.progressElement_.style.opacity = '0.0';
     this.progressElement_.style.opacity = '0.0';
     if (this.benchmarksRun_ == this.benchmarkCount_) {
       this.setIndex_(this.overallIndex_, true);
@@ -132,6 +134,7 @@ robohornet.Runner = function(version, benchmarkDetails) {
     //Wait until the progress bar fades out to put it back to the left.
     this.progressElement_.style.marginLeft = "-100%";
     this.progressElement_.removeEventListener("webkitTransitionEnd", this.progressCallback_, false);
+    this.progressElement_.removeEventListener("transitionend", this.progressCallback_, false);
   }
 
   _p.setRunStatus_ = function(enabled) {
