@@ -34,6 +34,7 @@ robohornet.Runner = function(version, benchmarkDetails) {
   this.benchmarksFailed_ = 0;
   this.nextProgressLocation_ = 0;
   this.progressLocation_ = 0;
+  this.progressCallback_ = bind(this.progressTransitionDone_, this);
 };
 
 (function() {
@@ -107,6 +108,8 @@ robohornet.Runner = function(version, benchmarkDetails) {
 
   _p.done_ = function() {
     this.testFrame.src = 'javascript:void(0)';
+    this.progressElement_.addEventListener("webkitTransitionEnd", this.progressCallback_, false);
+    this.progressElement_.style.opacity = '0.0';
     if (this.benchmarksRun_ == this.benchmarkCount_) {
       this.setIndex_(this.overallIndex_, true);
       this.setStatusMessage_("The RoboHornet index is normalized to 100 and roughly shows your browser's performance compared to other modern browsers. <a target='_blank' href='http://code.google.com/p/robohornet/wiki/BenchmarkScoring'>Learn more</a>.");
@@ -125,8 +128,9 @@ robohornet.Runner = function(version, benchmarkDetails) {
   };
   
   _p.progressTransitionDone_ = function() {
-    this.progressElement_.style.opacity = '0.0';
+    //Wait until the progress bar fades out to put it back to the left.
     this.progressElement_.style.marginLeft = "-100%";
+    this.progressElement_.removeEventListener("webkitTransitionEnd", this.progressCallback_, false);
   }
 
   _p.setRunStatus_ = function(enabled) {
