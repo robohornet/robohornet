@@ -59,6 +59,7 @@ robohornet.Runner = function(version, benchmarkDetails) {
   _p.run = function() {
     this.currentIndex_ = -1;
     this.overallIndex_ = 0;
+    this.setIndex_(0.0, false);
     this.setRunStatus_(false);
     this.setStatusMessage_('Please wait while the benchmark runs. For best results, close all other programs and pages while the test is running.', false);
     this.progressElement_.style.opacity = "0.1";
