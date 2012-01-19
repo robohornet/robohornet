@@ -59,4 +59,12 @@ function makeRandomPath(width, height, numVerts) {
 <body 
 <div id="container" style="position: absolute; width:512px; height: 512px; overflow:hidden; border: 1px solid black;"></div> 
 </body> 
+<script>
+		if (window.opener && window.opener.__robohornet__) {
+			document.body.appendChild(document.createTextNode('Running test using test runner...'));
+			window.opener.__robohornet__.benchmarkLoaded();
+		} else {
+			document.body.appendChild(document.createTextNode('Not yet implemented'));
+    }
+</script>
 </html> 

@@ -87,7 +87,7 @@ a {
 }
 
 #tests {
-  margin: 5px;
+  margin: 5px auto;
 }
 
 #tests > thead > tr > td {
@@ -135,21 +135,19 @@ a {
   content: "\25BC";
 }
 
-#tests > tbody > tr.details {
-  display: none;
+.details {
+	font-size: 0;
 }
 
-#tests > tbody > tr.details.expanded {
-  display: block;
+.details > div {
+    display: none;
 }
 
-.details-container {
+.details > div.expanded {
+		display: block;
+	font-size: 14px;
     border: 1px dotted #FCCF4D;
     background: #FDE7A7;
-}
-
-.details-container.disabled {
-  opacity: 0.5;
 }
 
 .runs {

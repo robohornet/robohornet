@@ -7,7 +7,7 @@
 <script>
    
     var tableElement;
-    function setUp(rowCount)
+    function setUp()
     {
         var tableBody = document.createElement('tbody');
         tableElement = document.createElement('table');
@@ -27,8 +27,31 @@
         for (var i = 0; i < rowCount; i++) {
             var tableRow = document.createElement('tr');
             tableBody.appendChild(tableRow);
-            tableRow.appendChild(document.createElement('td'));
+						var tableCell = document.createElement('td');
+						tableCell.appendChild(document.createTextNode(i));
+            tableRow.appendChild(tableCell);
         }
+        var tableRow = document.createElement('tr');
+        tableElement.tBodies[0].appendChild(tableRow);
+        var tableCell = document.createElement('td');
+        tableCell.appendChild(document.createTextNode(tableElement.offsetHeight));
+        tableRow.appendChild(tableCell);
+    }
+
+		if (window.opener && window.opener.__robohornet__) {
+			document.body.appendChild(document.createTextNode('Running test using test runner...'));
+			window.opener.__robohornet__.benchmarkLoaded();
+		} else {
+
+			document.body.appendChild(document.createTextNode('Running test standalone...'));
+
+			var rowCount = 10000;
+      setUp(rowCount);
+			var startTime = new Date().getTime();
+      test(rowCount);
+			var endTime = new Date().getTime();
+
+			document.body.appendChild(document.createTextNode('Added ' + rowCount + ' rows in ' + (endTime - startTime) + ' ms.'));
     }
 </script>
 </body>

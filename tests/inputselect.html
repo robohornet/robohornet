@@ -34,6 +34,13 @@
         inputElement.select();
         inputElement.blur();
     }
+
+		if (window.opener && window.opener.__robohornet__) {
+			document.body.appendChild(document.createTextNode('Running test using test runner...'));
+			window.opener.__robohornet__.benchmarkLoaded();
+		} else {
+			document.body.appendChild(document.createTextNode('Not yet implemented'));
+    }
 </script>
 </body>
 </html>

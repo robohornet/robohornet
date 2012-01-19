@@ -28,12 +28,11 @@ var benchmarks = [
       description: 'Tests adding rows to an existing table',
       filename: 'tests/addrow.html',
       runs: [
-        ['10 rows',     10],
-        ['100 rows',   100],
+        ['250 rows',   250],
         ['1000 rows', 1000]
       ],
       weight: 2,
-      baselineTime: 7.37
+      baselineTime: 38
   },
 
   {
@@ -41,12 +40,11 @@ var benchmarks = [
       description: 'Tests adding columns to an existing table',
       filename: 'tests/addcol.html',      
       runs: [
-        ['10 columns',     10],
-        ['100 columns',   100],
+        ['250 columns',   250],
         ['1000 columns', 1000]
       ],
       weight: 1,
-      baselineTime: 39.37
+      baselineTime: 46.5
   },
 
   {
@@ -54,14 +52,13 @@ var benchmarks = [
       description: 'Tests descendant selectors at different DOM depths',
       filename: 'tests/descendantselector.html',
       runs: [
-        ['10 nodes deep',     10],
-        ['100 nodes deep',   100],
         ['1000 nodes deep', 1000]
       ],
       weight: 2,
       baselineTime: 47.99
   },
 
+/*
   {
       name: 'Input Selection',
       description: 'Test the cost of selecting the text in an input field. In some browsers this causes a relayout which can be expensive.',
@@ -74,6 +71,7 @@ var benchmarks = [
       weight: 1,
       baselineTime: 2.75
   },
+*/
 
   {
       name: '2D Canvas Draw',

@@ -5,22 +5,26 @@
 <style>
 div { padding: 1px; }
 .test div { padding: 2px; }
+.test2 div { padding: 3px; }
 </style>
 </head>
 <body>
 <script>
 
     var rootElement;
+		var totalHeight;
     function setUp(depth)
     {
         rootElement = document.createElement('div');
         var parentElement = rootElement;
         for (var i = 0; i < depth; i++) {
             var element = document.createElement('div');
+						element.appendChild(document.createTextNode(i));
             parentElement.appendChild(element);
             parentElement = element;
         }
         document.body.appendChild(rootElement);
+        totalHeight = 0
     }
 
     function tearDown()
@@ -31,8 +35,15 @@ div { padding: 1px; }
 
     function test(depth)
     {
-        rootElement.className = rootElement.className == 'test' ? '' : 'test';
-        rootElement.offsetHeight;
+        rootElement.className = rootElement.className == 'test' ? 'test2' : 'test';
+        totalHeight += rootElement.offsetHeight;
+    }
+
+		if (window.opener && window.opener.__robohornet__) {
+			document.body.appendChild(document.createTextNode('Running test using test runner...'));
+			window.opener.__robohornet__.benchmarkLoaded();
+		} else {
+			document.body.appendChild(document.createTextNode('Not yet implemented'));
     }
 </script>
 </body>

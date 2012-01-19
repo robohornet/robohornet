@@ -50,6 +50,27 @@
             tableCell.appendChild(document.createTextNode(i));
             tableRow.appendChild(tableCell);
         }
+        var tableRow = document.createElement('tr');
+        tableElement.tBodies[0].appendChild(tableRow);
+        var tableCell = document.createElement('td');
+        tableCell.appendChild(document.createTextNode(tableElement.offsetHeight));
+        tableRow.appendChild(tableCell);
+    }
+
+		if (window.opener && window.opener.__robohornet__) {
+			document.body.appendChild(document.createTextNode('Running test using test runner...'));
+			window.opener.__robohornet__.benchmarkLoaded();
+		} else {
+
+			document.body.appendChild(document.createTextNode('Running test standalone...'));
+
+			var rowCount = 10000;
+      setUp(rowCount);
+			var startTime = new Date().getTime();
+      test(rowCount);
+			var endTime = new Date().getTime();
+
+			document.body.appendChild(document.createTextNode('Added ' + rowCount + ' cols in ' + (endTime - startTime) + ' ms.'));
     }
 </script>
 </body>
