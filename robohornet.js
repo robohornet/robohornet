@@ -34,8 +34,6 @@ robohornet.Runner = function(version, benchmarkDetails) {
   this.benchmarksFailed_ = 0;
   this.nextProgressLocation_ = 0;
   this.progressLocation_ = 0;
-  this.timerID_ = 0;
-  this.progressCallback_ = bind(this.progressTransitionDone_, this);
 };
 
 (function() {
@@ -63,7 +61,6 @@ robohornet.Runner = function(version, benchmarkDetails) {
     this.setRunStatus_(false);
     this.setStatusMessage_('Please wait while the benchmark runs. For best results, close all other programs and pages while the test is running.', false);
     this.progressElement_.style.opacity = "0.1";
-    this.progressElement_.style.webkitTransitionDelay = "";
     for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
       var identifier = 'benchmark-' + benchmark.index;
       document.getElementById(identifier + '-toggle').disabled = true;
@@ -73,20 +70,8 @@ robohornet.Runner = function(version, benchmarkDetails) {
     this.benchmarksFailed_ = 0;
     this.setProgressLocation_(0);
     this.nextProgressLocation_ = 0;
-    this.timerID_ = window.setInterval(this.timerHit.bind(this), 1000);
     this.next_();
   };
-
-  _p.timerHit = function() {
-    //Only add bits every so often.
-    if(Math.random() < 0.8) return;
-    var newValue = this.progressLocation_ + (Math.random() * 2.0);
-    if (newValue < this.nextProgressLocation_) {
-      //We don't want to set the progress bar to be farther than it could
-      //possibly be for this test.
-      this.setProgressLocation_(newValue);
-    }
-  }
 
   _p.benchmarkSucceeded = function() {
     this.benchmarksRun_++;
@@ -122,7 +107,6 @@ robohornet.Runner = function(version, benchmarkDetails) {
 
   _p.done_ = function() {
     this.testFrame.src = 'javascript:void(0)';
-    this.progressElement_.addEventListener("webkitTransitionEnd", this.progressCallback_, false);
     if (this.benchmarksRun_ == this.benchmarkCount_) {
       this.setIndex_(this.overallIndex_, true);
       this.setStatusMessage_("The RoboHornet index is normalized to 100 and roughly shows your browser's performance compared to other modern browsers. <a target='_blank' href='http://code.google.com/p/robohornet/wiki/BenchmarkScoring'>Learn more</a>.");
@@ -138,15 +122,11 @@ robohornet.Runner = function(version, benchmarkDetails) {
       document.getElementById(identifier + '-toggle').disabled = false;
     }
     this.setRunStatus_(true);
-    window.clearInterval(this.timerID_);
   };
   
   _p.progressTransitionDone_ = function() {
-    /* Temporarily have the margin lag while we wait for it to fade out. */
-    this.progressElement_.style.webkitTransitionDelay = "3s,0s";
     this.progressElement_.style.opacity = '0.0';
     this.progressElement_.style.marginLeft = "-100%";
-    this.progressElement_.removeEventListener("webkitTransitionEnd", this.progressCallback_, false);
   }
 
   _p.setRunStatus_ = function(enabled) {

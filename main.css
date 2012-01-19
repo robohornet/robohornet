@@ -219,8 +219,7 @@ header img {
   width: 100%;
   z-index: -1;
   margin-left: -100%;
-  /* progressTransitionDone_ has the 3s hard-coded as well */
-  -webkit-transition: margin-left 3s ease, opacity 3s ease;
+  -webkit-transition: opacity 3s ease;
 }
 
 div.results {
