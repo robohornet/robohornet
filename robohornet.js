@@ -295,7 +295,20 @@ robohornet.Benchmark = function(runner, details) {
     var detailsElement = document.createElement('div');
     detailsElement.className = 'details-container';
     cell.appendChild(detailsElement);
-    detailsElement.appendChild(document.createTextNode(this.description));
+    detailsElement.appendChild(document.createTextNode(this.description + " ("));
+    var link = document.createElement("a");
+    
+    //The view-source URL must be a full URL.
+    var pathParts = window.location.pathname.split("/");
+    pathParts.pop();
+
+    link.href = "view-source:" + window.location.origin + "/" +
+                 pathParts.join("/") + "/" + this.filename;
+    link.target = "_blank";
+    link.appendChild(document.createTextNode("View source"));
+    detailsElement.appendChild(link);
+
+    detailsElement.appendChild(document.createTextNode(")"));
 
     // Append list of runs/parameters.
     var runsTable = document.createElement('table');

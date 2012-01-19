@@ -44,7 +44,6 @@
   src: local('Lato Black'), local('Lato-Black'), url('fonts/Lato-Black.woff') format('woff');
 }
 
-
 html {
   height: 100%;
   margin: 0;
@@ -68,6 +67,10 @@ table {
 
 th, td {
   padding: 0 1ex;
+}
+
+a {
+  color: inherit;
 }
 
 #sidebar {
@@ -292,10 +295,6 @@ header > div > div {
   text-align: center;
   color: #666666;
   font-style: italic;
-}
-
-#status a {
-  color: inherit;
 }
 
 #results > thead > tr > td {
