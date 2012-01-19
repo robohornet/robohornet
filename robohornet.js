@@ -164,6 +164,20 @@ robohornet.Runner = function(version, benchmarkDetails) {
     this.statusElement_.innerHTML = message;
   }
 
+  _p.enableAllBenchmarks = function() {
+    for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
+      benchmark.setEnabled(true, true);
+    }
+    this.updateHash();
+  }
+
+  _p.disableAllBenchmarks = function() {
+    for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
+      benchmark.setEnabled(false, true);
+    }
+    this.updatehHash();
+  }
+
   _p.updateHash = function() {
     var enabledBenchmarkIDs = [];
     var disabledBenchmarkIDs = [];

@@ -69,6 +69,11 @@ th, td {
   padding: 0 1ex;
 }
 
+thead small {
+  padding-left: 1em;
+  font-size: x-small;
+}
+
 a {
   color: inherit;
 }
