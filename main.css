@@ -103,12 +103,12 @@ a {
 }
 
 #tests > thead > tr > td.number, #tests > tbody > tr > td.number {
-    width: 10ex;
+  width: 10ex;
 }
 
 #tests > tbody > tr > td.details {
-    border-top: none;
-    padding: 0.5ex 5ex 2ex 5ex;
+  border-top: none;
+  padding: 0.5ex 5ex 2ex 5ex;
 }
 
 #tests > tbody > tr.disabled {
@@ -136,31 +136,31 @@ a {
 }
 
 .details {
-	font-size: 0;
+  font-size: 0;
 }
 
 .details > div {
-    display: none;
+  display: none;
 }
 
 .details > div.expanded {
-		display: block;
-	font-size: 14px;
-    border: 1px dotted #FCCF4D;
-    background: #FDE7A7;
+  display: block;
+  font-size: 14px;
+  border: 1px dotted #FCCF4D;
+  background: #FDE7A7;
 }
 
 .runs {
-    margin-top: 0.5ex;
-    table-layout: fixed;
+  margin-top: 0.5ex;
+  table-layout: fixed;
 }
 
 .runs > thead > tr > td.number, .runs > tbody > tr > td.number {
-    width: 10ex;
+  width: 10ex;
 }
 
 .runs > thead > tr > td.name, .runs > tbody > tr > td.name {
-    width: 30ex;
+  width: 30ex;
 }
 
 .runs > tbody > tr > td {
@@ -343,7 +343,7 @@ body.ready header img {
     -webkit-transform: translate(0, 0);
   }
   10% {
-    -webkit-transform: translate(0, 0) rotate(34deg);
+  -  webkit-transform: translate(0, 0) rotate(34deg);
   }
   17% {
     -webkit-transform: translate(-50%, 0) rotate(45deg);
@@ -390,7 +390,7 @@ body.ready header img {
 
 @-webkit-keyframes button-flourish {
   from {
-   -webkit-transform: scale(1.0); 
+    -webkit-transform: scale(1.0); 
   }
   10% {
     -webkit-transform: scale(1.15);

@@ -2,13 +2,13 @@ var robohornet = {};
 
 robohornet.Status = {
   LOADING: 0,
-	READY: 1,
+  READY: 1,
   RUNNING: 2
 };
 
 robohornet.BenchmarkStatus = {
   NO_STATUS: -1,
-	SUCCESS: 0,
+  SUCCESS: 0,
   LOADING: 1,
   RUNNING: 2,
   LOAD_FAILED: 3,
@@ -32,7 +32,7 @@ robohornet.Runner = function(version, benchmarks) {
 
   document.getElementById('index-prefix').textContent = version + ':';
 
-	this.initBenchmarks_(benchmarks);
+  this.initBenchmarks_(benchmarks);
   this.setStatus_(robohornet.Status.READY);
 };
 
@@ -45,58 +45,58 @@ robohornet.Runner = function(version, benchmarks) {
   };
 
   _p.run = function() {
-	  this.setStatus_(robohornet.Status.RUNNING);
-	  this.currentIndex_ = -1;
+    this.setStatus_(robohornet.Status.RUNNING);
+    this.currentIndex_ = -1;
     this.score_ = 0;
     window.setTimeout(bind(this.next_, this), 25);
   };
 
   _p.next_ = function() {
-		var benchmark;
-		while (!benchmark) {
-			benchmark = this.benchmarks_[++this.currentIndex_];
-			if (!benchmark)
-				break;
-			if (!document.getElementById('benchmark-' + benchmark.index + '-toggle').checked) {
-				this.setBenchmarkStatus_(benchmark, robohornet.BenchmarkStatus.SKIPPED);
-				benchmark = null;
-			}
-		}
-
-		this.activeBenchmark_ = benchmark;
-		if (benchmark) {
-			this.loadBenchmark_(benchmark);
-		} else {
-		  this.done_();
+    var benchmark;
+    while (!benchmark) {
+      benchmark = this.benchmarks_[++this.currentIndex_];
+      if (!benchmark)
+        break;
+      if (!document.getElementById('benchmark-' + benchmark.index + '-toggle').checked) {
+        this.setBenchmarkStatus_(benchmark, robohornet.BenchmarkStatus.SKIPPED);
+        benchmark = null;
+      }
     }
-	};
+
+    this.activeBenchmark_ = benchmark;
+    if (benchmark) {
+      this.loadBenchmark_(benchmark);
+    } else {
+      this.done_();
+    }
+  };
 
   _p.done_ = function() {
-		var successfulRuns = 0, failedRuns = 0;
-		for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
-			if (benchmark.status == robohornet.BenchmarkStatus.SUCCESS)
-				successfulRuns++;
-			else if (benchmark.status != robohornet.BenchmarkStatus.SKIPPED)
-				failedRuns++;
-		}
+    var successfulRuns = 0, failedRuns = 0;
+    for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
+      if (benchmark.status == robohornet.BenchmarkStatus.SUCCESS)
+        successfulRuns++;
+      else if (benchmark.status != robohornet.BenchmarkStatus.SKIPPED)
+        failedRuns++;
+    }
 
-		if (successfulRuns == this.benchmarks_.length) {
-			this.setScore_(this.score_, true /* opt_finalScore */);
+    if (successfulRuns == this.benchmarks_.length) {
+      this.setScore_(this.score_, true /* opt_finalScore */);
       this.statusElement_.textContent = 'The RoboHornet index is normalized to 100 and roughly shows your browser\'s performance compared to other modern browsers.';
     } else if (failedRuns) {
-			this.statusElement_.textContent = failedRuns + ' out of ' + this.benchmarks_.length + ' benchmark(s) failed.';
+      this.statusElement_.textContent = failedRuns + ' out of ' + this.benchmarks_.length + ' benchmark(s) failed.';
     } else {
-			this.statusElement_.textContent = 'Enable all benchmarks to compute index.';
+      this.statusElement_.textContent = 'Enable all benchmarks to compute index.';
     }
     this.setStatus_(robohornet.Status.READY);
-	};
+  };
 
   _p.benchmarkLoaded = function() {
-		var benchmark = this.activeBenchmark_;
-		if (!benchmark)
-			return;
+    var benchmark = this.activeBenchmark_;
+    if (!benchmark)
+      return;
 
-		var self = this;
+    var self = this;
     var suite = new Benchmark.Suite(this.name, {
       onComplete: function() { self.onBenchmarkComplete_(this, benchmark); }
     });
@@ -110,47 +110,47 @@ robohornet.Runner = function(version, benchmarks) {
       });
     }
 
-		this.setBenchmarkStatus_(benchmark, robohornet.BenchmarkStatus.RUNNING);
+    this.setBenchmarkStatus_(benchmark, robohornet.BenchmarkStatus.RUNNING);
     suite.run(true);
   };
 
   _p.initBenchmarks_ = function(benchmarks) {
     var totalWeight = 0;
-	  var benchmark;
+    var benchmark;
 
-		for (var details, i = 0; details = benchmarks[i]; i++) {
-		  totalWeight += details.weight;
-		}
+    for (var details, i = 0; details = benchmarks[i]; i++) {
+      totalWeight += details.weight;
+    }
 
-	  this.benchmarks_ = [];
-	  this.benchmarksById_ = {};
-		for (var details, i = 0; details = benchmarks[i]; i++) {
-		  benchmark = new robohornet.Benchmark(details);
+    this.benchmarks_ = [];
+    this.benchmarksById_ = {};
+    for (var details, i = 0; details = benchmarks[i]; i++) {
+      benchmark = new robohornet.Benchmark(details);
       benchmark.index = i;
       benchmark.computedWeight = (benchmark.weight / totalWeight) * 100;
-		  this.benchmarks_.push(benchmark);
+      this.benchmarks_.push(benchmark);
       this.benchmarksById_[benchmark.id] = benchmark;
-			this.registerBenchmark_(benchmark);
-		}
+      this.registerBenchmark_(benchmark);
+    }
   };
 
   _p.loadBenchmark_ = function(benchmark) {
-		if (this.benchmarkWindow_)
-			this.benchmarkWindow_.close();
+    if (this.benchmarkWindow_)
+      this.benchmarkWindow_.close();
 
-		this.setBenchmarkStatus_(benchmark, robohornet.BenchmarkStatus.LOADING);
-		this.activeBenchmark_ = benchmark;
+    this.setBenchmarkStatus_(benchmark, robohornet.BenchmarkStatus.LOADING);
+    this.activeBenchmark_ = benchmark;
     this.benchmarkWindow_ = window.open(benchmark.filename, 'benchmark', 'width=1024,height=768');
-		if (!this.benchmarkWindow_) {
-			this.activeBenchmark_ = null;
-			alert('Popup required by benchmark suite blocked.');
-			return;
-		}
+    if (!this.benchmarkWindow_) {
+      this.activeBenchmark_ = null;
+      alert('Popup required by benchmark suite blocked.');
+      return;
+    }
 
   };
 
-	_p.onBenchmarkComplete_ = function(suite, benchmark) {
-		this.benchmarkWindow_.close();
+  _p.onBenchmarkComplete_ = function(suite, benchmark) {
+    this.benchmarkWindow_.close();
     var results = [];
     for (var run, i = 0; run = suite[i]; i++) {
       results.push({
@@ -160,13 +160,13 @@ robohornet.Runner = function(version, benchmarks) {
         runs: run.stats.size
       });
     }
-		benchmark.results = results;
-		this.setBenchmarkStatus_(benchmark, robohornet.BenchmarkStatus.SUCCESS);
+    benchmark.results = results;
+    this.setBenchmarkStatus_(benchmark, robohornet.BenchmarkStatus.SUCCESS);
     this.showBenchmarkResults_(benchmark);
     window.setTimeout(bind(this.next_, this), 25);
   };
 
-	_p.registerBenchmark_ = function(benchmark) {
+  _p.registerBenchmark_ = function(benchmark) {
     var identifier = 'benchmark-' + benchmark.index;
 
     // Append summary row.
@@ -228,12 +228,12 @@ robohornet.Runner = function(version, benchmarks) {
       runsTable.tBodies[0].appendChild(runsRow);
     }
     detailsElement.appendChild(runsTable);
-		var linkElement = document.createElement('a');
-		linkElement.target = '_new';
-		linkElement.href = benchmark.filename;
-		linkElement.appendChild(document.createTextNode('Open test in new window'));
+    var linkElement = document.createElement('a');
+    linkElement.target = '_new';
+    linkElement.href = benchmark.filename;
+    linkElement.appendChild(document.createTextNode('Open test in new window'));
     detailsElement.appendChild(linkElement);
-		benchmark.detailsElement_ = detailsElement;
+    benchmark.detailsElement_ = detailsElement;
 
     row.appendChild(cell);
     this.testsContainer.tBodies[0].appendChild(row);
@@ -241,7 +241,7 @@ robohornet.Runner = function(version, benchmarks) {
   };
 
   _p.showBenchmarkResults_ = function(benchmark) {
-		var results = benchmark.results;
+    var results = benchmark.results;
 
     var row = benchmark.summaryRow_;
     row.cells[1].textContent = 'Computing Index...';
@@ -259,8 +259,8 @@ robohornet.Runner = function(version, benchmarks) {
 
     var diff = accumulatedMean - benchmark.baselineTime;
     var score = benchmark.baselineTime * benchmark.computedWeight / accumulatedMean;
-	 	this.score_ += score;
-		this.setScore_(this.score_);
+     this.score_ += score;
+    this.setScore_(this.score_);
 
     row.cells[1].textContent = 'Completed successfully ';
     row.cells[2].textContent = accumulatedMean.toFixed(2) + 'ms';
@@ -268,30 +268,30 @@ robohornet.Runner = function(version, benchmarks) {
   };
 
 
-	_p.setBenchmarkStatus_ = function(benchmark, status) {
-		benchmark.status = status;
+  _p.setBenchmarkStatus_ = function(benchmark, status) {
+    benchmark.status = status;
     switch (benchmark.status) {
-			case robohornet.BenchmarkStatus.SUCCESS:
-				caption = 'Completed successfully';
+      case robohornet.BenchmarkStatus.SUCCESS:
+        caption = 'Completed successfully';
         break;
-			case robohornet.BenchmarkStatus.LOADING:
-				caption = 'Loading...';
+      case robohornet.BenchmarkStatus.LOADING:
+        caption = 'Loading...';
         break;
-			case robohornet.BenchmarkStatus.RUNNING:
-				caption = 'Running...';
+      case robohornet.BenchmarkStatus.RUNNING:
+        caption = 'Running...';
         break;
-			case robohornet.BenchmarkStatus.LOAD_FAILED:
-				caption = 'Failed to load';
+      case robohornet.BenchmarkStatus.LOAD_FAILED:
+        caption = 'Failed to load';
         break;
-			case robohornet.BenchmarkStatus.RUN_FAILED:
-				caption = 'Failed to run';
+      case robohornet.BenchmarkStatus.RUN_FAILED:
+        caption = 'Failed to run';
         break;
-			case robohornet.BenchmarkStatus.SKIPPED:
-				caption = 'Skipped';
+      case robohornet.BenchmarkStatus.SKIPPED:
+        caption = 'Skipped';
         break;
-			default:
-				caption = 'Unknown failure';
-		}
+      default:
+        caption = 'Unknown failure';
+    }
 
     var row = benchmark.summaryRow_;
     row.cells[1].textContent = caption;
@@ -301,23 +301,23 @@ robohornet.Runner = function(version, benchmarks) {
     this.status_ = status;
     switch (this.status_) {
       case robohornet.Status.READY:
-				caption = 'Run';
-				break;
+        caption = 'Run';
+        break;
       case robohornet.Status.RUNNING:
-				caption = 'Running...';
-				break;
+        caption = 'Running...';
+        break;
       default:
-				caption = 'Loading...';
+        caption = 'Loading...';
     }
     this.runElement_.textContent = caption;
-		this.runElement_.disabled = this.status_ != robohornet.Status.READY;
+    this.runElement_.disabled = this.status_ != robohornet.Status.READY;
   };
 
   _p.setScore_ = function(index, opt_finalScore) {
     // Ensure that we have 4 digits in front of the dot and 2 after.
     var parts = (Math.round(index * 100) / 100).toString().split('.');
     if (parts.length < 2)
-			parts.push('00');
+      parts.push('00');
     while (!opt_finalScore && parts[0].length < 3) {
       parts[0] = '0' + parts[0];
     }
@@ -329,9 +329,9 @@ robohornet.Runner = function(version, benchmarks) {
     this.indexElement_.className = opt_finalScore ? 'final' : '';
   }
 
-	_p.toggleBenchmarkDetails_ = function(benchmark, e) {
-		benchmark.detailsElement_.className = benchmark.detailsElement_.className == 'expanded' ? '' : 'expanded';
-	};
+  _p.toggleBenchmarkDetails_ = function(benchmark, e) {
+    benchmark.detailsElement_.className = benchmark.detailsElement_.className == 'expanded' ? '' : 'expanded';
+  };
 
 })();
 
@@ -360,10 +360,10 @@ function bind(fn, opt_scope, var_args) {
   var len = arguments.length;
   var args = [];
   for (var i = 2; i < len; i++) {
-  	args.push(arguments[i]);
+    args.push(arguments[i]);
   }
   return function() {
-  	fn.apply(scope, args);
+    fn.apply(scope, args);
   };
 }
 
