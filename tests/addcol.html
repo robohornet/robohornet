@@ -8,11 +8,12 @@
 </head>
 <body>
 <script>
-    
+    var DEFAULT_ROW_COUNT = 1000;
     var tableElement;
     
-    function setUp(rowCount)
+    function setUp(opt_rowCount)
     {
+        var rowCount = opt_rowCount || DEFAULT_ROW_COUNT;
         var tableBody = document.createElement('tbody');
         for (var i = 0; i < rowCount; i++) {
             var tableRow = document.createElement('tr');
@@ -42,8 +43,9 @@
         }
     }
 
-    function test(rowCount)
+    function test(opt_rowCount)
     {
+        var rowCount = opt_rowCount || DEFAULT_ROW_COUNT;
         for (var i = 0; i < tableElement.rows.length; i++) {
             var tableRow = tableElement.rows[i];
             var tableCell = document.createElement('td');
@@ -57,21 +59,7 @@
         tableRow.appendChild(tableCell);
     }
 
-		if (window.opener && window.opener.__robohornet__) {
-			document.body.appendChild(document.createTextNode('Running test using test runner...'));
-			window.opener.__robohornet__.benchmarkLoaded();
-		} else {
-
-			document.body.appendChild(document.createTextNode('Running test standalone...'));
-
-			var rowCount = 10000;
-      setUp(rowCount);
-			var startTime = new Date().getTime();
-      test(rowCount);
-			var endTime = new Date().getTime();
-
-			document.body.appendChild(document.createTextNode('Added ' + rowCount + ' cols in ' + (endTime - startTime) + ' ms.'));
-    }
 </script>
+<script src="../test.js"></script>
 </body>
 </html>

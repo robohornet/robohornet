@@ -6,20 +6,25 @@
 div { padding: 1px; }
 .test div { padding: 2px; }
 .test2 div { padding: 3px; }
+.test div div div { background: orange; }
+.test div div div div { background: white; }
 </style>
 </head>
 <body>
 <script>
 
     var rootElement;
-		var totalHeight;
-    function setUp(depth)
+    var totalHeight;
+    var DEFAULT_DEPTH = 1000;
+    
+    function setUp(opt_depth)
     {
+        var depth = opt_depth || DEFAULT_DEPTH;
         rootElement = document.createElement('div');
         var parentElement = rootElement;
         for (var i = 0; i < depth; i++) {
             var element = document.createElement('div');
-						element.appendChild(document.createTextNode(i));
+                        element.appendChild(document.createTextNode(i));
             parentElement.appendChild(element);
             parentElement = element;
         }
@@ -33,18 +38,13 @@ div { padding: 1px; }
         rootElement = null;
     }
 
-    function test(depth)
+    function test(opt_depth)
     {
+        var depth = opt_depth || DEFAULT_DEPTH;
         rootElement.className = rootElement.className == 'test' ? 'test2' : 'test';
         totalHeight += rootElement.offsetHeight;
     }
-
-		if (window.opener && window.opener.__robohornet__) {
-			document.body.appendChild(document.createTextNode('Running test using test runner...'));
-			window.opener.__robohornet__.benchmarkLoaded();
-		} else {
-			document.body.appendChild(document.createTextNode('Not yet implemented'));
-    }
 </script>
+<script src="../test.js"></script>
 </body>
 </html>

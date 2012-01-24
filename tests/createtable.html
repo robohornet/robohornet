@@ -12,9 +12,11 @@
     
     var tableBody;
     var tableString;
+    var DEFAULT_SIZE = [200, 100];
     
-    function setUp(size)
+    function setUp(opt_size)
     {
+        var size = opt_size || DEFAULT_SIZE;
         var rowCount = size[0];
         var colCount = size[1];
 
@@ -49,17 +51,11 @@
         tableString = null;
     }
 
-    function test(size)
+    function test()
     {
         tableBody.innerHTML = tableString;
     }
-
-		if (window.opener && window.opener.__robohornet__) {
-			document.body.appendChild(document.createTextNode('Running test using test runner...'));
-			window.opener.__robohornet__.benchmarkLoaded();
-		} else {
-			document.body.appendChild(document.createTextNode('Not yet implemented'));
-    }
 </script>
+<script src="../test.js"></script>
 </body>
 </html>

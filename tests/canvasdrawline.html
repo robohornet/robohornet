@@ -5,9 +5,11 @@
 <script> 
 
 var canvas, vertices;
+var DEFAULT_NUMBER_OF_VERTICES = 25000;
 
-function setUp(numberOfVertices)
+function setUp(opt_numberOfVertices)
 {
+    var numberOfVertices = opt_numberOfVertices || DEFAULT_NUMBER_OF_VERTICES;
     var container = document.getElementById('container');
     container.style.overflow = 'hidden';
 
@@ -30,7 +32,8 @@ function tearDown()
   while (container.firstChild) { container.removeChild(container.lastChild); }
 }
  
-function test(numberOfVertices) {
+function test(opt_numberOfVertices) {
+    var numberOfVertices = opt_numberOfVertices || DEFAULT_NUMBER_OF_VERTICES;
     var path = vertices;
     var context = canvas.getContext('2d');
 
@@ -56,15 +59,8 @@ function makeRandomPath(width, height, numVerts) {
 
 </script> 
 </head> 
-<body 
-<div id="container" style="position: absolute; width:512px; height: 512px; overflow:hidden; border: 1px solid black;"></div> 
+<body>
+<div id="container" style="position: absolute; width:512px; height: 512px; overflow:hidden; border: 1px solid black;"></div>
 </body> 
-<script>
-		if (window.opener && window.opener.__robohornet__) {
-			document.body.appendChild(document.createTextNode('Running test using test runner...'));
-			window.opener.__robohornet__.benchmarkLoaded();
-		} else {
-			document.body.appendChild(document.createTextNode('Not yet implemented'));
-    }
-</script>
+<script src="../test.js"></script>
 </html> 

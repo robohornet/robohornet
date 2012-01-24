@@ -33,13 +33,15 @@
       '#8fa'
     ];
     var NUM_ELEMENTS = 500;
+    var DEFAULT_NUM_SVGS = 500;
 
     var container;
     var contentContainer;
     var template;
     
-    function setUp(numSvgs)
+    function setUp(opt_numSvgs)
     {
+        var numSvgs = opt_numSvgs || DEFAULT_NUM_SVGS;
         container = document.getElementById('container');
         contentContainer = document.getElementById('content');
         template = document.getElementsByClassName('slide')[0];
@@ -62,8 +64,9 @@
         template = null;
     }
 
-    function test(numSvgs)
+    function test(opt_numSvgs)
     {
+        var numSvgs = opt_numSvgs || DEFAULT_NUM_SVGS;
         for (var i = 0; i < 1000; i++) {
             var size = Math.random() * 300 + 100;
             container.style.width = size + 'px';
@@ -118,14 +121,7 @@
             'L' + d[0] + ' ' + d[1] +
             'Z"></path>';
     }
-
-
-		if (window.opener && window.opener.__robohornet__) {
-			document.body.appendChild(document.createTextNode('Running test using test runner...'));
-			window.opener.__robohornet__.benchmarkLoaded();
-		} else {
-			document.body.appendChild(document.createTextNode('Not yet implemented'));
-    }
 </script>
+<script src="../test.js"></script>
 </body>
 </html>

@@ -5,8 +5,9 @@
 </head>
 <body>
 <script>
-   
+    var DEFAULT_ROW_COUNT = 1000;
     var tableElement;
+    
     function setUp()
     {
         var tableBody = document.createElement('tbody');
@@ -21,14 +22,15 @@
         tableElement = null;
     }
 
-    function test(rowCount)
+    function test(opt_rowCount)
     {
+        var rowCount = opt_rowCount || DEFAULT_ROW_COUNT;
         var tableBody = tableElement.tBodies[0];
         for (var i = 0; i < rowCount; i++) {
             var tableRow = document.createElement('tr');
             tableBody.appendChild(tableRow);
-						var tableCell = document.createElement('td');
-						tableCell.appendChild(document.createTextNode(i));
+                        var tableCell = document.createElement('td');
+                        tableCell.appendChild(document.createTextNode(i));
             tableRow.appendChild(tableCell);
         }
         var tableRow = document.createElement('tr');
@@ -37,22 +39,7 @@
         tableCell.appendChild(document.createTextNode(tableElement.offsetHeight));
         tableRow.appendChild(tableCell);
     }
-
-		if (window.opener && window.opener.__robohornet__) {
-			document.body.appendChild(document.createTextNode('Running test using test runner...'));
-			window.opener.__robohornet__.benchmarkLoaded();
-		} else {
-
-			document.body.appendChild(document.createTextNode('Running test standalone...'));
-
-			var rowCount = 10000;
-      setUp(rowCount);
-			var startTime = new Date().getTime();
-      test(rowCount);
-			var endTime = new Date().getTime();
-
-			document.body.appendChild(document.createTextNode('Added ' + rowCount + ' rows in ' + (endTime - startTime) + ' ms.'));
-    }
 </script>
+<script src="../test.js"></script>
 </body>
 </html>

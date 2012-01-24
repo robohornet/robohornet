@@ -15,8 +15,11 @@
     var container;
     var tableBody;
 
-    function setUp(size)
+    var DEFAULT_SIZE = [1000, 50];
+
+    function setUp(opt_size)
     {
+        var size = opt_size || DEFAULT_SIZE;
         var rowCount = size[0];
         var colCount = size[1];
 
@@ -52,20 +55,15 @@
         container.scrollTop = 0;
     }
 
-    function test(size)
+    function test(opt_size)
     {
+        var size = opt_size || DEFAULT_SIZE;
         var maxScroll = container.firstChild.offsetHeight - container.offsetHeight;
         while (container.scrollTop < maxScroll) {
             container.scrollTop = container.scrollTop + 1000;
         }
     }
-
-		if (window.opener && window.opener.__robohornet__) {
-			document.body.appendChild(document.createTextNode('Running test using test runner...'));
-			window.opener.__robohornet__.benchmarkLoaded();
-		} else {
-			document.body.appendChild(document.createTextNode('Not yet implemented'));
-    }
 </script>
+<script src="../test.js"></script>
 </body>
 </html>

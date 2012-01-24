@@ -140,7 +140,7 @@ robohornet.Runner = function(version, benchmarks) {
 
     this.setBenchmarkStatus_(benchmark, robohornet.BenchmarkStatus.LOADING);
     this.activeBenchmark_ = benchmark;
-    this.benchmarkWindow_ = window.open(benchmark.filename, 'benchmark', 'width=1024,height=768');
+    this.benchmarkWindow_ = window.open(benchmark.filename + '?use_test_runner', 'benchmark', 'width=1024,height=768');
     if (!this.benchmarkWindow_) {
       this.activeBenchmark_ = null;
       alert('Popup required by benchmark suite blocked.');
