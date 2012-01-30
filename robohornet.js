@@ -341,16 +341,23 @@ robohornet.Runner = function(version, benchmarks) {
 
   _p.setStatus_ = function(status) {
     this.status_ = status;
+    var disableInputs = false;
     switch (this.status_) {
       case robohornet.Status.READY:
         caption = 'Run';
         break;
       case robohornet.Status.RUNNING:
         caption = 'Running...';
+        disableInputs = true;
         break;
       default:
         caption = 'Loading...';
     }
+
+    for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
+      benchmark.toggleElement_.disabled = disableInputs;
+    }
+
     document.body.className = (this.status_ == robohornet.Status.READY) ? 'ready' : 'running';
     this.runElement_.textContent = caption;
     this.runElement_.disabled = this.status_ != robohornet.Status.READY;
