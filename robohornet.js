@@ -34,6 +34,8 @@ robohornet.Runner = function(version, benchmarks) {
 
   this.initBenchmarks_(benchmarks);
   this.setStatus_(robohornet.Status.READY);
+
+  this.progressCallback_ = bind(this.progressTransitionDone_, this);
 };
 
 (function() {
@@ -48,6 +50,8 @@ robohornet.Runner = function(version, benchmarks) {
     this.setStatus_(robohornet.Status.RUNNING);
     this.currentIndex_ = -1;
     this.score_ = 0;
+    this.progressElement_.style.opacity = "0.1";
+    this.statusElement_.textContent = "Please wait while the benchmark runs. For best results, close all other programs and pages while the test is running.";
     window.setTimeout(bind(this.next_, this), 25);
   };
 
@@ -63,6 +67,9 @@ robohornet.Runner = function(version, benchmarks) {
       }
     }
 
+    var progressAmount = (this.currentIndex_ / this.benchmarks_.length) * 100;
+    this.progressElement_.style.marginLeft = "-" + (100 - progressAmount).toString() + "%";
+
     this.activeBenchmark_ = benchmark;
     if (benchmark) {
       this.loadBenchmark_(benchmark);
@@ -72,6 +79,11 @@ robohornet.Runner = function(version, benchmarks) {
   };
 
   _p.done_ = function() {
+    this.progressElement_.addEventListener("webkitTransitionEnd", this.progressCallback_, false);
+    this.progressElement_.addEventListener("transitionend", this.progressCallback_, false);
+    this.progressElement_.style.opacity = '0.0';
+    this.progressElement_.style.opacity = '0.0';
+
     var successfulRuns = 0, failedRuns = 0;
     for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
       if (benchmark.status == robohornet.BenchmarkStatus.SUCCESS)
@@ -86,10 +98,17 @@ robohornet.Runner = function(version, benchmarks) {
     } else if (failedRuns) {
       this.statusElement_.textContent = failedRuns + ' out of ' + this.benchmarks_.length + ' benchmark(s) failed.';
     } else {
-      this.statusElement_.textContent = 'Enable all benchmarks to compute index.';
+      this.statusElement_.textContent = 'Ran ' + successfulRuns + ' out of ' + this.benchmarks_.length + ' benchmarks. Enable all benchmarks to compute index.';
     }
     this.setStatus_(robohornet.Status.READY);
   };
+
+  _p.progressTransitionDone_ = function() {
+    //Wait until the progress bar fades out to put it back to the left.
+    this.progressElement_.style.marginLeft = "-100%";
+    this.progressElement_.removeEventListener("webkitTransitionEnd", this.progressCallback_, false);
+    this.progressElement_.removeEventListener("transitionend", this.progressCallback_, false);
+  }
 
   _p.benchmarkLoaded = function() {
     var benchmark = this.activeBenchmark_;
