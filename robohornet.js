@@ -36,6 +36,8 @@ robohornet.Runner = function(version, benchmarks) {
   this.setStatus_(robohornet.Status.READY);
 
   this.progressCallback_ = bind(this.progressTransitionDone_, this);
+
+  window.addEventListener("unload", bind(this.onWindowUnload_, this), false);
 };
 
 (function() {
@@ -441,6 +443,11 @@ robohornet.Runner = function(version, benchmarks) {
           break;
       }
     }
+  }
+
+  _p.onWindowUnload_ = function() {
+    if (this.benchmarkWindow_)
+      this.benchmarkWindow_.close();
   }
 
 })();
