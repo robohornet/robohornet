@@ -41,7 +41,7 @@ robohornet.Runner = function(version, benchmarks) {
   var _p = robohornet.Runner.prototype;
 
   _p.init = function() {
-
+    this.digestHash_();
   };
 
   _p.run = function() {
@@ -57,7 +57,7 @@ robohornet.Runner = function(version, benchmarks) {
       benchmark = this.benchmarks_[++this.currentIndex_];
       if (!benchmark)
         break;
-      if (!document.getElementById('benchmark-' + benchmark.index + '-toggle').checked) {
+      if (!benchmark.enabled) {
         this.setBenchmarkStatus_(benchmark, robohornet.BenchmarkStatus.SKIPPED);
         benchmark = null;
       }
@@ -166,18 +166,39 @@ robohornet.Runner = function(version, benchmarks) {
     window.setTimeout(bind(this.next_, this), 25);
   };
 
+  _p.setBenchmarkEnabled_ = function(benchmark, enabled, opt_skipUpdateHash) {
+    benchmark.toggleElement_.checked = enabled;
+    this.onBenchmarkToggle_(benchmark, opt_skipUpdateHash);
+  }
+
+  _p.onBenchmarkToggle_ = function(benchmark, opt_skipUpdateHash) {
+    benchmark.enabled = benchmark.toggleElement_.checked;
+    if (benchmark.enabled) {
+      benchmark.detailsElement_.classList.remove("disabled");
+      benchmark.summaryRow_.classList.remove("disabled");
+    } else {
+      benchmark.detailsElement_.classList.add("disabled");
+      benchmark.summaryRow_.classList.add("disabled");
+    }
+    if (!opt_skipUpdateHash)
+      this.updateHash_();
+  }
+
   _p.registerBenchmark_ = function(benchmark) {
     var identifier = 'benchmark-' + benchmark.index;
 
     // Append summary row.
     var row = document.createElement('tr');
     row.id = identifier;
+
     var cell = document.createElement('td');
     var checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.id = identifier + '-toggle';
     checkbox.checked = true;
+    checkbox.addEventListener('click', bind(this.onBenchmarkToggle_, this, benchmark), false);
     cell.appendChild(checkbox);
+    benchmark.toggleElement_ = checkbox;
 
     var label = document.createElement('span');
     label.appendChild(document.createTextNode(benchmark.name));
@@ -309,6 +330,7 @@ robohornet.Runner = function(version, benchmarks) {
       default:
         caption = 'Loading...';
     }
+    document.body.className = (this.status_ == robohornet.Status.READY) ? 'ready' : 'running';
     this.runElement_.textContent = caption;
     this.runElement_.disabled = this.status_ != robohornet.Status.READY;
   };
@@ -330,8 +352,77 @@ robohornet.Runner = function(version, benchmarks) {
   }
 
   _p.toggleBenchmarkDetails_ = function(benchmark, e) {
-    benchmark.detailsElement_.className = benchmark.detailsElement_.className == 'expanded' ? '' : 'expanded';
+    var rowEle = benchmark.detailsElement_.parentElement.parentElement;
+    rowEle.classList.toggle("expanded");
+    benchmark.summaryRow_.classList.toggle("expanded");
   };
+
+  _p.enableAllBenchmarks = function() {
+    for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
+      this.setBenchmarkEnabled_(benchmark, true, true);
+    }
+    this.updateHash_();
+  }
+
+  _p.disableAllBenchmarks = function() {
+    for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
+      this.setBenchmarkEnabled_(benchmark, false, true);
+    }
+    this.updateHash_();
+  }
+
+  _p.updateHash_ = function() {
+    var enabledBenchmarkIDs = [];
+    var disabledBenchmarkIDs = [];
+    for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
+      if (benchmark.enabled)
+        enabledBenchmarkIDs.push(benchmark.id);
+      else
+        disabledBenchmarkIDs.push(benchmark.id);
+    }
+    //We want to encode as few IDs as possible in the hash.
+    //This also gives us a good default to follow for new benchmarks.
+    if (disabledBenchmarkIDs.length) {
+      //At least one benchmark is disabled.  Are the majority disabled??
+      if (disabledBenchmarkIDs.length < enabledBenchmarkIDs.length) {
+        window.location.hash = '#d=' + disabledBenchmarkIDs.join(',');
+      } else {
+        window.location.hash = '#e=' + enabledBenchmarkIDs.join(',');
+      }
+    } else {
+      window.location.hash = '';
+    }
+  }
+
+  _p.digestHash_ = function() {
+    var hash = window.location.hash;
+    if (!hash)
+      return;
+    hash = hash.replace('#', '').toLowerCase().split('&');
+    var enableBenchmarks;
+    var benchmark;
+    for (var segment, i = 0; segment = hash[i]; i++) {
+      hash[i] = hash[i].split('=');
+      enableBenchmarks = false;
+      switch (hash[i][0]) {
+        case 'e':
+          enableBenchmarks = true;
+          //We set all benchmarks to disable and then only enable some.
+          for (var k = 0; benchmark = this.benchmarks_[k]; k++) {
+            this.setBenchmarkEnabled_(benchmark, false, true);
+          }
+        case 'd':
+          var ids = hash[i][1].split(',');
+          for (var benchmarkID, j = 0; benchmarkID = ids[j]; j++) {
+            benchmark = this.benchmarksById_[benchmarkID];
+            if (!benchmark)
+              continue;
+            this.setBenchmarkEnabled_(benchmark, enableBenchmarks, true);
+          }
+          break;
+      }
+    }
+  }
 
 })();
 
@@ -351,6 +442,7 @@ robohornet.Benchmark = function(details) {
   this.runs = details.runs;
   this.weight = details.weight;
   this.baselineTime = details.baselineTime;
+  this.enabled = true;
 
   this.id = this.filename.match(/\/([A-z]+)\./)[1].toLowerCase();
 };

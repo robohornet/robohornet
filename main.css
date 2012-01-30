@@ -140,14 +140,21 @@ a {
 }
 
 .details > div {
-  display: none;
-}
-
-.details > div.expanded {
-  display: block;
   font-size: 14px;
   border: 1px dotted #FCCF4D;
   background: #FDE7A7;
+}
+
+tr.details td {
+  display: none;
+}
+
+tr.details.expanded td {
+  display: table-cell;
+}
+
+.details > div.disabled {
+  opacity: 0.5;
 }
 
 .runs {
