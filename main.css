@@ -115,14 +115,14 @@ a {
   color: rgba(69, 69, 69, 0.5);
 }
 
-#tests > tbody > tr span {
+#tests > tbody > tr td > span {
   font-size: 16px;
   margin-left: 16px;
   font-weight: bold;
   cursor: pointer;
 }
 
-#tests > tbody > tr span::before {
+#tests > tbody > tr td > span::before {
   content: "\25BA";
   font-size: 10px;
   margin-right: 10px;
@@ -131,8 +131,12 @@ a {
   cursor: pointer;
 }
 
-#tests > tbody > tr.expanded span::before {
+#tests > tbody > tr.expanded td > span::before {
   content: "\25BC";
+}
+
+#tags {
+  text-align: center;
 }
 
 .details {
@@ -177,6 +181,33 @@ tr.details.expanded td {
 
 td.number {
   text-align: right;
+}
+
+.tag {
+  display: inline-block;
+  background-color: #FCCF4D;
+  color: #FEF1CA;
+  border-radius: 3px;
+  padding: 2px;
+  margin: 2px;
+  cursor: pointer;
+}
+
+.tag.technology {
+  background-color: #F6943D;
+}
+
+.tag.inactive {
+  opacity: 0.2;
+}
+
+.tag.partially-inactive {
+  opacity: 0.6;
+}
+
+.tag:hover {
+  opacity: 1.0;
+  color: #454545;
 }
 
 #console {

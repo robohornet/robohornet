@@ -5,6 +5,49 @@
  */
 var BENCHMARK_VERSION = 'RH100';
 
+var TAGS = {
+  "G_SPREADSHEETS" : {
+    "prettyName" : "Google Spreadsheets",
+    "name" : "G_SPREADSHEETS",
+    "technology" : false
+  },
+  "G_PRESENTATIONS" : {
+    "prettyName" : "Google Presentations",
+    "name" : "G_PRESENTATIONS",
+    "technology" : false
+  },
+  "TABLE" : {
+    "prettyName" : "Table",
+    "name" : "TABLE",
+    "technology" : true
+  },
+  "DOM" : {
+    "prettyName" : "DOM",
+    "name" : "DOM",
+    "technology" : true
+  },
+  "CSS_SELECTORS" : {
+    "prettyName" : "CSS Selectors",
+    "name" : "CSS_SELECTORS",
+    "technology" : true
+  },
+  "CANVAS" : {
+    "prettyName" : "Canvas",
+    "name" : "CANVAS",
+    "technology" : true
+  },
+  "SCROLLING" : {
+    "prettyName" : "Scrolling",
+    "name" : "SCROLLING",
+    "technology" : true
+  },
+  "SVG" : {
+    "prettyName" : "SVG",
+    "name" : "SVG",
+    "technology" : true
+  }
+}
+
 /*
  * List of benchmakrs. Array of objects.
  *
@@ -32,7 +75,8 @@ var benchmarks = [
         ['1000 rows', 1000]
       ],
       weight: 2,
-      baselineTime: 38
+      baselineTime: 38,
+      tags: [TAGS.G_SPREADSHEETS, TAGS.TABLE, TAGS.DOM]
   },
 
   {
@@ -44,7 +88,8 @@ var benchmarks = [
         ['1000 columns', 1000]
       ],
       weight: 1,
-      baselineTime: 46.5
+      baselineTime: 46.5,
+      tags: [TAGS.G_SPREADSHEETS, TAGS.TABLE, TAGS.DOM]
   },
 
   {
@@ -55,7 +100,8 @@ var benchmarks = [
         ['1000 nodes deep', 1000]
       ],
       weight: 2,
-      baselineTime: 47.99
+      baselineTime: 47.99,
+      tags: [TAGS.DOM, TAGS.CSS_SELECTORS]
   },
 
 /*
@@ -82,7 +128,8 @@ var benchmarks = [
         ['10000 lines', 10000]
       ],
       weight: 3,
-      baselineTime: 461.02
+      baselineTime: 461.02,
+      tags: [TAGS.CANVAS, TAGS.G_PRESENTATIONS]
   },
 
   {
@@ -95,7 +142,8 @@ var benchmarks = [
         ['200x100', [200, 100]]
       ],
       weight: 2,
-      baselineTime: 209.895
+      baselineTime: 209.895,
+      tags: [TAGS.DOM, TAGS.G_SPREADSHEETS, TAGS.TABLE]
   },
 
   {
@@ -109,7 +157,8 @@ var benchmarks = [
         ['1000,50', [1000, 50]]
       ],
       weight: 1,
-      baselineTime: 204.36
+      baselineTime: 204.36,
+      tags: [TAGS.DOM, TAGS.G_SPREADSHEETS, TAGS.TABLE, TAGS.SCROLLING]
   },
 
   {
@@ -122,7 +171,8 @@ var benchmarks = [
         ['500x100', [500, 100]]
       ],
       weight: 2,
-      baselineTime: 1892.655
+      baselineTime: 1892.655,
+      tags: [TAGS.DOM, TAGS.TABLE, TAGS.G_SPREADSHEETS]
   },
 
   {
@@ -135,6 +185,7 @@ var benchmarks = [
         ['500 SVGs', 500]
       ],
       weight: 5,
-      baselineTime: 41.43
+      baselineTime: 41.43,
+      tags: [TAGS.SVG, TAGS.G_PRESENTATIONS]
   }
 ];

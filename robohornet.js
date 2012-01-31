@@ -29,6 +29,7 @@ robohornet.Runner = function(version, benchmarks) {
   this.runElement_ = document.getElementById('runButton');
   this.progressElement_ = document.getElementById('progress');
   this.indexElement_ = document.getElementById('index');
+  this.tagsElement_ = document.getElementById('tags');
 
   document.getElementById('index-prefix').textContent = version + ':';
 
@@ -45,6 +46,22 @@ robohornet.Runner = function(version, benchmarks) {
   var _p = robohornet.Runner.prototype;
 
   _p.init = function() {
+    //First enumerate all technology tags...
+    for (var tagName in TAGS) {
+      var tag = TAGS[tagName];
+      if (!tag.technology) continue;
+      var ele = this.makeTagElement_(tag);
+      this.tagsElement_.appendChild(ele);
+      tag.primaryElement = ele;
+    }
+    //then all property tags.
+    for (var tagName in TAGS) {
+      var tag = TAGS[tagName];
+      if (tag.technology) continue;
+      var ele = this.makeTagElement_(tag);
+      this.tagsElement_.appendChild(ele);
+      tag.primaryElement = ele;
+    }
     this.digestHash_();
   };
 
@@ -151,6 +168,13 @@ robohornet.Runner = function(version, benchmarks) {
       benchmark.computedWeight = (benchmark.weight / totalWeight) * 100;
       this.benchmarks_.push(benchmark);
       this.benchmarksById_[benchmark.id] = benchmark;
+      for (var tag, k = 0; tag = benchmark.tags[k]; k++) {
+        if (tag.benchmarks) {
+          tag.benchmarks.push(benchmark);
+        } else {
+          tag.benchmarks = [benchmark];
+        }
+      }
       this.registerBenchmark_(benchmark);
     }
   };
@@ -246,6 +270,12 @@ robohornet.Runner = function(version, benchmarks) {
     detailsElement.className = '';
     cell.appendChild(detailsElement);
     detailsElement.appendChild(document.createTextNode(benchmark.description));
+    detailsElement.appendChild(document.createElement("br"));
+
+    var tagElement;
+    for (var tag, i = 0; tag = benchmark.tags[i]; i++) {
+      detailsElement.appendChild(this.makeTagElement_(tag));
+    }
 
     // Append list of runs/parameters.
     var runsTable = document.createElement('table');
@@ -261,7 +291,7 @@ robohornet.Runner = function(version, benchmarks) {
     runsTable.tHead.appendChild(headerRow);
 
     runsTable.appendChild(document.createElement('tbody'));
-    for (var i = 0; i < benchmark.runs.length; i++) {
+    for (i = 0; i < benchmark.runs.length; i++) {
       var runsRow = document.createElement('tr');
       addCell(runsRow, benchmark.runs[i][0], 'name');
       addCell(runsRow, '0', 'number');
@@ -399,6 +429,66 @@ robohornet.Runner = function(version, benchmarks) {
     this.updateHash_();
   }
 
+  _p.makeTagElement_ = function(tag) {
+      var tagElement = document.createElement("span");
+      tagElement.className = "tag" + (tag.technology ? " technology" : "");
+      tagElement.appendChild(document.createTextNode(tag.prettyName));
+      var self = this;
+      var func = function(evt) {
+        if (evt.shiftKey) {
+          self.addBenchmarksToSelectionByTag(tag);
+        } else {
+          self.selectBenchmarksByTag(tag);
+        }
+        //Undo the text selection from a shift-click.
+        document.getSelection().removeAllRanges();
+      }
+      tagElement.addEventListener('click', func, false);
+      return tagElement;
+  }
+
+  _p.selectBenchmarksByTag = function(tagToSelect) {
+    /* First, disable all benchmarks */
+    this.disableAllBenchmarks();
+    this.addBenchmarksToSelectionByTag(tagToSelect);
+  }
+
+  _p.addBenchmarksToSelectionByTag = function(tagToSelect) {
+    for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
+      for (var tag, k = 0; tag = benchmark.tags[k]; k++) {
+        if (tag == tagToSelect) {
+          this.setBenchmarkEnabled_(benchmark, true, true);
+          break;
+        }
+      }
+    }
+    this.updateHash_();
+  }
+
+  _p.updateTagSelection_ = function() {
+    for(var tagName in TAGS) {
+      var tag = TAGS[tagName];
+      var isActive = false, isFullyActive = true;
+      for (var benchmark, i = 0; benchmark = tag.benchmarks[i]; i++) {
+        if (benchmark.enabled) {
+          isActive = true;
+        } else {
+          isFullyActive = false;
+        }
+      }
+      if (isFullyActive) {
+        tag.primaryElement.classList.remove('partially-inactive');
+        tag.primaryElement.classList.remove('inactive');
+      } else if (isActive) {
+        tag.primaryElement.classList.add('partially-inactive');
+        tag.primaryElement.classList.remove('inactive');
+      } else {
+        tag.primaryElement.classList.remove('partially-inactive');
+        tag.primaryElement.classList.add('inactive');
+      }
+    }
+  }
+
   _p.updateHash_ = function() {
     var enabledBenchmarkIDs = [];
     var disabledBenchmarkIDs = [];
@@ -420,6 +510,7 @@ robohornet.Runner = function(version, benchmarks) {
     } else {
       window.location.hash = '';
     }
+    this.updateTagSelection_();
   }
 
   _p.digestHash_ = function() {
@@ -450,6 +541,7 @@ robohornet.Runner = function(version, benchmarks) {
           break;
       }
     }
+    this.updateTagSelection_();
   }
 
   _p.onWindowUnload_ = function() {
@@ -475,6 +567,7 @@ robohornet.Benchmark = function(details) {
   this.runs = details.runs;
   this.weight = details.weight;
   this.baselineTime = details.baselineTime;
+  this.tags = details.tags;
   this.enabled = true;
 
   this.id = this.filename.match(/\/([A-z]+)\./)[1].toLowerCase();
