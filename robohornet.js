@@ -16,6 +16,12 @@ robohornet.BenchmarkStatus = {
   SKIPPED: 5
 };
 
+robohornet.TagType = {
+  SPECIAL : "special",
+  TECHNOLOGY : "technology",
+  APP : "app"
+}
+
 /**
  * Class representing a the RoboHornet test runner.
  *
@@ -46,22 +52,56 @@ robohornet.Runner = function(version, benchmarks) {
   var _p = robohornet.Runner.prototype;
 
   _p.init = function() {
+
+    //First create the special all/none tags
+    var allTag = {
+      "name" : "ALL",
+      "prettyName" : "All",
+      "type" : robohornet.TagType.SPECIAL
+    };
+
+    var noneTag = {
+      "name" : "NONE",
+      "prettyName" : "None",
+      "type" : robohornet.TagType.SPECIAL
+    };
+
+    //Pretend like the All tag was added to every benchmark.
+    allTag.benchmarks = this.benchmarks_;
+    noneTag.benchmarks = [];
+    for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
+      benchmark.tags.push(allTag);
+    }
+
+    //Put the all/none tags first.
+    var ele = this.makeTagElement_(allTag);
+    this.tagsElement_.appendChild(ele);
+    allTag.primaryElement = ele;
+
+    ele = this.makeTagElement_(noneTag);
+    this.tagsElement_.appendChild(ele);
+    noneTag.primaryElement = ele;
+
     //First enumerate all technology tags...
     for (var tagName in TAGS) {
       var tag = TAGS[tagName];
-      if (!tag.technology) continue;
+      if (tag.type != robohornet.TagType.TECHNOLOGY) continue;
       var ele = this.makeTagElement_(tag);
       this.tagsElement_.appendChild(ele);
       tag.primaryElement = ele;
     }
-    //then all property tags.
+    //then all app tags.
     for (var tagName in TAGS) {
       var tag = TAGS[tagName];
-      if (tag.technology) continue;
+      if (tag.type == robohornet.TagType.TECHNOLOGY) continue;
       var ele = this.makeTagElement_(tag);
       this.tagsElement_.appendChild(ele);
       tag.primaryElement = ele;
     }
+
+    TAGS['ALL'] = allTag;
+    TAGS['NONE'] = noneTag;
+
     this.digestHash_();
   };
 
@@ -431,7 +471,7 @@ robohornet.Runner = function(version, benchmarks) {
 
   _p.makeTagElement_ = function(tag) {
       var tagElement = document.createElement("span");
-      tagElement.className = "tag" + (tag.technology ? " technology" : "");
+      tagElement.className = "tag " + tag.type;
       tagElement.appendChild(document.createTextNode(tag.prettyName));
       var self = this;
       var func = function(evt) {
@@ -469,11 +509,22 @@ robohornet.Runner = function(version, benchmarks) {
     for(var tagName in TAGS) {
       var tag = TAGS[tagName];
       var isActive = false, isFullyActive = true;
-      for (var benchmark, i = 0; benchmark = tag.benchmarks[i]; i++) {
-        if (benchmark.enabled) {
-          isActive = true;
-        } else {
-          isFullyActive = false;
+      if (tag.benchmarks.length == 0 && tag.type == robohornet.TagType.SPECIAL) {
+        //Special case the none case
+        isFullyActive = true;
+        for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
+          if (benchmark.enabled) {
+            isFullyActive = false;
+            break;
+          }
+        }
+      } else {
+        for (var benchmark, i = 0; benchmark = tag.benchmarks[i]; i++) {
+          if (benchmark.enabled) {
+            isActive = true;
+          } else {
+            isFullyActive = false;
+          }
         }
       }
       if (isFullyActive) {
@@ -515,8 +566,10 @@ robohornet.Runner = function(version, benchmarks) {
 
   _p.digestHash_ = function() {
     var hash = window.location.hash;
-    if (!hash)
+    if (!hash) {
+      this.updateTagSelection_();
       return;
+    }
     hash = hash.replace('#', '').toLowerCase().split('&');
     var enableBenchmarks;
     var benchmark;

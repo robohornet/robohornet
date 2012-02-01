@@ -9,42 +9,42 @@ var TAGS = {
   "G_SPREADSHEETS" : {
     "prettyName" : "Google Spreadsheets",
     "name" : "G_SPREADSHEETS",
-    "technology" : false
+    "type" : robohornet.TagType.APP
   },
   "G_PRESENTATIONS" : {
     "prettyName" : "Google Presentations",
     "name" : "G_PRESENTATIONS",
-    "technology" : false
+    "type" : robohornet.TagType.APP
   },
   "TABLE" : {
     "prettyName" : "Table",
     "name" : "TABLE",
-    "technology" : true
+    "type" : robohornet.TagType.TECHNOLOGY
   },
   "DOM" : {
     "prettyName" : "DOM",
     "name" : "DOM",
-    "technology" : true
+    "type" : robohornet.TagType.TECHNOLOGY
   },
   "CSS_SELECTORS" : {
     "prettyName" : "CSS Selectors",
     "name" : "CSS_SELECTORS",
-    "technology" : true
+    "type" : robohornet.TagType.TECHNOLOGY
   },
   "CANVAS" : {
     "prettyName" : "Canvas",
     "name" : "CANVAS",
-    "technology" : true
+    "type" : robohornet.TagType.TECHNOLOGY
   },
   "SCROLLING" : {
     "prettyName" : "Scrolling",
     "name" : "SCROLLING",
-    "technology" : true
+    "type" : robohornet.TagType.TECHNOLOGY
   },
   "SVG" : {
     "prettyName" : "SVG",
     "name" : "SVG",
-    "technology" : true
+    "type" : robohornet.TagType.TECHNOLOGY
   }
 }
 

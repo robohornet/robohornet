@@ -5,6 +5,7 @@
  * Light-Yellow: #FDE7A7
  * Very-Light-Yellow: #FEF1CA
  * Dark-Gray: #454545
+ * Light-Gray: #AAAAAA;
  */
 
 @font-face {
@@ -195,6 +196,10 @@ td.number {
 
 .tag.technology {
   background-color: #F6943D;
+}
+
+.tag.special {
+  background-color: #AAAAAA;
 }
 
 .tag.inactive {
