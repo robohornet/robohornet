@@ -95,6 +95,18 @@ a {
   border-bottom: 1px solid #454545;
 }
 
+#tests tr.summary-row td {
+  border-top: 1px solid #454545;
+}
+
+#tests tr.summary-row td:first-child {
+  text-align: right;
+}
+
+#tests tr.summary-row td.final {
+  font-weight: bold;
+}
+
 #tests > tbody > tr > td {
   font-weight: normal;
 }

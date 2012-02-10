@@ -109,6 +109,7 @@ robohornet.Runner = function(version, benchmarks) {
     this.setStatus_(robohornet.Status.RUNNING);
     this.currentIndex_ = -1;
     this.score_ = 0;
+    this.rawScore_ = 0;
     this.progressElement_.style.opacity = "0.1";
     this.statusElement_.textContent = "Please wait while the benchmark runs. For best results, close all other programs and pages while the test is running.";
     window.setTimeout(bind(this.next_, this), 25);
@@ -152,7 +153,7 @@ robohornet.Runner = function(version, benchmarks) {
     }
 
     if (successfulRuns == this.benchmarks_.length) {
-      this.setScore_(this.score_, true /* opt_finalScore */);
+      this.setScore_(true /* opt_finalScore */);
       this.statusElement_.innerHTML = 'The RoboHornet index is normalized to 100 and roughly shows your browser\'s performance compared to other modern browsers on reference hardware. <a href="https://code.google.com/p/robohornet/wiki/BenchmarkScoring" target="_blank">Learn more</a>';
     } else if (failedRuns) {
       this.statusElement_.textContent = failedRuns + ' out of ' + this.benchmarks_.length + ' benchmark(s) failed.';
@@ -217,6 +218,18 @@ robohornet.Runner = function(version, benchmarks) {
       }
       this.registerBenchmark_(benchmark);
     }
+    var finalRow = document.createElement("tr");
+    finalRow.className = "summary-row";
+    var cell = document.createElement("td");
+    cell.colSpan = 5;
+    cell.innerHTML = "<em>Raw score</em>";
+    finalRow.appendChild(cell);
+    cell = document.createElement("td");
+    cell.className = "number";
+    cell.textContent = "-";
+    finalRow.appendChild(cell);
+    this.rawScoreElement_ = cell;
+    this.testsContainer.tBodies[0].appendChild(finalRow);
   };
 
   _p.loadBenchmark_ = function(benchmark) {
@@ -371,8 +384,11 @@ robohornet.Runner = function(version, benchmarks) {
 
     var diff = accumulatedMean - benchmark.baselineTime;
     var score = benchmark.baselineTime * benchmark.computedWeight / accumulatedMean;
-     this.score_ += score;
-    this.setScore_(this.score_);
+    this.score_ += score;
+    var rawScore = accumulatedMean * benchmark.computedWeight;
+    this.rawScore_ += rawScore;
+
+    this.setScore_();
 
     row.cells[1].textContent = 'Completed successfully ';
     row.cells[2].textContent = accumulatedMean.toFixed(2) + 'ms';
@@ -433,9 +449,9 @@ robohornet.Runner = function(version, benchmarks) {
     this.runElement_.disabled = this.status_ != robohornet.Status.READY;
   };
 
-  _p.setScore_ = function(index, opt_finalScore) {
+  _p.setScore_ = function(opt_finalScore) {
     // Ensure that we have 4 digits in front of the dot and 2 after.
-    var parts = (Math.round(index * 100) / 100).toString().split('.');
+    var parts = (Math.round(this.score_ * 100) / 100).toString().split('.');
     if (parts.length < 2)
       parts.push('00');
     while (!opt_finalScore && parts[0].length < 3) {
@@ -447,6 +463,12 @@ robohornet.Runner = function(version, benchmarks) {
     this.indexElement_.textContent = '';
     this.indexElement_.textContent = parts.join('.');
     this.indexElement_.className = opt_finalScore ? 'final' : '';
+    this.rawScoreElement_.textContent = this.rawScore_.toFixed(2);
+    if (opt_finalScore) {
+      this.rawScoreElement_.classList.add('final');
+    } else {
+      this.rawScoreElement_.classList.remove('final');
+    }
   }
 
   _p.toggleBenchmarkDetails_ = function(benchmark, e) {
