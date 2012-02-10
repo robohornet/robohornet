@@ -153,7 +153,7 @@ robohornet.Runner = function(version, benchmarks) {
 
     if (successfulRuns == this.benchmarks_.length) {
       this.setScore_(this.score_, true /* opt_finalScore */);
-      this.statusElement_.textContent = 'The RoboHornet index is normalized to 100 and roughly shows your browser\'s performance compared to other modern browsers.';
+      this.statusElement_.innerHTML = 'The RoboHornet index is normalized to 100 and roughly shows your browser\'s performance compared to other modern browsers on reference hardware. <a href="https://code.google.com/p/robohornet/wiki/BenchmarkScoring" target="_blank">Learn more</a>';
     } else if (failedRuns) {
       this.statusElement_.textContent = failedRuns + ' out of ' + this.benchmarks_.length + ' benchmark(s) failed.';
     } else {
