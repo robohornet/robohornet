@@ -15,7 +15,7 @@
     var container;
     var tableBody;
 
-    var DEFAULT_SIZE = [1000, 50];
+    var DEFAULT_SIZE = [1000, 100];
 
     function setUp(opt_size)
     {
@@ -23,6 +23,7 @@
         var rowCount = size[0];
         var colCount = size[1];
 
+        container = document.getElementById('container')
         tableBody = document.getElementById('main-table').firstChild;
         var htmlBuffer = [];
         htmlBuffer.push('<tr>');
