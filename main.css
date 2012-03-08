@@ -366,6 +366,7 @@ header > div > div {
   text-align: center;
   color: #666666;
   font-style: italic;
+  font-weight: normal;
 }
 
 #results > thead > tr > td {
