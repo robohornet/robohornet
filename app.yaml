@@ -1,0 +1,19 @@
+application: robohornet-benchmark
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /
+  static_files: robohornet.html
+  upload: robohornet.html
+  login: admin
+- url: /(.*).yaml
+  static_files: robohornet.html
+  mime_type: text/html
+  upload: robohornet.html
+  login: admin
+- url: /(.*)
+  static_files: \1
+  upload: .*
+  login: admin
