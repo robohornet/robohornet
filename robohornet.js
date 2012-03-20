@@ -503,7 +503,7 @@ robohornet.Runner = function(version, benchmarks) {
           self.selectBenchmarksByTag(tag);
         }
         //Undo the text selection from a shift-click.
-        document.getSelection().removeAllRanges();
+        window.getSelection().removeAllRanges();
       }
       tagElement.addEventListener('click', func, false);
       return tagElement;
