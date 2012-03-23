@@ -4,16 +4,21 @@ runtime: python
 api_version: 1
 
 handlers:
-- url: /
-  static_files: robohornet.html
-  upload: robohornet.html
-  login: admin
-- url: /(.*).yaml
-  static_files: robohornet.html
-  mime_type: text/html
-  upload: robohornet.html
-  login: admin
-- url: /(.*)
-  static_files: \1
-  upload: .*
-  login: admin
+# TEMPORARILY SHUNT ALL REQUESTS THROUGH THE ACL HANDLER
+# Once this is public, flip back to fully static handlers
+- url: .*
+  script: simple-acl-server.py
+  login: required
+#- url: /
+#  static_files: robohornet.html
+#  upload: robohornet.html
+#  login: admin
+#- url: /(.*).yaml
+#  static_files: robohornet.html
+#  mime_type: text/html
+#  upload: robohornet.html
+#  login: admin
+#- url: /(.*)
+#  static_files: \1
+#  upload: .*
+#  login: admin
