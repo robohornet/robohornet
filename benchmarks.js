@@ -258,5 +258,19 @@ var benchmarks = [
       weight: 1,
       baselineTime: 30,
       tags: [TAGS.DOM, TAGS.SCROLLING]
+  },
+
+  {
+    name: 'offsetHeight triggers reflow',
+    description: 'Test the affect of forcing a reflow by calling offsetHeight',
+    filename: 'tests/offsetreflow.html',
+    runs: [
+      ['100 Reflows', 100],
+      ['1000 Reflows', 1000],
+      ['10000 Reflows', 10000]
+    ],
+    weight: 5,
+    baselineTime: 2500,
+    tags: [TAGS.DOM, TAGS.G_SPREADSHEETS]
   }
 ];
