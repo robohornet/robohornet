@@ -237,12 +237,12 @@ var benchmarks = [
       description: 'Test referencing the arguments array',
       filename: 'tests/varargs.html',
       runs: [
-        ['10000 Instantiations', 10000],
-        ['100000 Instantiations', 100000],
-        ['100000000 Instantiations', 100000000]
+        ['100 Instantiations', 100],
+        ['1000 Instantiations', 1000],
+        ['1000000 Instantiations', 1000000]
       ],
       weight: 1,
-      baselineTime: 100,
+      baselineTime: 300,
       tags: [TAGS.JS]
   }
 ];
