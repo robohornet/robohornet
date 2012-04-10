@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ES5 Property Accessors</title>
+    <script>
+
+      "use strict"
+      var TIMES = 1e5;
+      var OBJ;
+
+      function setUp() {
+        OBJ = {
+          prop: 1,
+          get bar() {
+            return this.prop;
+          },
+          set bar(value) {
+            this.prop = value;
+          }
+        };
+      }
+
+      function tearDown() {}
+
+      function reset() {
+        OBJ.prop = 1;
+      }
+
+      function test_get() {
+        for (var i = 0; i < TIMES; i++) {
+          var x = OBJ.bar + 1;
+        }
+      }
+
+      function test_set() {
+        for (var i = 0; i < TIMES; i++) {
+          OBJ.bar = 42;
+        }
+      }
+
+      function test_combined() {
+        for (var i = 0; i < TIMES; i++) {
+          OBJ.bar = OBJ.bar + 1;
+        }
+      }
+
+      function test(opt_mode) {
+        switch(opt_mode) {
+          case 'GET':
+            test_get();
+            break;
+          case 'SET':
+            test_set();
+            break;
+          default:
+            test_combined();
+            break;
+        }
+      }
+
+    </script>
+  </head>
+  <body></body>
+  <script src="../test.js"></script>
+</html>

@@ -45,6 +45,11 @@ var TAGS = {
     "prettyName" : "SVG",
     "name" : "SVG",
     "type" : robohornet.TagType.TECHNOLOGY
+  },
+  "ES5" : {
+    "prettyName" : "ES5",
+    "name" : "ES5",
+    "type" : robohornet.TagType.TECHNOLOGY
   }
 }
 
@@ -187,5 +192,18 @@ var benchmarks = [
       weight: 5,
       baselineTime: 41.43,
       tags: [TAGS.SVG, TAGS.G_PRESENTATIONS]
+  },
+  {
+      name: 'ES5 Property Accessors',
+      description: 'Test ES5 getter/setters',
+      filename: 'tests/property_accessors.html',
+      runs: [
+        ['Getter', 'GET'],
+        ['Setter', 'SET'],
+        ['Combined', '']
+      ],
+      weight: 1,
+      baselineTime: 100,
+      tags: [TAGS.ES5]
   }
 ];
