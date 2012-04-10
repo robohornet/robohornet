@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Animated gifs</title>
+
+<!--
+  GIF being used is in public domain.
+  See: http://commons.wikimedia.org/wiki/File:8-cell-simple.gif
+-->
+
+<style>
+</style>
+</head>
+<body>
+<div id="container"></div>
+<script>
+    var container;
+    var num;
+    var DEFAULT_GIFS = 100;
+
+    function setUp(opt_numGifs)
+    {
+        num = opt_numGifs || DEFAULT_GIFS;
+        container = document.getElement('container');
+    }
+
+    function reset() {
+        container.innerHTML = '';
+    }
+
+    function tearDown()
+    {
+        container.innerHTML = '';
+    }
+
+    function test()
+    {
+        var maxScroll = container.firstChild.offsetHeight - container.offsetHeight;
+    }
+</script>
+<script src="../test.js"></script>
+</body>
+</html>
