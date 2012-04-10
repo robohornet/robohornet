@@ -13,7 +13,8 @@ robohornet.BenchmarkStatus = {
   RUNNING: 2,
   LOAD_FAILED: 3,
   RUN_FAILED: 4,
-  SKIPPED: 5
+  SKIPPED: 5,
+  POPUP_BLOCKED : 6
 };
 
 robohornet.TagType = {
@@ -151,10 +152,12 @@ robohornet.Runner = function(version, benchmarks) {
     this.progressElement_.style.opacity = '0.0';
     this.progressElement_.style.opacity = '0.0';
 
-    var successfulRuns = 0, failedRuns = 0;
+    var successfulRuns = 0, failedRuns = 0, blockedRuns = 0;
     for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
       if (benchmark.status == robohornet.BenchmarkStatus.SUCCESS)
         successfulRuns++;
+      else if (benchmark.status == robohornet.BenchmarkStatus.POPUP_BLOCKED)
+        blockedRuns++;
       else if (benchmark.status != robohornet.BenchmarkStatus.SKIPPED)
         failedRuns++;
     }
@@ -162,10 +165,12 @@ robohornet.Runner = function(version, benchmarks) {
     if (successfulRuns == this.benchmarks_.length) {
       this.setScore_(true /* opt_finalScore */);
       this.statusElement_.innerHTML = 'The RoboHornet index is normalized to 100 and roughly shows your browser\'s performance compared to other modern browsers on reference hardware. <a href="https://code.google.com/p/robohornet/wiki/BenchmarkScoring" target="_blank">Learn more</a>';
+    } else if (blockedRuns) {
+      this.statusElement_.textContent = "Your browser's popup blocker prevented some of the benchmarks from running. Disable your popup blocker and run the test again to see the index.";
     } else if (failedRuns) {
       this.statusElement_.textContent = failedRuns + ' out of ' + this.benchmarks_.length + ' benchmark(s) failed.';
     } else {
-      this.statusElement_.textContent = 'Ran ' + successfulRuns + ' out of ' + this.benchmarks_.length + ' benchmarks. Enable all benchmarks to compute index.';
+      this.statusElement_.textContent = 'Ran ' + successfulRuns + ' out of ' + this.benchmarks_.length + ' benchmarks. Enable all benchmarks to compute the index.';
     }
     this.setStatus_(robohornet.Status.READY);
   };
@@ -276,8 +281,8 @@ robohornet.Runner = function(version, benchmarks) {
     this.benchmarkWindow_ = window.open(benchmark.filename + '?use_test_runner', 'benchmark', 'left=' + left + ',top=' + top + ',width='+ TARGET_WINDOW_WIDTH + ',height=' + TARGET_WINDOW_HEIGHT);
     if (!this.benchmarkWindow_) {
       this.activeBenchmark_ = null;
-      alert('Popup required by benchmark suite blocked.');
-      return;
+      this.setBenchmarkStatus_(benchmark, robohornet.BenchmarkStatus.POPUP_BLOCKED);
+      window.setTimeout(bind(this.next_, this), 25);
     }
 
   };
@@ -451,6 +456,9 @@ robohornet.Runner = function(version, benchmarks) {
         break;
       case robohornet.BenchmarkStatus.SKIPPED:
         caption = 'Skipped';
+        break;
+      case robohornet.BenchmarkStatus.POPUP_BLOCKED:
+        caption = "Benchmark window blocked";
         break;
       default:
         caption = 'Unknown failure';
