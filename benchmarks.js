@@ -203,6 +203,7 @@ var benchmarks = [
       baselineTime: 41.43,
       tags: [TAGS.SVG, TAGS.G_PRESENTATIONS]
   },
+
   {
       name: 'ES5 Property Accessors',
       description: 'Test ES5 getter/setters',
