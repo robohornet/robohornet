@@ -238,7 +238,17 @@ robohornet.Runner = function(version, benchmarks) {
 
     this.setBenchmarkStatus_(benchmark, robohornet.BenchmarkStatus.LOADING);
     this.activeBenchmark_ = benchmark;
-    this.benchmarkWindow_ = window.open(benchmark.filename + '?use_test_runner', 'benchmark', 'width=1024,height=768');
+
+    //We want to position the popup window on top, ideally with its bottom right corner in the bottom right of the screen.
+    //For most browsers and platforms, if we overshoot it's fine; the popup will be moved to be fully on screen.
+
+    var TARGET_WINDOW_HEIGHT = 480;
+    var TARGET_WINDOW_WIDTH = 640;
+
+    var top = window.screen.availHeight + window.screen.availTop - TARGET_WINDOW_HEIGHT;
+    var left = window.screen.availWidth + window.screen.availLeft - TARGET_WINDOW_WIDTH;
+
+    this.benchmarkWindow_ = window.open(benchmark.filename + '?use_test_runner', 'benchmark', 'left=' + left + ',top=' + top + ',width='+ TARGET_WINDOW_WIDTH + ',height=' + TARGET_WINDOW_HEIGHT);
     if (!this.benchmarkWindow_) {
       this.activeBenchmark_ = null;
       alert('Popup required by benchmark suite blocked.');
