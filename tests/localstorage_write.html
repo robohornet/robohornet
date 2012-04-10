@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Writing to localStorage</title>
+<style>
+</style>
+</head>
+<body>
+<script>
+
+    var DEFAULT_ITEMS = 100;
+
+    function setUp(opt_items)
+    {
+
+    }
+
+    function reset() {
+        localStorage.clear();
+    }
+
+    function tearDown()
+    {
+        localStorage.clear();
+    }
+
+    function test(opt_items)
+    {
+        var items = opt_items || DEFAULT_ITEMS;
+        for (var i = 0; i < items; i++) {
+            localStorage.setItem('key' + i, i);
+        }
+    }
+</script>
+<script src="../test.js"></script>
+</body>
+</html>

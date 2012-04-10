@@ -272,5 +272,33 @@ var benchmarks = [
     weight: 5,
     baselineTime: 2500,
     tags: [TAGS.DOM, TAGS.G_SPREADSHEETS]
+  },
+
+  {
+    name: 'Write to localStorage',
+    description: 'Test the localStorage write performance',
+    filename: 'tests/localstorage_write.html',
+    runs: [
+      ['100 Writes', 100],
+      ['1000 Writes', 1000],
+      ['10000 Writes', 10000]
+    ],
+    weight: 5,
+    baselineTime: 2500,
+    tags: [TAGS.JS]
+  },
+
+  {
+    name: 'Read from localStorage',
+    description: 'Test the localStorage read performance',
+    filename: 'tests/localstorage_read.html',
+    runs: [
+      ['100 Reads', 100],
+      ['1000 Reads', 1000],
+      ['10000 Reads', 10000]
+    ],
+    weight: 5,
+    baselineTime: 2500,
+    tags: [TAGS.JS]
   }
 ];
