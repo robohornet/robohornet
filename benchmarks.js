@@ -244,5 +244,19 @@ var benchmarks = [
       weight: 1,
       baselineTime: 300,
       tags: [TAGS.JS]
+  },
+
+  {
+      name: 'Animated GIFS',
+      description: 'Test scrolling lots of animated GIFs',
+      filename: 'tests/animated_gifs.html',
+      runs: [
+        ['20x10 GIFs', [20, 10]],
+        ['100x10 GIFs', [100, 10]],
+        ['100x100 GIFs', [100, 100]]
+      ],
+      weight: 1,
+      baselineTime: 30,
+      tags: [TAGS.DOM, TAGS.SCROLLING]
   }
 ];

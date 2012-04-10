@@ -54,35 +54,33 @@
         var lines = size[0];
         var columns = size[1];
         container = document.getElementById('container');
-
+        container.appendChild(document.createElement('div'));
+        var subContainer = container.firstChild;
         for (var i = 0; i < lines; i++) {
             for (var j = 0; j < columns; j++) {
                 var image = document.createElement('img');
                 image.src = img_src;
-                container.appendChild(image);
+                subContainer.appendChild(image);
             }
-            container.appendChild(document.createElement('br'));
+            subContainer.appendChild(document.createElement('br'));
         }
     }
 
     function reset() {
         container.innerHTML = '';
+        container.scrollTop = 0;
     }
 
     function tearDown()
     {
         container.innerHTML = '';
+        container.scrollTop = 0;
     }
 
     function test()
     {
-        var maxScroll = container.offsetHeight;
-        while (true) {
-            var lastScrollTop = container.scrollTop;
-            container.scrollTop += 500;
-            if (container.scrollTop == lastScrollTop) {
-                break;
-            }
+        while (container.scrollTop < (container.firstChild.offsetHeight - container.offsetHeight)) {
+            container.scrollTop += 1000;
         }
     }
 </script>
