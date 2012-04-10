@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>arguments instantiation is slow</title>
+<style>
+</style>
+</head>
+<body>
+<script>
+
+    var args;
+    var runs;
+    var DEFAULT_RUNS = 100000;
+
+    function setUp(opt_runs)
+    {
+        runs = opt_runs || DEFAULT_RUNS;
+        args = new Array(runs);
+    }
+
+    function reset() {
+        args = new Array(runs);
+    }
+
+    function tearDown()
+    {
+        delete args;
+    }
+
+    function test()
+    {
+        for (var i = 0; i < runs; i++) {
+            checkArgs(args[i], args[i], args[i]);
+        }
+    }
+
+    function checkArgs(var_args) {
+        return !arguments.length
+    }
+</script>
+<script src="../test.js"></script>
+</body>
+</html>

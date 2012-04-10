@@ -51,9 +51,9 @@ var TAGS = {
     "name" : "SVG",
     "type" : robohornet.TagType.TECHNOLOGY
   },
-  "ES5" : {
-    "prettyName" : "ES5",
-    "name" : "ES5",
+  "JS" : {
+    "prettyName" : "Javascript",
+    "name" : "JS",
     "type" : robohornet.TagType.TECHNOLOGY
   },
   "MATH" : {
@@ -215,7 +215,7 @@ var benchmarks = [
       ],
       weight: 1,
       baselineTime: 100,
-      tags: [TAGS.ES5]
+      tags: [TAGS.JS]
   },
 
   {
@@ -230,5 +230,19 @@ var benchmarks = [
       weight: 2,
       baselineTime: 115,
       tags: [TAGS.MATH, TAGS.G_MAPS]
+  },
+
+  {
+      name: 'Argument instantiation',
+      description: 'Test referencing the arguments array',
+      filename: 'tests/varargs.html',
+      runs: [
+        ['10000 Instantiations', 10000],
+        ['100000 Instantiations', 100000],
+        ['100000000 Instantiations', 100000000]
+      ],
+      weight: 1,
+      baselineTime: 100,
+      tags: [TAGS.JS]
   }
 ];
