@@ -60,6 +60,7 @@ body {
   background-image: -webkit-linear-gradient(top, #FDE7A7, #FEF1CA 300px);
   background-image: -moz-linear-gradient(top, #FDE7A7, #FEF1CA 300px);
   background-image: -o-linear-gradient(top, #FDE7A7, #FEF1CA 300px);
+  background-repeat: no-repeat;
   font-size: 14px;
   overflow-x: hidden;
 }
