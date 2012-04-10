@@ -139,8 +139,8 @@ var benchmarks = [
       description: 'Test 2D canvas line painting.',
       filename: 'tests/canvasdrawline.html',
       runs: [
-        ['1000 lines', 1000],
-        ['10000 lines', 10000]
+        ['500 lines', 500],
+        ['2500 lines', 2500]
       ],
       weight: 3,
       baselineTime: 461.02,

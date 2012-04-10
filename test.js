@@ -1,6 +1,7 @@
 var requestAnimationFrameFunction = window.mozRequestAnimationFrame ||
         window.msRequestAnimationFrame ||
-        window.webkitRequestAnimationFrame;
+        window.webkitRequestAnimationFrame ||
+        window.oRequestAnimationFrame;
 
 if (window.opener && window.opener.__robohornet__ && window.location.search == '?use_test_runner') {
     document.body.appendChild(document.createTextNode('Running test using test runner...'));

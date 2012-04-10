@@ -10,6 +10,9 @@
     
     function setUp()
     {
+        if (tableElement)
+          tearDown();
+
         var tableBody = document.createElement('tbody');
         tableElement = document.createElement('table');
         tableElement.appendChild(tableBody);
@@ -29,8 +32,8 @@
         for (var i = 0; i < rowCount; i++) {
             var tableRow = document.createElement('tr');
             tableBody.appendChild(tableRow);
-                        var tableCell = document.createElement('td');
-                        tableCell.appendChild(document.createTextNode(i));
+            var tableCell = document.createElement('td');
+            tableCell.appendChild(document.createTextNode(i));
             tableRow.appendChild(tableCell);
         }
         var tableRow = document.createElement('tr');

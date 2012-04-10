@@ -17,10 +17,11 @@ robohornet.BenchmarkStatus = {
 };
 
 robohornet.TagType = {
-  SPECIAL : "special",
-  TECHNOLOGY : "technology",
-  APP : "app"
-}
+  SPECIAL : 'special',
+  TECHNOLOGY : 'technology',
+  APP : 'app'
+};
+
 
 /**
  * Class representing a the RoboHornet test runner.
@@ -44,36 +45,41 @@ robohornet.Runner = function(version, benchmarks) {
 
   this.progressCallback_ = bind(this.progressTransitionDone_, this);
 
-  window.addEventListener("unload", bind(this.onWindowUnload_, this), false);
+  window.addEventListener('unload', bind(this.onWindowUnload_, this), false);
 };
 
 (function() {
+
+  var requestAnimationFrameFunction = window.mozRequestAnimationFrame ||
+      window.msRequestAnimationFrame ||
+      window.webkitRequestAnimationFrame ||
+      window.oRequestAnimationFrame;
 
   var _p = robohornet.Runner.prototype;
 
   _p.init = function() {
 
-    //First create the special all/none tags
+    // First create the special all/none tags.
     var allTag = {
-      "name" : "ALL",
-      "prettyName" : "All",
-      "type" : robohornet.TagType.SPECIAL
+      name: 'ALL',
+      prettyName: 'All',
+      type: robohornet.TagType.SPECIAL
     };
 
     var noneTag = {
-      "name" : "NONE",
-      "prettyName" : "None",
-      "type" : robohornet.TagType.SPECIAL
+      name: 'NONE',
+      prettyName: 'None',
+      type: robohornet.TagType.SPECIAL
     };
 
-    //Pretend like the All tag was added to every benchmark.
+    // Pretend like the All tag was added to every benchmark.
     allTag.benchmarks = this.benchmarks_;
     noneTag.benchmarks = [];
     for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
       benchmark.tags.push(allTag);
     }
 
-    //Put the all/none tags first.
+    // Put the all/none tags first.
     var ele = this.makeTagElement_(allTag);
     this.tagsElement_.appendChild(ele);
     allTag.primaryElement = ele;
@@ -82,7 +88,7 @@ robohornet.Runner = function(version, benchmarks) {
     this.tagsElement_.appendChild(ele);
     noneTag.primaryElement = ele;
 
-    //First enumerate all technology tags...
+    // First enumerate all technology tags...
     for (var tagName in TAGS) {
       var tag = TAGS[tagName];
       if (tag.type != robohornet.TagType.TECHNOLOGY) continue;
@@ -90,7 +96,8 @@ robohornet.Runner = function(version, benchmarks) {
       this.tagsElement_.appendChild(ele);
       tag.primaryElement = ele;
     }
-    //then all app tags.
+    
+    // Then all app tags.
     for (var tagName in TAGS) {
       var tag = TAGS[tagName];
       if (tag.type == robohornet.TagType.TECHNOLOGY) continue;
@@ -110,8 +117,8 @@ robohornet.Runner = function(version, benchmarks) {
     this.currentIndex_ = -1;
     this.score_ = 0;
     this.rawScore_ = 0;
-    this.progressElement_.style.opacity = "0.1";
-    this.statusElement_.textContent = "Please wait while the benchmark runs. For best results, close all other programs and pages while the test is running.";
+    this.progressElement_.style.opacity = '0.1';
+    this.statusElement_.textContent = 'Please wait while the benchmark runs. For best results, close all other programs and pages while the test is running.';
     window.setTimeout(bind(this.next_, this), 25);
   };
 
@@ -181,12 +188,29 @@ robohornet.Runner = function(version, benchmarks) {
     });
 
     var win = this.benchmarkWindow_;
-    var emptyFn = function() {};
+
+    var callback = function(arg, fn, deferred) {
+      win[fn].call(win, arg);
+      requestAnimationFrameFunction.call(win, bind(deferred.resolve, deferred));
+    };
+
     for (var run, i = 0; run = benchmark.runs[i]; i++) {
       var argument = run[1];
-      suite.add(run[0], bind(win.test, win, argument), {
-        setup: bind(win.setUp || emptyFn, win, argument),
-        teardown: bind(win.tearDown || emptyFn, win, argument)
+      suite.add(run[0], {
+        defer: true,
+        fn: function(deferred) { callback(argument, 'test', deferred); },
+        // FIXME: setup and teardown should use the callback function just like above once Benchmark.js is updated to support it.
+        setup: function(deferred) { 
+          var win = __robohornet__.benchmarkWindow_;
+          win.setUp && win.setUp.call(win);
+          deferred.resolve();
+        },
+        /* FIXME: teardown is called immediately after setup (and before test) in defered mode. 
+        teardown: function(deferred) { 
+          var win = __robohornet__.benchmarkWindow_;
+          win.tearDown && win.tearDown.call(win);
+          deferred.resolve();
+        },*/
       });
     }
 
@@ -265,7 +289,7 @@ robohornet.Runner = function(version, benchmarks) {
       results.push({
         name: run.name,
         mean: run.stats.mean * 1000,
-        rme: run.stats.RME,
+        rme: run.stats.rme,
         runs: run.stats.size
       });
     }
