@@ -275,6 +275,20 @@ var benchmarks = [
   },
 
   {
+      name: 'DOM Range API',
+      description: 'Test the DOM Range API',
+      filename: 'tests/range.html',
+      runs: [
+        ['createRange', 'createRange'],
+        ['selectNode', 'selectNode'],
+        ['selectNodeContents', 'selectNodeContents']
+      ],
+      weight: 1,
+      baselineTime: 70,
+      tags: [TAGS.DOM]
+  },
+
+  {
     name: 'Write to localStorage',
     description: 'Test the localStorage write performance',
     filename: 'tests/localstorage_write.html',
