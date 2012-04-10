@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Force layout with offsetHeight</title>
+<style>
+    #container { width: 200px; height: 800px; overflow-y: scroll; }
+</style>
+</head>
+<body>
+<div id="container">
+</div>
+<script>
+    var container;
+    var DEFAULT_RUNS = 10000;
+    function setUp(opt_numResizes)
+    {
+        container = document.getElementById('container');
+    }
+
+    function reset() {
+        container.style.width = 200 + 'px';
+        container.style.height = 800 + 'px';
+    }
+
+    function tearDown()
+    {
+
+    }
+
+    function test(opt_numResizes)
+    {
+        var runs = opt_numResizes || DEFAULT_RUNS;
+        for (var i = 0; i < runs; i++) {
+            container.style.width = Math.random() * 500 + 'px';
+            container.style.height = Math.random() * 500 + 'px';
+            container.offsetHeight;
+        }
+    }
+</script>
+<script src="../test.js"></script>
+</body>
+</html>
