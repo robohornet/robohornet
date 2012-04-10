@@ -279,9 +279,9 @@ var benchmarks = [
     description: 'Test the localStorage write performance',
     filename: 'tests/localstorage_write.html',
     runs: [
+      ['50 Writes', 50],
       ['100 Writes', 100],
-      ['1000 Writes', 1000],
-      ['10000 Writes', 10000]
+      ['1000 Writes', 1000]
     ],
     weight: 5,
     baselineTime: 2500,
@@ -293,9 +293,9 @@ var benchmarks = [
     description: 'Test the localStorage read performance',
     filename: 'tests/localstorage_read.html',
     runs: [
+      ['50 Reads', 50],
       ['100 Reads', 100],
-      ['1000 Reads', 1000],
-      ['10000 Reads', 10000]
+      ['1000 Reads', 1000]
     ],
     weight: 5,
     baselineTime: 2500,
