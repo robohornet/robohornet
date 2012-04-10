@@ -181,11 +181,12 @@ robohornet.Runner = function(version, benchmarks) {
     });
 
     var win = this.benchmarkWindow_;
+    var emptyFn = function() {};
     for (var run, i = 0; run = benchmark.runs[i]; i++) {
       var argument = run[1];
       suite.add(run[0], bind(win.test, win, argument), {
-        setup: bind(win.setUp, win, argument),
-        teardown: bind(win.tearDown, win, argument)
+        setup: bind(win.setUp || emptyFn, win, argument),
+        teardown: bind(win.tearDown || emptyFn, win, argument)
       });
     }
 
