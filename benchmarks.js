@@ -16,6 +16,11 @@ var TAGS = {
     "name" : "G_PRESENTATIONS",
     "type" : robohornet.TagType.APP
   },
+  "G_MAPS" : {
+    "prettyName" : "Google Maps",
+    "name" : "G_MAPS",
+    "type" : robohornet.TagType.APP
+  },
   "TABLE" : {
     "prettyName" : "Table",
     "name" : "TABLE",
@@ -49,6 +54,11 @@ var TAGS = {
   "ES5" : {
     "prettyName" : "ES5",
     "name" : "ES5",
+    "type" : robohornet.TagType.TECHNOLOGY
+  },
+  "MATH" : {
+    "prettyName" : "Math",
+    "name" : "MATH",
     "type" : robohornet.TagType.TECHNOLOGY
   }
 }
@@ -205,5 +215,19 @@ var benchmarks = [
       weight: 1,
       baselineTime: 100,
       tags: [TAGS.ES5]
+  },
+
+  {
+      name: 'Calculate primes',
+      description: 'Test calculating primes from 2 to N',
+      filename: 'tests/primes.html',
+      runs: [
+        ['Primes up to 1000', 1000],
+        ['Primes up to 10000', 10000],
+        ['Primes up to 100000', 100000]
+      ],
+      weight: 2,
+      baselineTime: 115,
+      tags: [TAGS.MATH, TAGS.G_MAPS]
   }
 ];
