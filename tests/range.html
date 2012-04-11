@@ -1,54 +1,40 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>DOM Range API</title>
-    <script>
+<head>
+  <title>DOM Range API</title>
+  <script>
 
-      var RANGE;
-      var TIMES = 1e5;
-      var NODES = 1e3;
-      var HTML = (function() {
-        var txt = 'Cupcake ipsum dolor sit amet icing carrot cake gummi bears jelly. Sugar plum sesame snaps candy canes.';
+      var DEFAULT_ITERATIONS = 100;
+      var BODY_HTML = generateHtml(100, true /** opt_withIds */);
+      var REPLACEMENT_HTML = generateHtml(100);
+
+      function reset() { document.body.innerHTML = BODY_HTML; }
+      function setUp() { reset(); }
+
+      function test(opt_times) {
+        // Replace a section of the DOM using the Range API.
+        // Inspired by metamorph.js.
+        var times = opt_times || DEFAULT_ITERATIONS;
+        var start = document.getElementById('node' + Math.floor(times * 0.1));
+        var end = document.getElementById('node' + Math.floor(times * 0.9));
+        var r = document.createRange();
+        for (var i = 0; i < times; i++) {
+          r.setStartAfter(start);
+          r.setEndBefore(end);
+          r.deleteContents();
+          r.insertNode(r.createContextualFragment(REPLACEMENT_HTML));
+        }
+      }
+
+      function generateHtml(nodes, opt_withIds) {
+        var lorem =
+            'Cupcake ipsum dolor sit amet icing carrot cake gummi ' +
+            'bears jelly. Sugar plum sesame snaps candy canes.';
         var s = '';
-        for (var i = 0; i < NODES; i++) {
-          s += '<p id=node' +  i + '>' + txt + '</p>';
+        for (var i = 0; i < nodes; i++) {
+          s += '<p id=node' + (opt_withIds ? i : '') + '>' + lorem + '</p>';
         }
         return s;
-      })();
-
-      function setUp() {
-        reset();
-      }
-      function tearDown() {}
-      function reset() {
-        document.body.innerHTML = HTML;
-      }
-      function test(mode) {
-        mode = mode || "selectNodeContents";
-        var fn = "test_" + mode;
-        window[fn]();
-      }
-
-      function test_createRange() {
-        for (var i = 0; i < TIMES; i++) {
-          var r = document.createRange();
-        }
-      }
-
-      function test_selectNode() {
-        var node = document.getElementById('node876');
-        var r = document.createRange();
-        for (var i = 0; i < TIMES; i++) {
-          r.selectNode(node);
-        }
-      }
-
-      function test_selectNodeContents() {
-        var node = document.getElementById('node876');
-        var r = document.createRange();
-        for (var i = 0; i < TIMES; i++) {
-          r.selectNodeContents(node);
-        }
       }
 
     </script>
