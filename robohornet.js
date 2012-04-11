@@ -198,8 +198,6 @@ robohornet.Runner = function(version, benchmarks) {
     var callFunction = function(win, fn, arg, deferred) {
       win[fn] && win[fn].call(win, arg);
       if (deferred) { deferred.resolve(); }
-      if (!win || win.innerHeight == 0)
-        this.abort();
     };
           
     var callTest = function(win, arg, deferred) {
@@ -311,7 +309,7 @@ robohornet.Runner = function(version, benchmarks) {
   };
 
   _p.onBenchmarkComplete_ = function(suite, benchmark) {
-    if (!this.benchmarkWindow_ || this.benchmarkWindow_.innerHeight == 0) {
+    if (!this.benchmarkWindow_) {
       this.onBenchmarkAbort_(suite, benchmark);
       return;
     }
