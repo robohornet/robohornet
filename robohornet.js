@@ -345,7 +345,8 @@ robohornet.Runner = function(version, benchmarks) {
       benchmark.detailsElement_.classList.add("disabled");
       benchmark.summaryRow_.classList.add("disabled");
     }
-    if (!opt_skipUpdateHash)
+    //opt_skipUpdateHash may be a MouseEvent sometimes, but only skip if it's explicitly 'true'
+    if (opt_skipUpdateHash != true)
       this.updateHash_();
   }
 
