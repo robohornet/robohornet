@@ -56,13 +56,14 @@
         container.scrollTop = 0;
     }
 
-    function test(opt_size)
+    function testAsync(opt_size, deferred)
     {
         var size = opt_size || DEFAULT_SIZE;
         var maxScroll = container.firstChild.offsetHeight - container.offsetHeight;
         while (container.scrollTop < maxScroll) {
             container.scrollTop = container.scrollTop + 1000;
         }
+        requestAnimationFrameFunction(function() { deferred.resolve(); });
     }
 </script>
 <script src="../test.js"></script>

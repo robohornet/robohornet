@@ -1,24 +1,34 @@
 var requestAnimationFrameFunction = window.mozRequestAnimationFrame ||
-        window.msRequestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.oRequestAnimationFrame;
+    window.msRequestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.oRequestAnimationFrame;
 
 if (window.opener && window.opener.__robohornet__ && window.location.search == '?use_test_runner') {
-    document.body.appendChild(document.createTextNode('Running test using test runner...'));
-    window.opener.__robohornet__.benchmarkLoaded();
+  document.body.appendChild(document.createTextNode('Running test using test runner...'));
+  window.opener.__robohornet__.benchmarkLoaded();
 } else {
 
-    document.body.appendChild(document.createTextNode('Running test standalone...'));
+  document.body.appendChild(document.createTextNode('Running test standalone...'));
 
-    setUp();
-    window.setTimeout(function() {
-        var startTime = new Date().getTime();
-        test();
-        requestAnimationFrameFunction.call(window, function() {
-            var endTime = new Date().getTime();
-            document.body.appendChild(document.createTextNode('Ran test in ' + (endTime - startTime) + ' ms.'));
-        });
-    }, 0);
+  setUp();
+  window.setTimeout(function() {
+    if (window['testAsync']) {
+      var startTime = new Date().getTime();
+      var deferred = {
+        startTime: 0,
+        resolve: function() {
+          var endTime = new Date().getTime();
+          document.body.appendChild(document.createTextNode('Ran test in ' + (endTime - startTime) + ' ms.'));
+        }
+      };
+      window['testAsync'](undefined, deferred);
+    } else {
+      var startTime = new Date().getTime();
+      window['test']();
+      var endTime = new Date().getTime();
+      document.body.appendChild(document.createTextNode('Ran test in ' + (endTime - startTime) + ' ms.'));
+    }
+  }, 0);
 }
 
 // To make the benchmark results predictable, we replace Math.random with a
@@ -36,3 +46,4 @@ Math.random = (function() {
     return (seed & 0xfffffff) / 0x10000000;
   };
 })();
+

@@ -194,28 +194,33 @@ robohornet.Runner = function(version, benchmarks) {
 
     var win = this.benchmarkWindow_;
 
-    var callback = function(arg, fn, deferred) {
+    var callback2 = function(arg, fn, deferred) {
       win[fn].call(win, arg);
       requestAnimationFrameFunction.call(win, bind(deferred.resolve, deferred));
     };
+    
+    var callFunction = function(fn, arg, deferred) {
+      this[fn] && this[fn].call(win, arg);
+      if (deferred) { deferred.resolve(); }
+    };
+    
+    var callTest = function(arg, deferred) {
+      if (this['testAsync']) {
+        this['testAsync'].call(win, arg, deferred);
+      }
+      else {
+        this['test'].call(win, arg);
+        if (deferred) { deferred.resolve(); }
+      }
+    };
 
     for (var run, i = 0; run = benchmark.runs[i]; i++) {
-      var argument = run[1];
+      var arg = run[1];
       suite.add(run[0], {
         defer: true,
-        fn: function(deferred) { callback(argument, 'test', deferred); },
-        // FIXME: setup and teardown should use the callback function just like above once Benchmark.js is updated to support it.
-        setup: function(deferred) { 
-          var win = __robohornet__.benchmarkWindow_;
-          win.setUp && win.setUp.call(win);
-          deferred.resolve();
-        },
-        /* FIXME: teardown is called immediately after setup (and before test) in defered mode. 
-        teardown: function(deferred) { 
-          var win = __robohornet__.benchmarkWindow_;
-          win.tearDown && win.tearDown.call(win);
-          deferred.resolve();
-        },*/
+        fn: bind(callTest, win, arg),
+        setup: bind(callFunction, win, 'setUp', arg),
+        teardown: bind(callFunction, win, 'tearDown', arg)
       });
     }
 
@@ -263,22 +268,27 @@ robohornet.Runner = function(version, benchmarks) {
   };
 
   _p.loadBenchmark_ = function(benchmark) {
-    if (this.benchmarkWindow_)
+    if (this.benchmarkWindow_) {
       this.benchmarkWindow_.close();
+      this.benchmarkWindow_ = null
+    }
 
     this.setBenchmarkStatus_(benchmark, robohornet.BenchmarkStatus.LOADING);
     this.activeBenchmark_ = benchmark;
 
-    //We want to position the popup window on top, ideally with its bottom right corner in the bottom right of the screen.
-    //For most browsers and platforms, if we overshoot it's fine; the popup will be moved to be fully on screen.
+    //  We want to position the popup window on top, ideally with its bottom right corner in the bottom right of the screen.
+    //  For most browsers and platforms, if we overshoot it's fine; the popup will be moved to be fully on screen.
 
-    var TARGET_WINDOW_HEIGHT = 480;
-    var TARGET_WINDOW_WIDTH = 640;
+    var TARGET_WINDOW_WIDTH = 800;
+    var TARGET_WINDOW_HEIGHT = 600;
 
     var top = window.screen.availHeight + window.screen.availTop - TARGET_WINDOW_HEIGHT;
     var left = window.screen.availWidth + window.screen.availLeft - TARGET_WINDOW_WIDTH;
 
-    this.benchmarkWindow_ = window.open(benchmark.filename + '?use_test_runner', 'benchmark', 'left=' + left + ',top=' + top + ',width='+ TARGET_WINDOW_WIDTH + ',height=' + TARGET_WINDOW_HEIGHT);
+    this.benchmarkWindow_ = window.open(benchmark.filename + '?use_test_runner', 'rh-benchmark',
+        'left=' + left + ',top=' + top +
+        ',width='+ TARGET_WINDOW_WIDTH + ',height=' + TARGET_WINDOW_HEIGHT);
+
     if (!this.benchmarkWindow_) {
       this.activeBenchmark_ = null;
       this.setBenchmarkStatus_(benchmark, robohornet.BenchmarkStatus.POPUP_BLOCKED);
@@ -289,6 +299,7 @@ robohornet.Runner = function(version, benchmarks) {
 
   _p.onBenchmarkComplete_ = function(suite, benchmark) {
     this.benchmarkWindow_.close();
+    this.benchmarkWindow_ = null;
     var results = [];
     for (var run, i = 0; run = suite[i]; i++) {
       results.push({
@@ -698,8 +709,10 @@ function bind(fn, opt_scope, var_args) {
   for (var i = 2; i < len; i++) {
     args.push(arguments[i]);
   }
-  return function() {
-    fn.apply(scope, args);
+  return function(arguments) {
+    var a = args.slice();
+    a.push.call(a, arguments);
+    fn.apply(scope, a);
   };
 }
 

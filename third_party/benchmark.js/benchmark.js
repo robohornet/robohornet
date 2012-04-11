@@ -1116,6 +1116,7 @@
 
     if (bench.aborted) {
       // cycle() -> clone cycle/complete event -> compute()'s invoked bench.run() cycle/complete
+      me.teardown();
       clone.running = false;
       cycle(me);
     }
@@ -1125,6 +1126,7 @@
     }
     else {
       timer.stop(me);
+      me.teardown();
       delay(clone, function() { cycle(me); });
     }
   }
@@ -2372,12 +2374,20 @@
         // compile in setup/teardown functions and the test loop
         compiled = bench.compiled = createFunction(preprocess('t$'), interpolate(
           preprocess(deferred
-            ? 'var d$=this,#{fnArg}=d$,r$=d$.resolve,m$=d$.benchmark._original,f$=m$.fn;' +
+            ? 'var d$=this,#{fnArg}=d$,m$=d$.benchmark._original,f$=m$.fn,su$=m$.setup,td$=m$.teardown;' +
+              // when `deferred.cycles` is `0` then...
               'if(!d$.cycles){' +
-              'd$.fn=function(){var #{fnArg}=d$;if(typeof f$=="function"){try{#{fn}}catch(e$){f$(d$)}}else{#{fn}}};' +
-              'd$.resolve=function(){d$.resolve=r$;r$.call(d$);if(d$.cycles==m$.count){#{teardown}\n}};' +
-              '#{setup}\nt$.start(d$);}' +
-              'd$.fn();return{}'
+              // set `deferred.fn`
+              'd$.fn=function(){var #{fnArg}=d$;if(typeof f$=="function"){try{#{fn}\n}catch(e$){f$(d$)}}else{#{fn}\n}};' +
+              // set `deferred.teardown`
+              'd$.teardown=function(){d$.cycles=0;if(typeof td$=="function"){try{#{teardown}\n}catch(e$){td$()}}else{#{teardown}\n}};' +
+              // execute the benchmark's `setup`
+              'if(typeof su$=="function"){try{#{setup}\n}catch(e$){su$()}}else{#{setup}\n};' +
+              // start timer
+              't$.start(d$);' +
+              // execute `deferred.fn` and return a dummy object
+              '}d$.fn();return{}'
+
             : 'var r$,s$,m$=this,f$=m$.fn,i$=m$.count,n$=t$.ns;#{setup}\n#{begin};' +
               'while(i$--){#{fn}\n}#{end};#{teardown}\nreturn{elapsed:r$,uid:"#{uid}"}'),
           source
@@ -2404,10 +2414,14 @@
         // fallback when a test exits early or errors during pretest
         if (decompilable && !compiled && !deferred && !isEmpty) {
           compiled = createFunction(preprocess('t$'), interpolate(
-            preprocess((clone.error && !stringable
-              ? 'var r$,s$,m$=this,f$=m$.fn,i$=m$.count'
-              : 'function f$(){#{fn}\n}var r$,s$,i$=this.count'
-            ) + ',n$=t$.ns;#{setup}\n#{begin};while(i$--){f$()}#{end};#{teardown}\nreturn{elapsed:r$}'),
+            preprocess(
+              (clone.error && !stringable
+                ? 'var r$,s$,m$=this,f$=m$.fn,i$=m$.count'
+                : 'function f$(){#{fn}\n}var r$,s$,m$=this,i$=m$.count'
+              ) +
+              ',n$=t$.ns;#{setup}\n#{begin};m$.f$=f$;while(i$--){m$.f$()}#{end};' +
+              'delete m$.f$;#{teardown}\nreturn{elapsed:r$}'
+            ),
             source
           ));
 
@@ -2556,7 +2570,7 @@
 
     // define `timer` methods
     timer.start = createFunction(preprocess('o$'),
-      preprocess('var n$=this.ns,#{begin};o$.timeStamp=s$'));
+      preprocess('var n$=this.ns,#{begin};o$.elapsed=0;o$.timeStamp=s$'));
 
     timer.stop = createFunction(preprocess('o$'),
       preprocess('var n$=this.ns,s$=o$.timeStamp,#{end};o$.elapsed=r$'));
@@ -2603,7 +2617,6 @@
      */
     function update(event) {
       var clone = this,
-          cycles = clone.cycles,
           type = event.type;
 
       if (bench.running) {
@@ -2746,7 +2759,7 @@
     // continue, if not aborted between cycles
     if (clone.running) {
       // `minTime` is set to `Benchmark.options.minTime` in `clock()`
-      cycles = clone.cycles++;
+      cycles = ++clone.cycles;
       clocked = deferred ? deferred.elapsed : clock(clone);
       minTime = clone.minTime;
 

@@ -161,10 +161,13 @@
         'teardown': function() { a = 2; }
       }).run();
 
-      var compiled = bench.compiled,
-          result = /var a\s*=\s*1/.test(compiled) && /throw a/.test(compiled) && /a\s*=\s*2/.test(compiled);
-
-      ok(/setup\(\)/.test(compiled) ? true : result);
+      var compiled = bench.compiled;
+      if (/setup\(\)/.test(compiled)) {
+        skipTest(1);
+      }
+      else {
+        ok(/var a\s*=\s*1/.test(compiled) && /throw a/.test(compiled) && /a\s*=\s*2/.test(compiled));
+      }
     });
 
     test('compiles using a custom "toString" method', function() {
@@ -179,10 +182,13 @@
       bench.teardown.toString = function() { return 'a = 2;' };
       bench.run();
 
-      var compiled = bench.compiled,
-          result = /var a\s*=\s*1/.test(compiled) && /throw a/.test(compiled) && /a\s*=\s*2/.test(compiled);
-
-      ok(/setup\(\)/.test(compiled) ? true : result);
+      var compiled = bench.compiled;
+      if (/setup\(\)/.test(compiled)) {
+        skipTest(1);
+      }
+      else {
+        ok(/var a\s*=\s*1/.test(compiled) && /throw a/.test(compiled) && /a\s*=\s*2/.test(compiled));
+      }
     });
 
     test('compiles using a string value', function() {
@@ -192,10 +198,60 @@
         'teardown': 'a = 2;'
       }).run();
 
-      var compiled = bench.compiled,
-          result = /var a\s*=\s*1/.test(compiled) && /throw a/.test(compiled) && /a\s*=\s*2/.test(compiled);
+      var compiled = bench.compiled;
+      if (/setup\(\)/.test(compiled)) {
+        skipTest(1);
+      }
+      else {
+        ok(/var a\s*=\s*1/.test(compiled) && /throw a/.test(compiled) && /a\s*=\s*2/.test(compiled));
+      }
+    });
+  }());
 
-      ok(/setup\(\)/.test(compiled) ? true : result);
+  /*--------------------------------------------------------------------------*/
+
+  QUnit.module('Benchmark test binding');
+
+  (function() {
+    var count = 0;
+
+    var tests = {
+      'inlined "setup", "fn", and "teardown"': (
+        'if(this instanceof Benchmark)this._fn=true;'
+      ),
+      'called "fn" and inlined "setup"/"teardown" reached by error': function() {
+        count++;
+        if (this instanceof Benchmark) {
+          this._fn = true;
+        }
+      },
+      'called "fn" and inlined "setup"/"teardown" reached by `return` statement': function() {
+        if (this instanceof Benchmark) {
+          this._fn = true;
+        }
+        return;
+      }
+    };
+
+    forOwn(tests, function(fn, title) {
+      test('has correct binding for ' + title, function() {
+        var bench = Benchmark({
+          'setup': 'if(this instanceof Benchmark)this._setup=true;',
+          'fn': fn,
+          'teardown': 'if(this instanceof Benchmark)this._teardown=true;',
+          'onCycle': function() { this.abort(); }
+        }).run();
+
+        var compiled = bench.compiled;
+        if (/setup\(\)/.test(compiled)) {
+          skipTest(3);
+        }
+        else {
+          ok(bench._setup, 'correct binding for "setup"');
+          ok(bench._fn, 'correct binding for "fn"');
+          ok(bench._teardown, 'correct binding for "teardown"');
+        }
+      });
     });
   }());
 
@@ -407,13 +463,16 @@
   QUnit.module('Benchmark.each');
 
   (function() {
+    var xpathResult;
+
     var objects = {
       'array': ['a', 'b', 'c', ''],
-      'array-like-object': { '0': 'a', '1': 'b', '2': 'c',  '3': '', 'length': 5 }
+      'array-like-object': { '0': 'a', '1': 'b', '2': 'c',  '3': '', 'length': 5 },
+      'xpath snapshot': null
     };
 
     if (window.document && document.evaluate) {
-      var xpathResult = [document.documentElement, document.getElementsByTagName('head')[0], document.body];
+      xpathResult = [document.documentElement, document.getElementsByTagName('head')[0], document.body];
       objects['xpath snapshot'] = document.evaluate('//*[self::html or self::head or self::body]', document, null, 7, null);
     }
 
@@ -1729,7 +1788,7 @@
 
   /*--------------------------------------------------------------------------*/
 
-  QUnit.module('Benchmark.Suite filter results onComplete');
+  QUnit.module('Benchmark.Suite filtered results onComplete');
 
   (function() {
     var count = 0,
@@ -1906,7 +1965,31 @@
           QUnit.start();
         }
       })
-      .run({ 'async': true });
+      .run();
+    });
+
+    asyncTest('should execute "setup", "fn", and "teardown" in correct order', function() {
+      var fired = [];
+
+      Benchmark({
+        'defer': true,
+        'setup': function() {
+          fired.push('setup');
+        },
+        'fn': function(deferred) {
+          fired.push('fn');
+          setTimeout(function() { deferred.resolve(); }, 10);
+        },
+        'teardown': function() {
+          fired.push('teardown');
+        },
+        'onComplete': function() {
+          var actual = fired.join().replace(/(fn,)+/g, '$1').replace(/(setup,fn,teardown(?:,|$))+/, '$1');
+          equal(actual, 'setup,fn,teardown');
+          QUnit.start();
+        }
+      })
+      .run();
     });
   }());
 
