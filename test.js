@@ -21,7 +21,7 @@ if (window.opener && window.opener.__robohornet__ && window.location.search == '
           document.body.appendChild(document.createTextNode('Ran test in ' + (endTime - startTime) + ' ms.'));
         }
       };
-      window['testAsync'](undefined, deferred);
+      window['testAsync'](deferred);
     } else {
       var startTime = new Date().getTime();
       window['test']();

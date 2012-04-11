@@ -206,7 +206,7 @@ robohornet.Runner = function(version, benchmarks) {
     
     var callTest = function(arg, deferred) {
       if (this['testAsync']) {
-        this['testAsync'].call(win, arg, deferred);
+        this['testAsync'].call(win, deferred, arg);
       }
       else {
         this['test'].call(win, arg);
