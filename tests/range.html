@@ -4,21 +4,22 @@
   <title>DOM Range API</title>
   <script>
 
-      var DEFAULT_ITERATIONS = 100;
-      var BODY_HTML = generateHtml(100, true /** opt_withIds */);
-      var REPLACEMENT_HTML = generateHtml(100);
+      var ITERATIONS = 100;
+      var MIN_NODES = 50;
+      var BODY_HTML = generateHtml(MIN_NODES, true /** opt_withIds */);
+      var REPLACEMENT_HTML = generateHtml(MIN_NODES);
 
       function reset() { document.body.innerHTML = BODY_HTML; }
       function setUp() { reset(); }
 
-      function test(opt_times) {
+      function test(opt_nodes) {
         // Replace a section of the DOM using the Range API.
         // Inspired by metamorph.js.
-        var times = opt_times || DEFAULT_ITERATIONS;
-        var start = document.getElementById('node' + Math.floor(times * 0.1));
-        var end = document.getElementById('node' + Math.floor(times * 0.9));
+        var nodes = opt_nodes || MIN_NODES;
+        var start = document.getElementById('node' + Math.floor(MIN_NODES * 0.1));
+        var end = document.getElementById('node' + Math.floor(MIN_NODES * 0.9));
         var r = document.createRange();
-        for (var i = 0; i < times; i++) {
+        for (var i = 0; i < ITERATIONS; i++) {
           r.setStartAfter(start);
           r.setEndBefore(end);
           r.deleteContents();

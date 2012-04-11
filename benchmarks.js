@@ -276,15 +276,14 @@ var benchmarks = [
 
   {
       name: 'DOM Range API',
-      description: 'Test replacing part of the DOM using the Range API',
+      description: 'Test replacing a number of DOM nodes using the Range API',
       filename: 'tests/range.html',
       runs: [
-        ['50 Replacements', 50],
-        ['100 Replacements', 100],
-        ['1000 Replacements', 1000]
+        ['50 Nodes', 50],
+        ['100 Nodes', 100]
       ],
       weight: 1,
-      baselineTime: 70,
+      baselineTime: 260,
       tags: [TAGS.DOM]
   },
 
