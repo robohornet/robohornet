@@ -148,6 +148,20 @@ var benchmarks = [
   },
 
   {
+      name: '2D Canvas toDataURL',
+      description: 'Test converting a 2D canvas to a data URI',
+      filename: 'tests/canvastodataurl.html',
+      runs: [
+        ['256x256, 1000 lines', [256, 1000]],
+        ['512x512, 1000 lines', [512, 1000]],
+        ['1024x1024, 1000 lines', [1024, 1000]]
+      ],
+      weight: 3,
+      baselineTime: 2500,
+      tags: [TAGS.CANVAS, TAGS.G_PRESENTATIONS]
+  },
+
+  {
       name: 'innerHTML Table',
       description: 'Test table render speed after innerHTML.',
       filename: 'tests/createtable.html',

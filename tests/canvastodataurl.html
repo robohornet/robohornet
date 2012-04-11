@@ -1,0 +1,69 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+<title>Canvas painting benchmark</title> 
+<script> 
+
+var canvas;
+var DEFAULT_NUMBER_OF_VERTICES = 1000;
+var DEFAULT_HEIGHT = 512;
+
+function setUp(opt_sizes)
+{
+    var opt_sizes = opt_sizes || [];
+    var numberOfVertices = opt_sizes[0] || DEFAULT_NUMBER_OF_VERTICES;
+    var height = opt_sizes[1] || DEFAULT_HEIGHT;
+
+    var container = document.getElementById('container');
+    container.style.width = container.style.height = height;
+    container.width = container.height = height;
+    //container.style.overflow = 'hidden';
+
+    canvas = document.createElement('canvas');
+    var canvasStyle = canvas.style;
+    canvasStyle.position = 'absolute';
+    canvasStyle.left = '0px';
+    canvasStyle.top = '0px';
+    canvas.width = canvas.height = height;
+    canvasStyle.width = canvasStyle.height = height + 'px';
+    container.appendChild(canvas);
+
+    draw(height, height, numberOfVertices);
+}
+
+function tearDown()
+{
+  var container = document.getElementById('container');
+  while (container.firstChild) { container.removeChild(container.lastChild); }
+}
+ 
+function test(opt_numberOfVertices) {
+    canvas.toDataURL("image/png");
+}
+
+function draw(width, height, numVerts) {
+  var path = [];
+  for (var i = 0; i < numVerts; ++i) {
+    path.push(Math.round(Math.random() * width),
+              Math.round(Math.random() * height));
+  }
+
+  var context = canvas.getContext('2d');
+  context.lineCap = context.lineJoin = 'round';
+
+  context.moveTo(path[0], path[1]);
+  for (var i = 2, I = path.length; i < I; ) {
+      context.lineTo(path[i++], path[i++]);
+  }
+  context.strokeStyle = 'rgba(255, 170, 85, 0.2)';
+  context.lineWidth = 1;
+  context.stroke();
+}
+
+</script> 
+</head> 
+<body>
+<div id="container" style="position: absolute; overflow:hidden; border: 1px solid black;"></div>
+</body> 
+<script src="../test.js"></script>
+</html> 
