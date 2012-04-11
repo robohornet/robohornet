@@ -306,7 +306,7 @@ robohornet.Runner = function(version, benchmarks) {
         name: run.name,
         mean: run.stats.mean * 1000,
         rme: run.stats.rme,
-        runs: run.stats.size
+        runs: run.stats.sample.length
       });
     }
     benchmark.results = results;
