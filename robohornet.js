@@ -11,10 +11,12 @@ robohornet.BenchmarkStatus = {
   SUCCESS: 0,
   LOADING: 1,
   RUNNING: 2,
-  LOAD_FAILED: 3,
-  RUN_FAILED: 4,
-  SKIPPED: 5,
-  POPUP_BLOCKED : 6
+  PENDING: 3,
+  LOAD_FAILED: 4,
+  RUN_FAILED: 5,
+  SKIPPED: 6,
+  POPUP_BLOCKED: 7,
+  ABORTED: 8
 };
 
 robohornet.TagType = {
@@ -176,7 +178,7 @@ robohornet.Runner = function(version, benchmarks) {
   };
 
   _p.progressTransitionDone_ = function() {
-    //Wait until the progress bar fades out to put it back to the left.
+    // Wait until the progress bar fades out to put it back to the left.
     this.progressElement_.style.marginLeft = "-100%";
     this.progressElement_.removeEventListener("webkitTransitionEnd", this.progressCallback_, false);
     this.progressElement_.removeEventListener("transitionend", this.progressCallback_, false);
@@ -189,38 +191,38 @@ robohornet.Runner = function(version, benchmarks) {
 
     var self = this;
     var suite = new Benchmark.Suite(this.name, {
-      onComplete: function() { self.onBenchmarkComplete_(this, benchmark); }
+      onComplete: function() { self.onBenchmarkComplete_(this, benchmark); },
+      onAbort: function() { self.onBenchmarkAbort_(this, benchmark); }
     });
 
-    var win = this.benchmarkWindow_;
-
-    var callback2 = function(arg, fn, deferred) {
-      win[fn].call(win, arg);
-      requestAnimationFrameFunction.call(win, bind(deferred.resolve, deferred));
-    };
-    
-    var callFunction = function(fn, arg, deferred) {
-      this[fn] && this[fn].call(win, arg);
+    var callFunction = function(win, fn, arg, deferred) {
+      win[fn] && win[fn].call(win, arg);
       if (deferred) { deferred.resolve(); }
+      if (!win || win.innerHeight == 0)
+        this.abort();
     };
-    
-    var callTest = function(arg, deferred) {
-      if (this['testAsync']) {
-        this['testAsync'].call(win, deferred, arg);
+          
+    var callTest = function(win, arg, deferred) {
+      if (win['testAsync']) {
+        win['testAsync'].call(win, deferred, arg);
       }
-      else {
-        this['test'].call(win, arg);
-        if (deferred) { deferred.resolve(); }
+      else if (win['test']) {
+        win['test'].call(win, arg);
+        if (deferred)
+          deferred.resolve();
       }
+      else
+        this.abort();
     };
 
+    var win = this.benchmarkWindow_;
     for (var run, i = 0; run = benchmark.runs[i]; i++) {
       var arg = run[1];
       suite.add(run[0], {
         defer: true,
-        fn: bind(callTest, win, arg),
-        setup: bind(callFunction, win, 'setUp', arg),
-        teardown: bind(callFunction, win, 'tearDown', arg)
+        fn: bind(callTest, suite, win, arg),
+        setup: bind(callFunction, suite, win, 'setUp', arg),
+        teardown: bind(callFunction, suite, win, 'tearDown', arg)
       });
     }
 
@@ -297,7 +299,23 @@ robohornet.Runner = function(version, benchmarks) {
 
   };
 
+  _p.onBenchmarkAbort_ = function(suite, benchmark) {
+      if (benchmark.status == robohornet.BenchmarkStatus.ABORTED)
+        return;
+
+      this.setBenchmarkStatus_(benchmark, robohornet.BenchmarkStatus.ABORTED);
+      if (this.benchmarkWindow_)
+        this.benchmarkWindow_.close();
+      this.benchmarkWindow_ = null;
+      window.setTimeout(bind(this.next_, this), 250);
+  };
+
   _p.onBenchmarkComplete_ = function(suite, benchmark) {
+    if (!this.benchmarkWindow_ || this.benchmarkWindow_.innerHeight == 0) {
+      this.onBenchmarkAbort_(suite, benchmark);
+      return;
+    }
+    
     this.benchmarkWindow_.close();
     this.benchmarkWindow_ = null;
     var results = [];
@@ -459,6 +477,9 @@ robohornet.Runner = function(version, benchmarks) {
       case robohornet.BenchmarkStatus.RUNNING:
         caption = 'Running...';
         break;
+      case robohornet.BenchmarkStatus.PENDING:
+        caption = 'Pending';
+        break;
       case robohornet.BenchmarkStatus.LOAD_FAILED:
         caption = 'Failed to load';
         break;
@@ -469,7 +490,13 @@ robohornet.Runner = function(version, benchmarks) {
         caption = 'Skipped';
         break;
       case robohornet.BenchmarkStatus.POPUP_BLOCKED:
-        caption = "Benchmark window blocked";
+        caption = 'Benchmark window blocked';
+        break;
+      case robohornet.BenchmarkStatus.ABORTED:
+        caption = 'Aborted by user';
+        break;
+      case robohornet.BenchmarkStatus.NO_STATUS:
+        caption = '-';
         break;
       default:
         caption = 'Unknown failure';
@@ -481,24 +508,24 @@ robohornet.Runner = function(version, benchmarks) {
 
   _p.setStatus_ = function(status) {
     this.status_ = status;
-    var disableInputs = false;
     switch (this.status_) {
       case robohornet.Status.READY:
         caption = 'Run';
         break;
       case robohornet.Status.RUNNING:
         caption = 'Running...';
-        disableInputs = true;
         break;
       default:
         caption = 'Loading...';
     }
 
     for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
-      benchmark.toggleElement_.disabled = disableInputs;
+      benchmark.toggleElement_.disabled = status == robohornet.Status.RUNNING;
+      if (status == robohornet.Status.RUNNING)
+        this.setBenchmarkStatus_(benchmark, robohornet.BenchmarkStatus.PENDING);
     }
 
-    document.body.className = (this.status_ == robohornet.Status.READY) ? 'ready' : 'running';
+    document.body.className = this.status_ == robohornet.Status.READY ? 'ready' : 'running';
     this.runElement_.textContent = caption;
     this.runElement_.disabled = this.status_ != robohornet.Status.READY;
   };
@@ -556,7 +583,7 @@ robohornet.Runner = function(version, benchmarks) {
         } else {
           self.selectBenchmarksByTag(tag);
         }
-        //Undo the text selection from a shift-click.
+        // Undo the text selection from a shift-click.
         window.getSelection().removeAllRanges();
       }
       tagElement.addEventListener('click', func, false);
@@ -564,7 +591,6 @@ robohornet.Runner = function(version, benchmarks) {
   }
 
   _p.selectBenchmarksByTag = function(tagToSelect) {
-    /* First, disable all benchmarks */
     this.disableAllBenchmarks();
     this.addBenchmarksToSelectionByTag(tagToSelect);
   }
@@ -586,7 +612,7 @@ robohornet.Runner = function(version, benchmarks) {
       var tag = TAGS[tagName];
       var isActive = false, isFullyActive = true;
       if (tag.benchmarks.length == 0 && tag.type == robohornet.TagType.SPECIAL) {
-        //Special case the none case
+        // Special case the none case.
         isFullyActive = true;
         for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
           if (benchmark.enabled) {
@@ -625,10 +651,10 @@ robohornet.Runner = function(version, benchmarks) {
       else
         disabledBenchmarkIDs.push(benchmark.id);
     }
-    //We want to encode as few IDs as possible in the hash.
-    //This also gives us a good default to follow for new benchmarks.
+    // We want to encode as few IDs as possible in the hash.
+    // This also gives us a good default to follow for new benchmarks.
     if (disabledBenchmarkIDs.length) {
-      //At least one benchmark is disabled.  Are the majority disabled??
+      // At least one benchmark is disabled. Are the majority disabled?
       if (disabledBenchmarkIDs.length < enabledBenchmarkIDs.length) {
         window.location.hash = '#d=' + disabledBenchmarkIDs.join(',');
       } else {
