@@ -6,62 +6,63 @@
 var BENCHMARK_VERSION = 'RH100';
 
 var TAGS = {
-  "G_SPREADSHEETS" : {
-    "prettyName" : "Google Spreadsheets",
-    "name" : "G_SPREADSHEETS",
-    "type" : robohornet.TagType.APP
+  "G_SPREADSHEETS": {
+    prettyName: "Google Spreadsheets",
+    name: "G_SPREADSHEETS",
+    type: robohornet.TagType.APP
   },
-  "G_PRESENTATIONS" : {
-    "prettyName" : "Google Presentations",
-    "name" : "G_PRESENTATIONS",
-    "type" : robohornet.TagType.APP
+  "G_PRESENTATIONS": {
+    prettyName: "Google Presentations",
+    name: "G_PRESENTATIONS",
+    type: robohornet.TagType.APP
   },
-  "G_MAPS" : {
-    "prettyName" : "Google Maps",
-    "name" : "G_MAPS",
-    "type" : robohornet.TagType.APP
+  "G_MAPS": {
+    prettyName: "Google Maps",
+    name: "G_MAPS",
+    type: robohornet.TagType.APP
   },
-  "TABLE" : {
-    "prettyName" : "Table",
-    "name" : "TABLE",
-    "type" : robohornet.TagType.TECHNOLOGY
+  "TABLE": {
+    prettyName: "Table",
+    name: "TABLE",
+    type: robohornet.TagType.TECHNOLOGY
   },
-  "DOM" : {
-    "prettyName" : "DOM",
-    "name" : "DOM",
-    "type" : robohornet.TagType.TECHNOLOGY
+  "DOM": {
+    prettyName: "DOM",
+    name: "DOM",
+    type: robohornet.TagType.TECHNOLOGY
   },
-  "CSS_SELECTORS" : {
-    "prettyName" : "CSS Selectors",
-    "name" : "CSS_SELECTORS",
-    "type" : robohornet.TagType.TECHNOLOGY
+  "CSS_SELECTORS": {
+    prettyName: "CSS Selectors",
+    name: "CSS_SELECTORS",
+    type: robohornet.TagType.TECHNOLOGY
   },
-  "CANVAS" : {
-    "prettyName" : "Canvas",
-    "name" : "CANVAS",
-    "type" : robohornet.TagType.TECHNOLOGY
+  "CANVAS": {
+    prettyName: "Canvas",
+    name: "CANVAS",
+    type: robohornet.TagType.TECHNOLOGY
   },
-  "SCROLLING" : {
-    "prettyName" : "Scrolling",
-    "name" : "SCROLLING",
-    "type" : robohornet.TagType.TECHNOLOGY
+  "SCROLLING": {
+    prettyName: "Scrolling",
+    name: "SCROLLING",
+    type: robohornet.TagType.TECHNOLOGY
   },
-  "SVG" : {
-    "prettyName" : "SVG",
-    "name" : "SVG",
-    "type" : robohornet.TagType.TECHNOLOGY
+  "SVG": {
+    prettyName: "SVG",
+    name: "SVG",
+    type: robohornet.TagType.TECHNOLOGY
   },
-  "JS" : {
-    "prettyName" : "Javascript",
-    "name" : "JS",
-    "type" : robohornet.TagType.TECHNOLOGY
+  "JS": {
+    prettyName: "Javascript",
+    name: "JS",
+    type: robohornet.TagType.TECHNOLOGY
   },
-  "MATH" : {
-    "prettyName" : "Math",
-    "name" : "MATH",
-    "type" : robohornet.TagType.TECHNOLOGY
+  "MATH": {
+    prettyName: "Math",
+    name: "MATH",
+    type: robohornet.TagType.TECHNOLOGY
   }
-}
+};
+
 
 /*
  * List of benchmakrs. Array of objects.
@@ -196,8 +197,7 @@ var benchmarks = [
       filename: 'tests/resizecol.html',
       runs: [
         ['500x10', [500, 10]],
-        ['500x50', [500, 50]],
-        ['500x100', [500, 100]]
+        ['500x50', [500, 50]]
       ],
       weight: 2,
       baselineTime: 1892.655,
@@ -210,8 +210,7 @@ var benchmarks = [
       filename: 'tests/svgresize.html',
       runs: [
         ['50 SVGs', 50],
-        ['100 SVGs', 100],
-        ['250 SVGs', 250]
+        ['100 SVGs', 100]
       ],
       weight: 5,
       baselineTime: 41.43,
@@ -329,3 +328,4 @@ var benchmarks = [
     tags: [TAGS.JS]
   }
 ];
+
