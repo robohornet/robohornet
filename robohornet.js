@@ -197,7 +197,10 @@ robohornet.Runner = function(version, benchmarks) {
 
     var callFunction = function(win, fn, arg, deferred) {
       win[fn] && win[fn].call(win, arg);
-      if (deferred) { deferred.resolve(); }
+      if (fn == 'setUp' && win['resetMathRandom'])
+        win['resetMathRandom']();
+      if (deferred)
+        deferred.resolve();
     };
           
     var callTest = function(win, arg, deferred) {
