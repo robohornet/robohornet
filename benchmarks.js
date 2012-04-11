@@ -158,7 +158,7 @@ var benchmarks = [
         ['1024x1024, 1000 lines', [1024, 1000]]
       ],
       weight: 3,
-      baselineTime: 2500,
+      baselineTime: 1000,
       tags: [TAGS.CANVAS, TAGS.G_PRESENTATIONS]
   },
 
@@ -283,7 +283,7 @@ var benchmarks = [
       ['10000 Reflows', 10000]
     ],
     weight: 5,
-    baselineTime: 2500,
+    baselineTime: 1000,
     tags: [TAGS.DOM, TAGS.G_SPREADSHEETS]
   },
 
@@ -310,7 +310,7 @@ var benchmarks = [
       ['1000 Writes', 1000]
     ],
     weight: 5,
-    baselineTime: 2500,
+    baselineTime: 75,
     tags: [TAGS.JS]
   },
 
@@ -324,7 +324,7 @@ var benchmarks = [
       ['1000 Reads', 1000]
     ],
     weight: 5,
-    baselineTime: 2500,
+    baselineTime: 50,
     tags: [TAGS.JS]
   }
 ];
