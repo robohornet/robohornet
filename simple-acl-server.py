@@ -37,14 +37,11 @@ ALLOWED_USERS = [re.compile("^" + pattern.replace(".", "\.").replace("*", ".*") 
 
 class ACLPage(webapp.RequestHandler):
 	def get(self, path):
-		user = str(users.get_current_user())
-		#App engine reports gmail addresses without the "gmail.com"
-		if "@" not in user:
-			user = user + "@gmail.com"
+		user = users.get_current_user()
 		#Check if the user is allowed.
-		if not any(pattern.match(user) for pattern in ALLOWED_USERS):
+		if not user or not any(pattern.match(user.email()) for pattern in ALLOWED_USERS):
 			self.response.set_status(404)
-			logging.warning("|%s| tried to log in but was blacklisted" % user)
+			logging.warning("|%s| tried to log in but was blacklisted" % user.email())
 			self.response.out.write(webapp.Response.http_status_message(404))
 			return
 		#Remove the leading /
