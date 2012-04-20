@@ -91,7 +91,7 @@ var benchmarks = [
         ['1000 rows', 1000]
       ],
       weight: 2,
-      baselineTime: 38,
+      baselineTime: 43.61,
       tags: [TAGS.G_SPREADSHEETS, TAGS.TABLE, TAGS.DOM]
   },
 
@@ -104,7 +104,7 @@ var benchmarks = [
         ['1000 columns', 1000]
       ],
       weight: 1,
-      baselineTime: 46.5,
+      baselineTime: 73.25,
       tags: [TAGS.G_SPREADSHEETS, TAGS.TABLE, TAGS.DOM]
   },
 
@@ -116,7 +116,7 @@ var benchmarks = [
         ['1000 nodes deep', 1000]
       ],
       weight: 2,
-      baselineTime: 47.99,
+      baselineTime: 35.27,
       tags: [TAGS.DOM, TAGS.CSS_SELECTORS]
   },
 
@@ -144,7 +144,7 @@ var benchmarks = [
         ['2500 lines', 2500]
       ],
       weight: 3,
-      baselineTime: 461.02,
+      baselineTime: 97.79,
       tags: [TAGS.CANVAS, TAGS.G_PRESENTATIONS]
   },
 
@@ -158,7 +158,7 @@ var benchmarks = [
         ['1024x1024, 1000 lines', [1024, 1000]]
       ],
       weight: 3,
-      baselineTime: 1000,
+      baselineTime: 724.78,
       tags: [TAGS.CANVAS, TAGS.G_PRESENTATIONS]
   },
 
@@ -172,7 +172,7 @@ var benchmarks = [
         ['200x100', [200, 100]]
       ],
       weight: 2,
-      baselineTime: 209.895,
+      baselineTime: 392.75,
       tags: [TAGS.DOM, TAGS.G_SPREADSHEETS, TAGS.TABLE]
   },
 
@@ -187,7 +187,7 @@ var benchmarks = [
         ['1000,50', [1000, 50]]
       ],
       weight: 1,
-      baselineTime: 204.36,
+      baselineTime: 1306.62,
       tags: [TAGS.DOM, TAGS.G_SPREADSHEETS, TAGS.TABLE, TAGS.SCROLLING]
   },
 
@@ -200,7 +200,7 @@ var benchmarks = [
         ['500x50', [500, 50]]
       ],
       weight: 2,
-      baselineTime: 1892.655,
+      baselineTime: 1944.59,
       tags: [TAGS.DOM, TAGS.TABLE, TAGS.G_SPREADSHEETS]
   },
 
@@ -213,7 +213,7 @@ var benchmarks = [
         ['100 SVGs', 100]
       ],
       weight: 5,
-      baselineTime: 41.43,
+      baselineTime: 234.91,
       tags: [TAGS.SVG, TAGS.G_PRESENTATIONS]
   },
 
@@ -227,7 +227,7 @@ var benchmarks = [
         ['Combined', '']
       ],
       weight: 1,
-      baselineTime: 100,
+      baselineTime: 84.50,
       tags: [TAGS.JS]
   },
 
@@ -241,7 +241,7 @@ var benchmarks = [
         ['Primes up to 100000', 100000]
       ],
       weight: 2,
-      baselineTime: 115,
+      baselineTime: 98.52,
       tags: [TAGS.MATH, TAGS.G_MAPS]
   },
 
@@ -255,7 +255,7 @@ var benchmarks = [
         ['1000000 Instantiations', 1000000]
       ],
       weight: 1,
-      baselineTime: 300,
+      baselineTime: 272.89,
       tags: [TAGS.JS]
   },
 
@@ -269,7 +269,7 @@ var benchmarks = [
         ['100x100 GIFs', [100, 100]]
       ],
       weight: 1,
-      baselineTime: 30,
+      baselineTime: 187.83,
       tags: [TAGS.DOM, TAGS.SCROLLING]
   },
 
@@ -283,7 +283,7 @@ var benchmarks = [
       ['10000 Reflows', 10000]
     ],
     weight: 5,
-    baselineTime: 1000,
+    baselineTime: 587.35,
     tags: [TAGS.DOM, TAGS.G_SPREADSHEETS]
   },
 
@@ -296,7 +296,7 @@ var benchmarks = [
         ['100 Nodes', 100]
       ],
       weight: 1,
-      baselineTime: 260,
+      baselineTime: 105.99,
       tags: [TAGS.DOM]
   },
 
@@ -310,7 +310,7 @@ var benchmarks = [
       ['1000 Writes', 1000]
     ],
     weight: 5,
-    baselineTime: 75,
+    baselineTime: 43.34,
     tags: [TAGS.JS]
   },
 
@@ -324,7 +324,7 @@ var benchmarks = [
       ['1000 Reads', 1000]
     ],
     weight: 5,
-    baselineTime: 50,
+    baselineTime: 33.48,
     tags: [TAGS.JS]
   }
 ];
