@@ -288,7 +288,7 @@ robohornet.Runner = function(version, benchmarks) {
     var top = window.screen.availHeight + window.screen.availTop - TARGET_WINDOW_HEIGHT;
     var left = window.screen.availWidth + window.screen.availLeft - TARGET_WINDOW_WIDTH;
 
-    this.benchmarkWindow_ = window.open(benchmark.filename + '?use_test_runner', 'rh-benchmark',
+    this.benchmarkWindow_ = window.open(benchmark.filename + '?use_test_runner', 'robohornet',
         'left=' + left + ',top=' + top +
         ',width='+ TARGET_WINDOW_WIDTH + ',height=' + TARGET_WINDOW_HEIGHT);
 
