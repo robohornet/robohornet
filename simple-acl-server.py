@@ -35,6 +35,8 @@ ALLOWED_USERS = [
 
 ALLOWED_USERS = [re.compile("^" + pattern.replace(".", "\.").replace("*", ".*") + "$", re.IGNORECASE) for pattern in ALLOWED_USERS]
 
+STATIC_BASE_PATH = "static/"
+
 class ACLPage(webapp.RequestHandler):
 	def get(self, path):
 		user = users.get_current_user()
@@ -54,7 +56,7 @@ class ACLPage(webapp.RequestHandler):
 			self.response.out.write("Disallowed file type")
 			return
 		try:
-			f = open(path)
+			f = open(STATIC_BASE_PATH + path)
 		except IOError:
 			self.response.set_status(404)
 			self.response.out.write(webapp.Response.http_status_message(404))

@@ -10,15 +10,8 @@ handlers:
   script: simple-acl-server.py
   login: required
 #- url: /
-#  static_files: robohornet.html
-#  upload: robohornet.html
-#  login: admin
-#- url: /(.*).yaml
-#  static_files: robohornet.html
-#  mime_type: text/html
-#  upload: robohornet.html
-#  login: admin
+#  static_files: static/robohornet.html
+#  upload: static/robohornet.html
 #- url: /(.*)
-#  static_files: \1
+#  static_files: static/\1
 #  upload: .*
-#  login: admin
