@@ -1,8 +1,7 @@
 #This file is only required before launch to check ACLs
 #After launch we can do it all with static file hosting in app.yaml
 
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp.util import run_wsgi_app
+import webapp2
 from google.appengine.api import users
 
 import re
@@ -37,14 +36,14 @@ ALLOWED_USERS = [re.compile("^" + pattern.replace(".", "\.").replace("*", ".*") 
 
 STATIC_BASE_PATH = "static/"
 
-class ACLPage(webapp.RequestHandler):
+class ACLPage(webapp2.RequestHandler):
 	def get(self, path):
 		user = users.get_current_user()
 		#Check if the user is allowed.
 		if not user or not any(pattern.match(user.email()) for pattern in ALLOWED_USERS):
 			self.response.set_status(404)
 			logging.warning("|%s| tried to log in but was blacklisted" % user.email())
-			self.response.out.write(webapp.Response.http_status_message(404))
+			self.response.out.write(webapp2.Response.http_status_message(404))
 			return
 		#Remove the leading /
 		path = path[1:]
@@ -59,15 +58,9 @@ class ACLPage(webapp.RequestHandler):
 			f = open(STATIC_BASE_PATH + path)
 		except IOError:
 			self.response.set_status(404)
-			self.response.out.write(webapp.Response.http_status_message(404))
+			self.response.out.write(webapp2.Response.http_status_message(404))
 			return
 		self.response.headers['Content-Type'] = FILE_TYPES[file_type]
 		self.response.out.write(f.read())
 
-application = webapp.WSGIApplication([('(.*)', ACLPage)], debug = True)
-
-def main():
-	run_wsgi_app(application)
-
-if __name__ == "__main__":
-	main()
+app = webapp2.WSGIApplication([('(.*)', ACLPage)], debug = True)

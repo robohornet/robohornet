@@ -1,0 +1,34 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<link rel='stylesheet' href='/main.css'>
+		<style>
+			body {
+				background-color:white;
+				background-image: none;
+				margin: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<img src='badge'>
+		{% if error %}
+		<div class='error'>
+			<strong>Error:</strong> {{error}}
+		</div>
+		{% else %}
+			<p>You're authenticated as <strong>{{username}}</strong></p>
+			{% if has_vote %}
+				<h2>You've already voted for issue {{issue_number}}.</h2>
+				<form method='post'>
+					<input type='submit' value='Unvote for issue {{issue_number}}'>
+				</form>
+			{% else %}
+				<h2>You haven't voted for issue {{issue_number}}.</h2>
+				<form method='post'>
+					<input type='submit' value='Vote for issue {{issue_number}}'>
+				</form>
+			{% endif %}
+		{% endif %}
+	</body>
+</html>
