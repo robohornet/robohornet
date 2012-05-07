@@ -120,12 +120,12 @@ class Issue(db.Model):
 	number = db.IntegerProperty(required=True)
 	vote_count = db.IntegerProperty(default = 0)
 	def get_image(self):
-		#TODO: support mulptiple badge sizes
+		#TODO: support multiple badge sizes
 		memcache_key = "issue_%d_image" % self.number
 		cached_values = memcache.get_multi([memcache_key, memcache_key + "_width"])
 		image_data = cached_values.get(memcache_key)
 		width = cached_values.get(memcache_key + "_width")
-		if image_data:
+		if image_data and width:
 			im = Image.fromstring("RGBA", (width, BADGE_HEIGHT), image_data)
 		else:
 			im, width = draw_image(self.number, self.vote_count)
