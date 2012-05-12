@@ -115,20 +115,24 @@ def get_or_create_issue(number):
 		issue.put()
 	return issue
 
+def get_cached_issue_image(issue_number):
+	memcache_key = "issue_%d_image" % issue_number
+	cached_values = memcache.get_multi([memcache_key, memcache_key + "_width"])
+	image_data = cached_values.get(memcache_key)
+	width = cached_values.get(memcache_key + "_width")
+	if image_data and width:
+		return Image.fromstring("RGBA", (width, BADGE_HEIGHT), image_data)
+	return None
 
 class Issue(db.Model):
 	number = db.IntegerProperty(required=True)
 	vote_count = db.IntegerProperty(default = 0)
 	def get_image(self):
 		#TODO: support multiple badge sizes
-		memcache_key = "issue_%d_image" % self.number
-		cached_values = memcache.get_multi([memcache_key, memcache_key + "_width"])
-		image_data = cached_values.get(memcache_key)
-		width = cached_values.get(memcache_key + "_width")
-		if image_data and width:
-			im = Image.fromstring("RGBA", (width, BADGE_HEIGHT), image_data)
-		else:
+		im = get_cached_issue_image(self.number)
+		if not im:
 			im, width = draw_image(self.number, self.vote_count)
+			memcache_key = "issue_%d_image" % self.number
 			memcache.set_multi({memcache_key: im.tostring(), memcache_key + "_width" : width})
 		return im
 	def has_vote(self, username):
@@ -252,8 +256,10 @@ class VotePage(webapp2.RequestHandler):
 class BadgePage(webapp2.RequestHandler):
 	def get(self, issue_number):
 		issue_number = int(issue_number)
-		issue = get_or_create_issue(issue_number)
-		im = issue.get_image() if issue else NO_ISSUE_IMAGE
+		im = get_cached_issue_image(issue_number)
+		if not im:
+			issue = get_or_create_issue(issue_number)
+			im = issue.get_image() if issue else NO_ISSUE_IMAGE
 		self.response.headers['Content-Type'] = "image/png"
 		im.save(self.response.out, "PNG")
 
