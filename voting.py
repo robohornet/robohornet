@@ -11,9 +11,8 @@ LOCAL_DEVELOPMENT_MODE = os.environ['SERVER_SOFTWARE'].startswith('Dev')
 
 GH_COOKIE_NAME = "gh_a"
 
-#Temporarily use a project name that's not locked down.
-ORGANIZATION_NAME = "jkomoros"
-PROJECT_NAME = "Playground"
+ORGANIZATION_NAME = "robohornet"
+PROJECT_NAME = "robohornet"
 PERFORMANCE_ISSUE_LABEL = "Performance"
 
 #We load up the client_ID and the client_secret from a configuration file that is not open source.
@@ -98,12 +97,13 @@ def draw_image(number, vote_count):
 	draw.text((vote_count_left_edge, 7), str(vote_count), font = LATO_BLACK, fill = VERY_LIGHT_YELLOW)
 	return im, width
 
-def get_or_create_issue(number):
+def get_or_create_issue(number, access_token=""):
 	number = int(number)
 	issue = Issue.all().filter('number =', number).get()
 	if not issue:
 		#Check if GitHub thinks this should exist.
-		response = urlfetch.fetch("https://api.github.com/repos/%s/%s/issues/%s" % (ORGANIZATION_NAME, PROJECT_NAME, str(number)))
+		url = "https://api.github.com/repos/%s/%s/issues/%s" % (ORGANIZATION_NAME, PROJECT_NAME, str(number))
+		response = urlfetch.fetch(url + "?access_token=" + access_token if access_token else url)
 		#TODO: error handle
 		data = json.loads(response.content)
 		if data.get("number") != number:
@@ -198,15 +198,14 @@ class Vote(db.Model):
 	issue = db.ReferenceProperty(Issue, required = True)
 	timestamp = db.DateTimeProperty(auto_now_add = True)
 
-class VotePage(webapp2.RequestHandler):
+class RoboHornetVotingPage(webapp2.RequestHandler):
 	def initialize(self, request, response):
-		super(VotePage, self).initialize(request, response)
+		super(RoboHornetVotingPage, self).initialize(request, response)
 		self.access = self.request.cookies.get(GH_COOKIE_NAME, "")
+
+class VotePage(RoboHornetVotingPage):
 	def get(self, issue_number):
-		issue = get_or_create_issue(issue_number)
-		if not issue:
-			self.render_template(issue, {"error" : "That issue either doesn't exist or isn't a performance issue."})
-			return
+		issue = get_or_create_issue(issue_number, self.access)
 		if not self.access:
 			if self.request.get("code", ""):
 				#The user said we're okay to get access. Now we need to get the access token.
@@ -225,8 +224,12 @@ class VotePage(webapp2.RequestHandler):
 				#TODO: remove the ?code= from the URL
 			else:
 				#Okay, this is the first request
-				self.redirect("https://github.com/login/oauth/authorize?client_id=%s&redirect_uri=%s" % (CLIENT_ID, self.request.url), False)
+				#TODO: once this is public, we no longer need the repo scope to access the issues on RoboHornet.
+				self.redirect("https://github.com/login/oauth/authorize?client_id=%s&redirect_uri=%s&scope=repo" % (CLIENT_ID, self.request.url), False)
 				return
+		if not issue:
+			self.render_template(issue, {"error" : "That issue either doesn't exist or isn't a performance issue."})
+			return
 		self.render_template(issue)
 	def post(self, issue_number):
 		issue = get_or_create_issue(issue_number)
@@ -254,12 +257,12 @@ class VotePage(webapp2.RequestHandler):
 		self.response.out.write(template.render("vote.html", args))
 
 
-class BadgePage(webapp2.RequestHandler):
+class BadgePage(RoboHornetVotingPage):
 	def get(self, issue_number):
 		issue_number = int(issue_number)
 		im = get_cached_issue_image(issue_number)
 		if not im:
-			issue = get_or_create_issue(issue_number)
+			issue = get_or_create_issue(issue_number, self.access)
 			im = issue.get_image() if issue else NO_ISSUE_IMAGE
 		self.response.headers['Content-Type'] = "image/png"
 		im.save(self.response.out, "PNG")
