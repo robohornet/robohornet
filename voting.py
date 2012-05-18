@@ -1,4 +1,4 @@
-import webapp2, logging, json, urllib
+import webapp2, logging, json, urllib, os
 
 from PIL import Image, ImageFont, ImageDraw
 
@@ -7,6 +7,7 @@ from google.appengine.ext.webapp import template
 from google.appengine.api import urlfetch
 from google.appengine.api import memcache
 
+LOCAL_DEVELOPMENT_MODE = os.environ['SERVER_SOFTWARE'].startswith('Dev')
 
 GH_COOKIE_NAME = "gh_a"
 
@@ -17,7 +18,7 @@ PERFORMANCE_ISSUE_LABEL = "Performance"
 
 #We load up the client_ID and the client_secret from a configuration file that is not open source.
 try:
-	config = json.load(open("client_config.json"))
+	config = json.load(open("client_config.json" if LOCAL_DEVELOPMENT_MODE else "client_config_production.json"))
 except IOError:
 	config = {}
 
