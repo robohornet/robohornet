@@ -109,7 +109,7 @@ def get_or_create_issue(number, access_token=""):
 		if data.get("number") != number:
 			return None
 		#Make sure it has the "Performance" label
-		if not any(item.get("name") == "Performance" for item in data.get("labels", [])):
+		if not any(item.get("name", "").lower() == "performance" for item in data.get("labels", [])):
 			return None
 		#TODO: in the future we should check every so often if this issue is still valid.
 		issue = Issue(number = number)
