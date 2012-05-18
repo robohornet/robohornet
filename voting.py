@@ -203,9 +203,8 @@ class RoboHornetVotingPage(webapp2.RequestHandler):
 		super(RoboHornetVotingPage, self).initialize(request, response)
 		self.access = self.request.cookies.get(GH_COOKIE_NAME, "")
 
-class VotePage(RoboHornetVotingPage):
+class AuthPage(RoboHornetVotingPage):
 	def get(self, issue_number):
-		issue = get_or_create_issue(issue_number, self.access)
 		if not self.access:
 			if self.request.get("code", ""):
 				#The user said we're okay to get access. Now we need to get the access token.
@@ -221,18 +220,25 @@ class VotePage(RoboHornetVotingPage):
 				access_token = response.content.split("&")[0].split("=")[1]
 				self.access = access_token
 				self.response.headers['Set-Cookie'] = "%s=%s; expires=Thu, 31-Dec-2020 23:59:59 GMT; path=/" % (GH_COOKIE_NAME, access_token)
-				#TODO: remove the ?code= from the URL
 			else:
 				#Okay, this is the first request
 				#TODO: once this is public, we no longer need the repo scope to access the issues on RoboHornet.
 				self.redirect("https://github.com/login/oauth/authorize?client_id=%s&redirect_uri=%s&scope=repo" % (CLIENT_ID, self.request.url), False)
 				return
+		self.redirect("/issue/%s/" % issue_number)
+
+class VotePage(RoboHornetVotingPage):
+	def get(self, issue_number):
+		if not self.access:
+			self.redirect("/issue/%s/auth" % issue_number)
+			return
+		issue = get_or_create_issue(issue_number, self.access)
 		if not issue:
 			self.render_template(issue, {"error" : "That issue either doesn't exist or isn't a performance issue."})
 			return
 		self.render_template(issue)
 	def post(self, issue_number):
-		issue = get_or_create_issue(issue_number)
+		issue = get_or_create_issue(issue_number, self.access)
 		if not issue:
 			self.render_template(issue, {"error" : "That issue either doesn't exist or isn't a performance issue."})
 			return
@@ -272,6 +278,7 @@ class NoSuchPage(webapp2.RequestHandler):
 		self.response.set_status(404)
 		self.response.out.write("Invalid URL")
 
-app = webapp2.WSGIApplication([('/issue/(\d+)/badge/?', BadgePage),
+app = webapp2.WSGIApplication([('/issue/(\d+)/auth/?', AuthPage),
+							   ('/issue/(\d+)/badge/?', BadgePage),
 							   ('/issue/(\d+)/?', VotePage), 
 							   ('(.*)', NoSuchPage)], debug = True)
