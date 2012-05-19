@@ -18,6 +18,7 @@
 		</div>
 		{% else %}
 			<p>You're authenticated as <strong>{{username}}</strong></p>
+			<p>This page allows you to express your support for issue #{{issue_number}} in the <a href='http://www.robohornet.org/'>RoboHornet benchmark</a>. You can learn more about issue {{issue_number}} on its <a href='https://github.com/robohornet/robohornet/issues/{{issue_number}}'>page in the GitHub project</a>.
 			{% if has_vote %}
 				<h2>You've already voted for issue {{issue_number}}.</h2>
 				<form method='post'>
