@@ -103,7 +103,7 @@ var benchmarks = [
         ['250 columns',   250],
         ['1000 columns', 1000]
       ],
-      weight: 1,
+      weight: 1.5,
       baselineTime: 73.25,
       tags: [TAGS.G_SPREADSHEETS, TAGS.TABLE, TAGS.DOM]
   },
@@ -115,7 +115,7 @@ var benchmarks = [
       runs: [
         ['1000 nodes deep', 1000]
       ],
-      weight: 2,
+      weight: 2.5,
       baselineTime: 35.27,
       tags: [TAGS.DOM, TAGS.CSS_SELECTORS]
   },
@@ -143,7 +143,7 @@ var benchmarks = [
         ['500 lines', 500],
         ['2500 lines', 2500]
       ],
-      weight: 3,
+      weight: 3.5,
       baselineTime: 97.79,
       tags: [TAGS.CANVAS, TAGS.G_PRESENTATIONS]
   },
@@ -157,7 +157,7 @@ var benchmarks = [
         ['512x512, 1000 lines', [512, 1000]],
         ['1024x1024, 1000 lines', [1024, 1000]]
       ],
-      weight: 3,
+      weight: 2,
       baselineTime: 724.78,
       tags: [TAGS.CANVAS, TAGS.G_PRESENTATIONS]
   },
@@ -186,7 +186,7 @@ var benchmarks = [
         ['1000,10', [1000, 10]],
         ['1000,50', [1000, 50]]
       ],
-      weight: 1,
+      weight: 2,
       baselineTime: 1306.62,
       tags: [TAGS.DOM, TAGS.G_SPREADSHEETS, TAGS.TABLE, TAGS.SCROLLING]
   },
@@ -212,7 +212,7 @@ var benchmarks = [
         ['50 SVGs', 50],
         ['100 SVGs', 100]
       ],
-      weight: 5,
+      weight: 2,
       baselineTime: 234.91,
       tags: [TAGS.SVG, TAGS.G_PRESENTATIONS]
   },
@@ -240,7 +240,7 @@ var benchmarks = [
         ['Primes up to 10000', 10000],
         ['Primes up to 100000', 100000]
       ],
-      weight: 2,
+      weight: 1,
       baselineTime: 98.52,
       tags: [TAGS.MATH, TAGS.G_MAPS]
   },
@@ -254,7 +254,7 @@ var benchmarks = [
         ['1000 Instantiations', 1000],
         ['1000000 Instantiations', 1000000]
       ],
-      weight: 1,
+      weight: 2,
       baselineTime: 272.89,
       tags: [TAGS.JS]
   },
@@ -268,7 +268,7 @@ var benchmarks = [
         ['100x10 GIFs', [100, 10]],
         ['100x100 GIFs', [100, 100]]
       ],
-      weight: 1,
+      weight: 0.25,
       baselineTime: 187.83,
       tags: [TAGS.DOM, TAGS.SCROLLING]
   },
@@ -282,7 +282,7 @@ var benchmarks = [
       ['1000 Reflows', 1000],
       ['10000 Reflows', 10000]
     ],
-    weight: 5,
+    weight: 3,
     baselineTime: 587.35,
     tags: [TAGS.DOM, TAGS.G_SPREADSHEETS]
   },
@@ -309,7 +309,7 @@ var benchmarks = [
       ['100 Writes', 100],
       ['1000 Writes', 1000]
     ],
-    weight: 5,
+    weight: 2,
     baselineTime: 43.34,
     tags: [TAGS.JS]
   },
@@ -323,7 +323,7 @@ var benchmarks = [
       ['100 Reads', 100],
       ['1000 Reads', 1000]
     ],
-    weight: 5,
+    weight: 2,
     baselineTime: 33.48,
     tags: [TAGS.JS]
   }
