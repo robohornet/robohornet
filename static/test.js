@@ -1,7 +1,12 @@
-var requestAnimationFrameFunction = window.mozRequestAnimationFrame ||
+var requestAnimationFrameFunction =
+    window.requestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
     window.msRequestAnimationFrame ||
     window.webkitRequestAnimationFrame ||
-    window.oRequestAnimationFrame;
+    window.oRequestAnimationFrame ||
+    function(callback) {
+      window.setTimeout(callback, 1000 / 60);
+    };
 
 if (window.opener && window.opener.__robohornet__ && window.location.search == '?use_test_runner') {
   document.body.appendChild(document.createTextNode('Running test using test runner...'));
