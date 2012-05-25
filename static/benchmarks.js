@@ -84,6 +84,7 @@ var TAGS = {
 var benchmarks = [
   {
       name: 'Add Rows to Table',
+      issueNumber: 10,
       description: 'Tests adding rows to an existing table',
       filename: 'tests/addrow.html',
       runs: [
@@ -97,6 +98,7 @@ var benchmarks = [
 
   {
       name: 'Add Columns to Table',
+      issueNumber: 11,
       description: 'Tests adding columns to an existing table',
       filename: 'tests/addcol.html',      
       runs: [
@@ -110,6 +112,7 @@ var benchmarks = [
 
   {
       name: 'Descendant Selector',
+      issueNumber: 12,
       description: 'Tests descendant selectors at different DOM depths',
       filename: 'tests/descendantselector.html',
       runs: [
@@ -137,6 +140,7 @@ var benchmarks = [
 
   {
       name: '2D Canvas Draw',
+      issueNumber: 13,
       description: 'Test 2D canvas line painting.',
       filename: 'tests/canvasdrawline.html',
       runs: [
@@ -150,6 +154,7 @@ var benchmarks = [
 
   {
       name: '2D Canvas toDataURL',
+      issueNumber: 14,
       description: 'Test converting a 2D canvas to a data URI',
       filename: 'tests/canvastodataurl.html',
       runs: [
@@ -164,6 +169,7 @@ var benchmarks = [
 
   {
       name: 'innerHTML Table',
+      issueNumber: 15,
       description: 'Test table render speed after innerHTML.',
       filename: 'tests/createtable.html',
       runs: [
@@ -178,6 +184,7 @@ var benchmarks = [
 
   {
       name: 'Table scrolling',
+      issueNumber: 16,
       description: 'Test scrolling speed using scrollTop',
       filename: 'tests/table_scrolltop.html',
       runs: [
@@ -193,6 +200,7 @@ var benchmarks = [
 
   {
       name: 'Resize columns',
+      issueNumber: 17,
       description: 'Test resizing columns in a table',
       filename: 'tests/resizecol.html',
       runs: [
@@ -206,6 +214,7 @@ var benchmarks = [
 
   {
       name: 'SVG resize',
+      issueNumber: 18,
       description: 'Test resizing SVGs',
       filename: 'tests/svgresize.html',
       runs: [
@@ -219,6 +228,7 @@ var benchmarks = [
 
   {
       name: 'ES5 Property Accessors',
+      issueNumber: 19,
       description: 'Test ES5 getter/setters',
       filename: 'tests/property_accessors.html',
       runs: [
@@ -233,6 +243,7 @@ var benchmarks = [
 
   {
       name: 'Calculate primes',
+      issueNumber: 20,
       description: 'Test calculating primes from 2 to N',
       filename: 'tests/primes.html',
       runs: [
@@ -247,6 +258,7 @@ var benchmarks = [
 
   {
       name: 'Argument instantiation',
+      issueNumber: 21,
       description: 'Test referencing the arguments array',
       filename: 'tests/varargs.html',
       runs: [
@@ -261,6 +273,7 @@ var benchmarks = [
 
   {
       name: 'Animated GIFS',
+      issueNumber: 22,
       description: 'Test scrolling lots of animated GIFs',
       filename: 'tests/animated_gifs.html',
       runs: [
@@ -275,6 +288,7 @@ var benchmarks = [
 
   {
     name: 'offsetHeight triggers reflow',
+    issueNumber: 30,
     description: 'Test the affect of forcing a reflow by calling offsetHeight',
     filename: 'tests/offsetreflow.html',
     runs: [
@@ -289,6 +303,7 @@ var benchmarks = [
 
   {
       name: 'DOM Range API',
+      issueNumber: 9,
       description: 'Test replacing a number of DOM nodes using the Range API',
       filename: 'tests/range.html',
       runs: [
@@ -302,6 +317,7 @@ var benchmarks = [
 
   {
     name: 'Write to localStorage',
+    issueNumber: 23,
     description: 'Test the localStorage write performance',
     filename: 'tests/localstorage_write.html',
     runs: [
@@ -316,6 +332,7 @@ var benchmarks = [
 
   {
     name: 'Read from localStorage',
+    issueNumber: 24,
     description: 'Test the localStorage read performance',
     filename: 'tests/localstorage_read.html',
     runs: [

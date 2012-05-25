@@ -396,6 +396,13 @@ robohornet.Runner = function(version, benchmarks) {
     detailsElement.appendChild(document.createTextNode(benchmark.description));
     detailsElement.appendChild(document.createElement("br"));
 
+    var issueLink = document.createElement("a");
+    issueLink.href = "http://github.com/robohornet/robohornet/issues/" + benchmark.issueNumber;
+    issueLink.target = "_blank";
+    issueLink.appendChild(document.createTextNode("View issue details on GitHub"));
+    detailsElement.appendChild(issueLink);
+    detailsElement.appendChild(document.createElement("br"));
+
     var tagElement;
     for (var tag, i = 0; tag = benchmark.tags[i]; i++) {
       detailsElement.appendChild(this.makeTagElement_(tag));
@@ -725,6 +732,7 @@ robohornet.Benchmark = function(details) {
   this.weight = details.weight;
   this.baselineTime = details.baselineTime;
   this.tags = details.tags;
+  this.issueNumber = details.issueNumber;
   this.enabled = true;
 
   this.id = this.filename.match(/\/([A-z]+)\./)[1].toLowerCase();
