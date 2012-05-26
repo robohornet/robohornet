@@ -149,7 +149,7 @@ var benchmarks = [
       ],
       weight: 3.5,
       baselineTime: 97.79,
-      tags: [TAGS.CANVAS, TAGS.G_PRESENTATIONS]
+      tags: [TAGS.CANVAS, TAGS.G_PRESENTATIONS],
   },
 
   {

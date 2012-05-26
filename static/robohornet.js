@@ -16,7 +16,8 @@ robohornet.BenchmarkStatus = {
   RUN_FAILED: 5,
   SKIPPED: 6,
   POPUP_BLOCKED: 7,
-  ABORTED: 8
+  ABORTED: 8,
+  NON_CORE: 9
 };
 
 robohornet.TagType = {
@@ -43,7 +44,13 @@ robohornet.Runner = function(version, benchmarks) {
 
   document.getElementById('index-prefix').textContent = version + ':';
 
+  this.hasExtendedBenchmark_ = false;
+
   this.initBenchmarks_(benchmarks);
+  this.init_();
+  this.installBenchmarks_();
+  this.digestHash_();
+
   this.setStatus_(robohornet.Status.READY);
 
   this.progressCallback_ = bind(this.progressTransitionDone_, this);
@@ -60,14 +67,24 @@ robohornet.Runner = function(version, benchmarks) {
 
   var _p = robohornet.Runner.prototype;
 
-  _p.init = function() {
+  _p.init_ = function() {
 
-    // First create the special all/none tags.
-    var allTag = {
-      name: 'ALL',
-      prettyName: 'All',
+    //If there are no benchmarks in the extended set, we pretend like it doesn't exist
+    //Otherwise, it will basically behave the same as 'Core', which is confusing.
+    var needExtended = this.hasExtendedBenchmark_;
+
+    // First create the special core/extended/none tags.
+    var coreTag = {
+      name: 'CORE',
+      prettyName: 'Core',
       type: robohornet.TagType.SPECIAL
     };
+
+    var extendedTag = {
+      name: "EXTENDED",
+      prettyName: "Extended",
+      type: robohornet.TagType.SPECIAL
+    }
 
     var noneTag = {
       name: 'NONE',
@@ -75,17 +92,29 @@ robohornet.Runner = function(version, benchmarks) {
       type: robohornet.TagType.SPECIAL
     };
 
-    // Pretend like the All tag was added to every benchmark.
-    allTag.benchmarks = this.benchmarks_;
+    // Pretend like the Core tag was added to every benchmark that's not in extended set.
+    coreTag.benchmarks = [];
+    extendedTag.benchmarks = this.benchmarks_;
     noneTag.benchmarks = [];
+
     for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
-      benchmark.tags.push(allTag);
+      if(!benchmark.extended) {
+        benchmark.tags.push(coreTag);
+        coreTag.benchmarks.push(benchmark);
+      }
+      if (needExtended) benchmark.tags.push(extendedTag);
     }
 
-    // Put the all/none tags first.
-    var ele = this.makeTagElement_(allTag);
+    // Put the core/extended/none tags first.
+    var ele = this.makeTagElement_(coreTag);
     this.tagsElement_.appendChild(ele);
-    allTag.primaryElement = ele;
+    coreTag.primaryElement = ele;
+
+    if (needExtended) {
+      ele = this.makeTagElement_(extendedTag);
+      this.tagsElement_.appendChild(ele);
+      extendedTag.primaryElement = ele;
+    }
 
     ele = this.makeTagElement_(noneTag);
     this.tagsElement_.appendChild(ele);
@@ -109,10 +138,10 @@ robohornet.Runner = function(version, benchmarks) {
       tag.primaryElement = ele;
     }
 
-    TAGS['ALL'] = allTag;
+    TAGS['CORE'] = coreTag;
+    if (needExtended) TAGS['EXTENDED'] = extendedTag;
     TAGS['NONE'] = noneTag;
 
-    this.digestHash_();
   };
 
   _p.run = function() {
@@ -132,7 +161,7 @@ robohornet.Runner = function(version, benchmarks) {
       if (!benchmark)
         break;
       if (!benchmark.enabled) {
-        this.setBenchmarkStatus_(benchmark, robohornet.BenchmarkStatus.SKIPPED);
+        this.setBenchmarkStatus_(benchmark, benchmark.extended ? robohornet.BenchmarkStatus.NON_CORE : robohornet.BenchmarkStatus.SKIPPED);
         benchmark = null;
       }
     }
@@ -154,17 +183,19 @@ robohornet.Runner = function(version, benchmarks) {
     this.progressElement_.style.opacity = '0.0';
     this.progressElement_.style.opacity = '0.0';
 
-    var successfulRuns = 0, failedRuns = 0, blockedRuns = 0;
+    var successfulRuns = 0, failedRuns = 0, blockedRuns = 0, nonCoreRuns = 0;
     for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
       if (benchmark.status == robohornet.BenchmarkStatus.SUCCESS)
         successfulRuns++;
+      else if (benchmark.status == robohornet.BenchmarkStatus.NON_CORE)
+        nonCoreRuns++;
       else if (benchmark.status == robohornet.BenchmarkStatus.POPUP_BLOCKED)
         blockedRuns++;
       else if (benchmark.status != robohornet.BenchmarkStatus.SKIPPED)
         failedRuns++;
     }
 
-    if (successfulRuns == this.benchmarks_.length) {
+    if (successfulRuns + nonCoreRuns == this.benchmarks_.length) {
       this.setScore_(true /* opt_finalScore */);
       this.statusElement_.innerHTML = 'The RoboHornet index is normalized to 100 and roughly shows your browser\'s performance compared to other modern browsers on reference hardware. <a href="https://code.google.com/p/robohornet/wiki/BenchmarkScoring" target="_blank">Learn more</a>';
     } else if (blockedRuns) {
@@ -247,6 +278,7 @@ robohornet.Runner = function(version, benchmarks) {
       benchmark.computedWeight = (benchmark.weight / totalWeight) * 100;
       this.benchmarks_.push(benchmark);
       this.benchmarksById_[benchmark.id] = benchmark;
+      if (benchmark.extended) this.hasExtendedBenchmark_ = true;
       for (var tag, k = 0; tag = benchmark.tags[k]; k++) {
         if (tag.benchmarks) {
           tag.benchmarks.push(benchmark);
@@ -254,6 +286,12 @@ robohornet.Runner = function(version, benchmarks) {
           tag.benchmarks = [benchmark];
         }
       }
+    }
+
+  };
+
+  _p.installBenchmarks_ = function() {
+    for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
       this.registerBenchmark_(benchmark);
     }
     var finalRow = document.createElement("tr");
@@ -403,8 +441,10 @@ robohornet.Runner = function(version, benchmarks) {
     detailsElement.appendChild(issueLink);
     detailsElement.appendChild(document.createElement("br"));
 
-    var tagElement;
+    if (benchmark.extended)
+      detailsElement.appendChild(this.makeTagElement_(TAGS['EXTENDED']));
     for (var tag, i = 0; tag = benchmark.tags[i]; i++) {
+      if (tag.type == robohornet.TagType.SPECIAL) continue;
       detailsElement.appendChild(this.makeTagElement_(tag));
     }
 
@@ -504,6 +544,9 @@ robohornet.Runner = function(version, benchmarks) {
       case robohornet.BenchmarkStatus.ABORTED:
         caption = 'Aborted by user';
         break;
+      case robohornet.BenchmarkStatus.NON_CORE:
+        caption = "Not a part of the core suite"
+        break;
       case robohornet.BenchmarkStatus.NO_STATUS:
         caption = '-';
         break;
@@ -574,11 +617,12 @@ robohornet.Runner = function(version, benchmarks) {
     this.updateHash_();
   }
 
-  _p.disableAllBenchmarks = function() {
+  _p.disableAllBenchmarks = function(opt_skipUpdateHash) {
     for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
       this.setBenchmarkEnabled_(benchmark, false, true);
     }
-    this.updateHash_();
+    if (opt_skipUpdateHash != true)
+      this.updateHash_();
   }
 
   _p.makeTagElement_ = function(tag) {
@@ -600,7 +644,7 @@ robohornet.Runner = function(version, benchmarks) {
   }
 
   _p.selectBenchmarksByTag = function(tagToSelect) {
-    this.disableAllBenchmarks();
+    this.disableAllBenchmarks(true);
     this.addBenchmarksToSelectionByTag(tagToSelect);
   }
 
@@ -652,40 +696,98 @@ robohornet.Runner = function(version, benchmarks) {
   }
 
   _p.updateHash_ = function() {
+    //We'll keep track of how many benchmarks each of the tag has enabled.
+    var enabledTagCount = {};
     var enabledBenchmarkIDs = [];
     var disabledBenchmarkIDs = [];
     for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
-      if (benchmark.enabled)
+      if (benchmark.enabled) {
         enabledBenchmarkIDs.push(benchmark.id);
-      else
+        for (var tag, k = 0; tag = benchmark.tags[k]; k++) {
+          enabledTagCount[tag.name] = (enabledTagCount[tag.name] || 0) + 1;
+        }
+      }
+      else {
         disabledBenchmarkIDs.push(benchmark.id);
+      }
     }
-    // We want to encode as few IDs as possible in the hash.
-    // This also gives us a good default to follow for new benchmarks.
-    if (disabledBenchmarkIDs.length) {
-      // At least one benchmark is disabled. Are the majority disabled?
-      if (disabledBenchmarkIDs.length < enabledBenchmarkIDs.length) {
-        window.location.hash = '#d=' + disabledBenchmarkIDs.join(',');
+
+    if (enabledBenchmarkIDs.length == 0) {
+      window.location.hash = "#et=none";
+      this.updateTagSelection_();
+      return;
+    }
+    
+    var maxTagName = "NONE"
+    var maxTagCount = 0;
+
+    //See which of the tags has the most coverage.
+    for (var tagName in enabledTagCount) {
+      if (enabledTagCount[tagName] < TAGS[tagName].benchmarks.length) {
+        //This tag doesn't ahve full coverage so it can't be the best answer.
+        continue;
+      }
+      if (enabledTagCount[tagName] > maxTagCount) {
+        maxTagCount = enabledTagCount[tagName];
+        maxTagName = tagName;
+      }
+    }
+
+    //Check if that maxTagName has coverage of all enabled benchmarks.
+    if (maxTagCount == enabledBenchmarkIDs.length) {
+      if (maxTagName == "CORE") {
+        //We don't need to explicitly enable it because it's enabled by default.
+        window.location.hash = "";
       } else {
-        window.location.hash = '#e=' + enabledBenchmarkIDs.join(',');
+        window.location.hash = "#et=" + maxTagName.toLowerCase();
       }
     } else {
-      window.location.hash = '';
+      //Okay, fall back on covering the benchmarks one by one, because no tag
+      //covered all enabled benchmarks perfectly.
+
+      // We want to encode as few IDs as possible in the hash.
+      // This also gives us a good default to follow for new benchmarks.
+      if (disabledBenchmarkIDs.length) {
+        // At least one benchmark is disabled. Are the majority disabled?
+        if (disabledBenchmarkIDs.length < enabledBenchmarkIDs.length) {
+          window.location.hash = '#d=' + disabledBenchmarkIDs.join(',');
+        } else {
+          window.location.hash = '#e=' + enabledBenchmarkIDs.join(',');
+        }
+      } else {
+        window.location.hash = '';
+      }
     }
     this.updateTagSelection_();
   }
 
   _p.digestHash_ = function() {
     var hash = window.location.hash;
+
     if (!hash) {
-      this.updateTagSelection_();
+      //The core set should be selected by default.
+      this.selectBenchmarksByTag(TAGS['CORE']);
       return;
     }
     hash = hash.replace('#', '').toLowerCase().split('&');
     var enableBenchmarks;
     var benchmark;
-    for (var segment, i = 0; segment = hash[i]; i++) {
+    var segment;
+
+    //First, checkx if "enabled-tags" is in, because we do special processing if it is.
+    for (segment, i = 0; segment = hash[i]; i++) {
       hash[i] = hash[i].split('=');
+      if (hash[i][0] == "et") {
+        var tag = TAGS[hash[i][1].toUpperCase()];
+        if (!tag) continue;
+        this.selectBenchmarksByTag(tag);
+        return;
+      }
+    }
+
+    //There wasn't a single enabled tag. Let's see if there are any individual enabled/disabled benchmarks.
+    for (var segment, i = 0; segment = hash[i]; i++) {
+      
       enableBenchmarks = false;
       switch (hash[i][0]) {
         case 'e':
@@ -705,6 +807,7 @@ robohornet.Runner = function(version, benchmarks) {
           break;
       }
     }
+    
     this.updateTagSelection_();
   }
 
@@ -734,6 +837,7 @@ robohornet.Benchmark = function(details) {
   this.tags = details.tags;
   this.issueNumber = details.issueNumber;
   this.enabled = true;
+  this.extended = details.extended || false;
 
   this.id = this.filename.match(/\/([A-z]+)\./)[1].toLowerCase();
 };
