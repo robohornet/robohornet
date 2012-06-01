@@ -21,6 +21,11 @@ var TAGS = {
     name: "G_MAPS",
     type: robohornet.TagType.APP
   },
+  "YUI" : {
+    prettyName: "YUI",
+    name: "YUI",
+    type: robohornet.TagType.APP
+  },
   "TABLE": {
     prettyName: "Table",
     name: "TABLE",
@@ -93,7 +98,7 @@ var benchmarks = [
       ],
       weight: 2,
       baselineTime: 43.61,
-      tags: [TAGS.G_SPREADSHEETS, TAGS.TABLE, TAGS.DOM]
+      tags: [TAGS.G_SPREADSHEETS, TAGS.TABLE, TAGS.DOM, TAGS.YUI]
   },
 
   {
@@ -107,7 +112,7 @@ var benchmarks = [
       ],
       weight: 1.5,
       baselineTime: 73.25,
-      tags: [TAGS.G_SPREADSHEETS, TAGS.TABLE, TAGS.DOM]
+      tags: [TAGS.G_SPREADSHEETS, TAGS.TABLE, TAGS.DOM, TAGS.YUI]
   },
 
   {
@@ -120,7 +125,7 @@ var benchmarks = [
       ],
       weight: 2.5,
       baselineTime: 35.27,
-      tags: [TAGS.DOM, TAGS.CSS_SELECTORS]
+      tags: [TAGS.DOM, TAGS.CSS_SELECTORS, TAGS.YUI]
   },
 
 /*
@@ -149,7 +154,7 @@ var benchmarks = [
       ],
       weight: 3.5,
       baselineTime: 97.79,
-      tags: [TAGS.CANVAS, TAGS.G_PRESENTATIONS],
+      tags: [TAGS.CANVAS, TAGS.G_PRESENTATIONS, TAGS.YUI],
   },
 
   {
@@ -179,7 +184,7 @@ var benchmarks = [
       ],
       weight: 2,
       baselineTime: 392.75,
-      tags: [TAGS.DOM, TAGS.G_SPREADSHEETS, TAGS.TABLE]
+      tags: [TAGS.DOM, TAGS.G_SPREADSHEETS, TAGS.TABLE, TAGS.YUI]
   },
 
   {
@@ -195,7 +200,7 @@ var benchmarks = [
       ],
       weight: 2,
       baselineTime: 1306.62,
-      tags: [TAGS.DOM, TAGS.G_SPREADSHEETS, TAGS.TABLE, TAGS.SCROLLING]
+      tags: [TAGS.DOM, TAGS.G_SPREADSHEETS, TAGS.TABLE, TAGS.SCROLLING, TAGS.YUI]
   },
 
   {
@@ -209,7 +214,7 @@ var benchmarks = [
       ],
       weight: 2,
       baselineTime: 1944.59,
-      tags: [TAGS.DOM, TAGS.TABLE, TAGS.G_SPREADSHEETS]
+      tags: [TAGS.DOM, TAGS.TABLE, TAGS.G_SPREADSHEETS, TAGS.YUI]
   },
 
   {
@@ -223,7 +228,7 @@ var benchmarks = [
       ],
       weight: 2,
       baselineTime: 234.91,
-      tags: [TAGS.SVG, TAGS.G_PRESENTATIONS]
+      tags: [TAGS.SVG, TAGS.G_PRESENTATIONS, TAGS.YUI]
   },
 
   {
@@ -268,7 +273,7 @@ var benchmarks = [
       ],
       weight: 2,
       baselineTime: 272.89,
-      tags: [TAGS.JS]
+      tags: [TAGS.JS, TAGS.YUI]
   },
 
   {
@@ -298,7 +303,7 @@ var benchmarks = [
     ],
     weight: 3,
     baselineTime: 587.35,
-    tags: [TAGS.DOM, TAGS.G_SPREADSHEETS]
+    tags: [TAGS.DOM, TAGS.G_SPREADSHEETS, TAGS.YUI]
   },
 
   {
@@ -312,7 +317,7 @@ var benchmarks = [
       ],
       weight: 1,
       baselineTime: 105.99,
-      tags: [TAGS.DOM]
+      tags: [TAGS.DOM, TAGS.YUI]
   },
 
   {
@@ -327,7 +332,7 @@ var benchmarks = [
     ],
     weight: 2,
     baselineTime: 43.34,
-    tags: [TAGS.JS]
+    tags: [TAGS.JS, TAGS.YUI]
   },
 
   {
@@ -342,7 +347,7 @@ var benchmarks = [
     ],
     weight: 2,
     baselineTime: 33.48,
-    tags: [TAGS.JS]
+    tags: [TAGS.JS, TAGS.YUI]
   }
 ];
 
