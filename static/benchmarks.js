@@ -3,7 +3,7 @@
  *
  * @type {string}
  */
-var BENCHMARK_VERSION = 'RH100';
+var BENCHMARK_VERSION = 'RH-A1';
 
 var TAGS = {
   "G_SPREADSHEETS": {
