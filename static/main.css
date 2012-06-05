@@ -150,7 +150,7 @@ a {
   content: "\25BC";
 }
 
-#tags {
+div[id^=tags] {
   text-align: center;
 }
 
@@ -456,7 +456,7 @@ body.ready header img {
 
 @-webkit-keyframes button-flourish {
   from {
-    -webkit-transform: scale(1.0); 
+    -webkit-transform: scale(1.0);
   }
   10% {
     -webkit-transform: scale(1.15);
@@ -468,7 +468,7 @@ body.ready header img {
 
 @-moz-keyframes button-flourish {
   from {
-   -moz-transform: scale(1.0); 
+   -moz-transform: scale(1.0);
   }
   10% {
     -moz-transform: scale(1.15);

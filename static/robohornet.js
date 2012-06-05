@@ -40,7 +40,10 @@ robohornet.Runner = function(version, benchmarks) {
   this.runElement_ = document.getElementById('runButton');
   this.progressElement_ = document.getElementById('progress');
   this.indexElement_ = document.getElementById('index');
-  this.tagsElement_ = document.getElementById('tags');
+  this.tagsSpecialElement_ = document.getElementById('tags-special');
+  this.tagsTechElement_ = document.getElementById('tags-technology');
+  this.tagsAppElement_ = document.getElementById('tags-app');
+
 
   document.getElementById('index-prefix').textContent = version + ':';
 
@@ -107,17 +110,17 @@ robohornet.Runner = function(version, benchmarks) {
 
     // Put the core/extended/none tags first.
     var ele = this.makeTagElement_(coreTag);
-    this.tagsElement_.appendChild(ele);
+    this.tagsSpecialElement_.appendChild(ele);
     coreTag.primaryElement = ele;
 
     if (needExtended) {
       ele = this.makeTagElement_(extendedTag);
-      this.tagsElement_.appendChild(ele);
+      this.tagsSpecialElement_.appendChild(ele);
       extendedTag.primaryElement = ele;
     }
 
     ele = this.makeTagElement_(noneTag);
-    this.tagsElement_.appendChild(ele);
+    this.tagsSpecialElement_.appendChild(ele);
     noneTag.primaryElement = ele;
 
     // First enumerate all technology tags...
@@ -125,16 +128,16 @@ robohornet.Runner = function(version, benchmarks) {
       var tag = TAGS[tagName];
       if (tag.type != robohornet.TagType.TECHNOLOGY) continue;
       var ele = this.makeTagElement_(tag);
-      this.tagsElement_.appendChild(ele);
+      this.tagsTechElement_.appendChild(ele);
       tag.primaryElement = ele;
     }
-    
+
     // Then all app tags.
     for (var tagName in TAGS) {
       var tag = TAGS[tagName];
       if (tag.type == robohornet.TagType.TECHNOLOGY) continue;
       var ele = this.makeTagElement_(tag);
-      this.tagsElement_.appendChild(ele);
+      this.tagsAppElement_.appendChild(ele);
       tag.primaryElement = ele;
     }
 
@@ -233,7 +236,7 @@ robohornet.Runner = function(version, benchmarks) {
       if (deferred)
         deferred.resolve();
     };
-          
+
     var callTest = function(win, arg, deferred) {
       if (win['testAsync']) {
         win['testAsync'].call(win, deferred, arg);
@@ -354,7 +357,7 @@ robohornet.Runner = function(version, benchmarks) {
       this.onBenchmarkAbort_(suite, benchmark);
       return;
     }
-    
+
     this.benchmarkWindow_.close();
     this.benchmarkWindow_ = null;
     var results = [];
@@ -717,7 +720,7 @@ robohornet.Runner = function(version, benchmarks) {
       this.updateTagSelection_();
       return;
     }
-    
+
     var maxTagName = "NONE"
     var maxTagCount = 0;
 
@@ -787,7 +790,7 @@ robohornet.Runner = function(version, benchmarks) {
 
     //There wasn't a single enabled tag. Let's see if there are any individual enabled/disabled benchmarks.
     for (var segment, i = 0; segment = hash[i]; i++) {
-      
+
       enableBenchmarks = false;
       switch (hash[i][0]) {
         case 'e':
@@ -807,7 +810,7 @@ robohornet.Runner = function(version, benchmarks) {
           break;
       }
     }
-    
+
     this.updateTagSelection_();
   }
 
