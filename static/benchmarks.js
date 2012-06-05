@@ -26,6 +26,26 @@ var TAGS = {
     name: "YUI",
     type: robohornet.TagType.APP
   },
+  "JQUERY" : {
+    prettyName: "jQuery",
+    name: "JQUERY",
+    type: robohornet.TagType.App
+  },
+  "EMBER" : {
+    prettyName: "Ember",
+    name: "EMBER",
+    type: robohornet.TagType.App
+  },
+  "HANDLEBARS" : {
+    prettyName : "Handlebars",
+    name: "HANDLEBARS",
+    type: robohornet.TagType.App
+  },
+  "METAMORPH" : {
+    prettyName : "Metamorph.js",
+    name: "METAMORPH",
+    type: robohornet.TagType.App
+  },
   "TABLE": {
     prettyName: "Table",
     name: "TABLE",
@@ -98,7 +118,7 @@ var benchmarks = [
       ],
       weight: 2,
       baselineTime: 43.61,
-      tags: [TAGS.G_SPREADSHEETS, TAGS.TABLE, TAGS.DOM, TAGS.YUI]
+      tags: [TAGS.G_SPREADSHEETS, TAGS.TABLE, TAGS.DOM, TAGS.YUI, TAGS.JQUERY, TAGS.EMBER]
   },
 
   {
@@ -184,7 +204,7 @@ var benchmarks = [
       ],
       weight: 2,
       baselineTime: 392.75,
-      tags: [TAGS.DOM, TAGS.G_SPREADSHEETS, TAGS.TABLE, TAGS.YUI]
+      tags: [TAGS.DOM, TAGS.G_SPREADSHEETS, TAGS.TABLE, TAGS.YUI, TAGS.JQUERY, TAGS.EMBER]
   },
 
   {
@@ -243,7 +263,7 @@ var benchmarks = [
       ],
       weight: 1,
       baselineTime: 84.50,
-      tags: [TAGS.JS]
+      tags: [TAGS.JS, TAGS.EMBER]
   },
 
   {
@@ -258,7 +278,7 @@ var benchmarks = [
       ],
       weight: 1,
       baselineTime: 98.52,
-      tags: [TAGS.MATH, TAGS.G_MAPS]
+      tags: [TAGS.MATH, TAGS.G_MAPS, TAGS.JQUERY, TAGS.EMBER, TAGS.HANDLEBARS]
   },
 
   {
@@ -273,7 +293,7 @@ var benchmarks = [
       ],
       weight: 2,
       baselineTime: 272.89,
-      tags: [TAGS.JS, TAGS.YUI]
+      tags: [TAGS.JS, TAGS.YUI, TAGS.JQUERY, TAGS.EMBER]
   },
 
   {
@@ -303,7 +323,7 @@ var benchmarks = [
     ],
     weight: 3,
     baselineTime: 587.35,
-    tags: [TAGS.DOM, TAGS.G_SPREADSHEETS, TAGS.YUI]
+    tags: [TAGS.DOM, TAGS.G_SPREADSHEETS, TAGS.YUI, TAGS.JQUERY, TAGS.EMBER]
   },
 
   {
@@ -317,7 +337,7 @@ var benchmarks = [
       ],
       weight: 1,
       baselineTime: 105.99,
-      tags: [TAGS.DOM, TAGS.YUI]
+      tags: [TAGS.DOM, TAGS.YUI, TAGS.METAMORPH]
   },
 
   {
