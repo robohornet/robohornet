@@ -265,6 +265,21 @@ header .logo {
   display: inline-block;
 }
 
+header .logo h1 {
+  /* Necessary for positioning of "ALPHA" tag */
+  position: relative;
+}
+
+header .logo h1::after {
+  content: "ALPHA";
+  font-size: 14px;
+  font-weight:normal;
+  position:absolute;
+  bottom: -10px;
+  right: 0px;
+  color: #F05A2A;
+}
+
 header img {
   height: 40px;
   width: 40px;
