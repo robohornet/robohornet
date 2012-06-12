@@ -29,6 +29,7 @@ ALLOWED_USERS = [
 	"ryan@wonko.com",
 	"allenjs@gmail.com",
 	"matthwk@gmail.com",
+	"danieljb2@gmail.com",
 	"*@google.com"
 ]
 
