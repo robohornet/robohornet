@@ -1,3 +1,5 @@
+*You can __run the benchmark at [robohornet.org](http://www.robohornet.org)__. For more about the background behind RoboHornet, read on...*
+
 RoboHornet is predicated on a simple truth: if there's a popular benchmark, browser vendors will compete to win it. But up until today, benchmarks' power as a social tool has rarely been capitalized on. First of all, writing good benchmarks is hard. In practice, most benchmarks today were written by browser implementors to help them chart their performance&mbdash;but the issues they picked aren't necessarily important to real web developers. Second, evangelizing a benchmark takes a lot of effort, and a benchmark is only as powerful as the social weight behind it. That's where RoboHornet comes in.
 
 **The goal of the RoboHornet benchmark is to distill the collective will of the web development community to get browser vendors to fix real-world performance pain points.** RoboHornet is an aspirational benchmark that sketches out a better future based on the performance pain of today. 
