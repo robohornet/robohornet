@@ -1,113 +1,95 @@
-/**
- * Benchmark version.
- *
- * @type {string}
- */
-var BENCHMARK_VERSION = 'RH-A1';
+var ROBOHORNET_DATA = {
+  /**
+   * Benchmark version.
+   *
+   * @type {string}
+   */
+  version: 'RH-A1',
 
-var TAGS = {
-  "G_SPREADSHEETS": {
-    prettyName: "Google Spreadsheets",
-    name: "G_SPREADSHEETS",
-    type: robohornet.TagType.APP
+  /**
+   * List of product, application and library tags.
+   *
+   * name: Short human readable name of tag.
+   */
+  productTags: {
+    G_SPREADSHEETS: {
+      name: 'Google Spreadsheets'
+    },
+    G_PRESENTATIONS: {
+      name: 'Google Presentations'
+    },
+    G_MAPS: {
+      name: 'Google Maps'
+    },
+    YUI: {
+      name: 'YUI'
+    },
+    JQUERY: {
+      name: 'jQuery'
+    },
+    EMBER: {
+      name: 'Ember'
+    },
+    HANDLEBARS: {
+      name: 'Handlebars'
+    },
+    METAMORPH: {
+      name: 'Metamorph.js'
+    }
   },
-  "G_PRESENTATIONS": {
-    prettyName: "Google Presentations",
-    name: "G_PRESENTATIONS",
-    type: robohornet.TagType.APP
-  },
-  "G_MAPS": {
-    prettyName: "Google Maps",
-    name: "G_MAPS",
-    type: robohornet.TagType.APP
-  },
-  "YUI" : {
-    prettyName: "YUI",
-    name: "YUI",
-    type: robohornet.TagType.APP
-  },
-  "JQUERY" : {
-    prettyName: "jQuery",
-    name: "JQUERY",
-    type: robohornet.TagType.App
-  },
-  "EMBER" : {
-    prettyName: "Ember",
-    name: "EMBER",
-    type: robohornet.TagType.App
-  },
-  "HANDLEBARS" : {
-    prettyName : "Handlebars",
-    name: "HANDLEBARS",
-    type: robohornet.TagType.App
-  },
-  "METAMORPH" : {
-    prettyName : "Metamorph.js",
-    name: "METAMORPH",
-    type: robohornet.TagType.App
-  },
-  "TABLE": {
-    prettyName: "Table",
-    name: "TABLE",
-    type: robohornet.TagType.TECHNOLOGY
-  },
-  "DOM": {
-    prettyName: "DOM",
-    name: "DOM",
-    type: robohornet.TagType.TECHNOLOGY
-  },
-  "CSS_SELECTORS": {
-    prettyName: "CSS Selectors",
-    name: "CSS_SELECTORS",
-    type: robohornet.TagType.TECHNOLOGY
-  },
-  "CANVAS": {
-    prettyName: "Canvas",
-    name: "CANVAS",
-    type: robohornet.TagType.TECHNOLOGY
-  },
-  "SCROLLING": {
-    prettyName: "Scrolling",
-    name: "SCROLLING",
-    type: robohornet.TagType.TECHNOLOGY
-  },
-  "SVG": {
-    prettyName: "SVG",
-    name: "SVG",
-    type: robohornet.TagType.TECHNOLOGY
-  },
-  "JS": {
-    prettyName: "Javascript",
-    name: "JS",
-    type: robohornet.TagType.TECHNOLOGY
-  },
-  "MATH": {
-    prettyName: "Math",
-    name: "MATH",
-    type: robohornet.TagType.TECHNOLOGY
-  }
-};
+  
 
+  /**
+   * List of technology tags.
+   *
+   * name: Short human readable name of tag.
+   */
+  technologyTags: {
+    TABLE: {
+      name: 'Table'
+    },
+    DOM: {
+      name: 'DOM'
+    },
+    CSS_SELECTORS: {
+      name: 'CSS Selectors'
+    },
+    CANVAS: {
+      name: 'Canvas'
+    },
+    SCROLLING: {
+      name: 'Scrolling'
+    },
+    SVG: {
+      name: 'SVG'
+    },
+    JS: {
+      name: 'Javascript'
+    },
+    MATH: {
+      name: 'Math'
+    }
+  },
 
-/*
- * List of benchmakrs. Array of objects.
- *
- * name:         Short human readable name of benchmark.
- * description:  Description of benchmark.
- * filename:     Filename of benchmark, each benchmark file must implement a test
- *               function and may implement a setUp and tearDown function.
- * runs:         List of parameters to feed to test, setUp and tearDown
- *               functions. For each entry a test run is constructed and the
- *               parameter in the second field is fed to the test function.
- *               The first field is a short human readable description of the
- *               parameter.
- * weight:       Weight of test as relative to the other tests in the file.
- *               A percentage weight will be computed based on the relative
- *               weight of each benchmark.
- * baselineTime: Baseline time, in milliseconds.
- */
-var benchmarks = [
-  {
+  /**
+   * List of benchmarks. Array of objects.
+   *
+   * name:         Short human readable name of benchmark.
+   * description:  Description of benchmark.
+   * filename:     Filename of benchmark, each benchmark file must implement a test
+   *               function and may implement a setUp and tearDown function.
+   * runs:         List of parameters to feed to test, setUp and tearDown
+   *               functions. For each entry a test run is constructed and the
+   *               parameter in the second field is fed to the test function.
+   *               The first field is a short human readable description of the
+   *               parameter.
+   * weight:       Weight of test as relative to the other tests in the file.
+   *               A percentage weight will be computed based on the relative
+   *               weight of each benchmark.
+   * baselineTime: Baseline time, in milliseconds.
+   */
+  benchmarks: [
+    {
       name: 'Add Rows to Table',
       issueNumber: 10,
       description: 'Tests adding rows to an existing table',
@@ -118,10 +100,11 @@ var benchmarks = [
       ],
       weight: 2,
       baselineTime: 43.61,
-      tags: [TAGS.G_SPREADSHEETS, TAGS.TABLE, TAGS.DOM, TAGS.YUI, TAGS.JQUERY, TAGS.EMBER]
-  },
+      tags: ['G_SPREADSHEETS', 'TABLE', 'DOM', 'YUI', 'JQUERY', 'EMBER'],
+      extended: false
+    },
 
-  {
+    {
       name: 'Add Columns to Table',
       issueNumber: 11,
       description: 'Tests adding columns to an existing table',
@@ -132,10 +115,11 @@ var benchmarks = [
       ],
       weight: 1.5,
       baselineTime: 73.25,
-      tags: [TAGS.G_SPREADSHEETS, TAGS.TABLE, TAGS.DOM, TAGS.YUI]
-  },
+      tags: ['G_SPREADSHEETS', 'TABLE', 'DOM', 'YUI'],
+      extended: false
+    },
 
-  {
+    {
       name: 'Descendant Selector',
       issueNumber: 12,
       description: 'Tests descendant selectors at different DOM depths',
@@ -145,25 +129,11 @@ var benchmarks = [
       ],
       weight: 2.5,
       baselineTime: 35.27,
-      tags: [TAGS.DOM, TAGS.CSS_SELECTORS, TAGS.YUI]
-  },
+      tags: ['DOM', 'CSS_SELECTORS', 'YUI'],
+      extended: false
+    },
 
-/*
-  {
-      name: 'Input Selection',
-      description: 'Test the cost of selecting the text in an input field. In some browsers this causes a relayout which can be expensive.',
-      filename: 'tests/inputselect.html',
-      runs: [
-        ['10 nodes deep',     10],
-        ['100 nodes deep',   100],
-        ['1000 nodes deep', 1000]
-      ],
-      weight: 1,
-      baselineTime: 2.75
-  },
-*/
-
-  {
+    {
       name: '2D Canvas Draw',
       issueNumber: 13,
       description: 'Test 2D canvas line painting.',
@@ -174,10 +144,11 @@ var benchmarks = [
       ],
       weight: 3.5,
       baselineTime: 97.79,
-      tags: [TAGS.CANVAS, TAGS.G_PRESENTATIONS, TAGS.YUI],
-  },
+      tags: ['CANVAS', 'G_PRESENTATIONS', 'YUI'],
+      extended: false
+    },
 
-  {
+    {
       name: '2D Canvas toDataURL',
       issueNumber: 14,
       description: 'Test converting a 2D canvas to a data URI',
@@ -189,10 +160,11 @@ var benchmarks = [
       ],
       weight: 2,
       baselineTime: 724.78,
-      tags: [TAGS.CANVAS, TAGS.G_PRESENTATIONS]
-  },
+      tags: ['CANVAS', 'G_PRESENTATIONS'],
+      extended: false
+    },
 
-  {
+    {
       name: 'innerHTML Table',
       issueNumber: 15,
       description: 'Test table render speed after innerHTML.',
@@ -204,10 +176,11 @@ var benchmarks = [
       ],
       weight: 2,
       baselineTime: 392.75,
-      tags: [TAGS.DOM, TAGS.G_SPREADSHEETS, TAGS.TABLE, TAGS.YUI, TAGS.JQUERY, TAGS.EMBER]
-  },
+      tags: ['DOM', 'G_SPREADSHEETS', 'TABLE', 'YUI', 'JQUERY', 'EMBER'],
+      extended: false
+    },
 
-  {
+    {
       name: 'Table scrolling',
       issueNumber: 16,
       description: 'Test scrolling speed using scrollTop',
@@ -220,10 +193,11 @@ var benchmarks = [
       ],
       weight: 2,
       baselineTime: 1306.62,
-      tags: [TAGS.DOM, TAGS.G_SPREADSHEETS, TAGS.TABLE, TAGS.SCROLLING, TAGS.YUI]
-  },
+      tags: ['DOM', 'G_SPREADSHEETS', 'TABLE', 'SCROLLING', 'YUI'],
+      extended: false
+    },
 
-  {
+    {
       name: 'Resize columns',
       issueNumber: 17,
       description: 'Test resizing columns in a table',
@@ -234,10 +208,11 @@ var benchmarks = [
       ],
       weight: 2,
       baselineTime: 1944.59,
-      tags: [TAGS.DOM, TAGS.TABLE, TAGS.G_SPREADSHEETS, TAGS.YUI]
-  },
+      tags: ['DOM', 'TABLE', 'G_SPREADSHEETS', 'YUI'],
+      extended: false
+    },
 
-  {
+    {
       name: 'SVG resize',
       issueNumber: 18,
       description: 'Test resizing SVGs',
@@ -248,10 +223,11 @@ var benchmarks = [
       ],
       weight: 2,
       baselineTime: 234.91,
-      tags: [TAGS.SVG, TAGS.G_PRESENTATIONS, TAGS.YUI]
-  },
+      tags: ['SVG', 'G_PRESENTATIONS', 'YUI'],
+      extended: false
+    },
 
-  {
+    {
       name: 'ES5 Property Accessors',
       issueNumber: 19,
       description: 'Test ES5 getter/setters',
@@ -263,10 +239,11 @@ var benchmarks = [
       ],
       weight: 1,
       baselineTime: 84.50,
-      tags: [TAGS.JS, TAGS.EMBER]
-  },
+      tags: ['JS', 'EMBER'],
+      extended: false
+    },
 
-  {
+    {
       name: 'Calculate primes',
       issueNumber: 20,
       description: 'Test calculating primes from 2 to N',
@@ -278,10 +255,11 @@ var benchmarks = [
       ],
       weight: 1,
       baselineTime: 98.52,
-      tags: [TAGS.MATH, TAGS.G_MAPS, TAGS.JQUERY, TAGS.EMBER, TAGS.HANDLEBARS]
-  },
+      tags: ['MATH', 'G_MAPS', 'JQUERY', 'EMBER', 'HANDLEBARS'],
+      extended: false
+    },
 
-  {
+    {
       name: 'Argument instantiation',
       issueNumber: 21,
       description: 'Test referencing the arguments array',
@@ -293,10 +271,11 @@ var benchmarks = [
       ],
       weight: 2,
       baselineTime: 272.89,
-      tags: [TAGS.JS, TAGS.YUI, TAGS.JQUERY, TAGS.EMBER]
-  },
+      tags: ['JS', 'YUI', 'JQUERY', 'EMBER'],
+      extended: false
+    },
 
-  {
+    {
       name: 'Animated GIFS',
       issueNumber: 22,
       description: 'Test scrolling lots of animated GIFs',
@@ -308,25 +287,27 @@ var benchmarks = [
       ],
       weight: 0.25,
       baselineTime: 187.83,
-      tags: [TAGS.DOM, TAGS.SCROLLING]
-  },
+      tags: ['DOM', 'SCROLLING'],
+      extended: false
+    },
 
-  {
-    name: 'offsetHeight triggers reflow',
-    issueNumber: 30,
-    description: 'Test the affect of forcing a reflow by calling offsetHeight',
-    filename: 'tests/offsetreflow.html',
-    runs: [
-      ['100 Reflows', 100],
-      ['1000 Reflows', 1000],
-      ['10000 Reflows', 10000]
-    ],
-    weight: 3,
-    baselineTime: 587.35,
-    tags: [TAGS.DOM, TAGS.G_SPREADSHEETS, TAGS.YUI, TAGS.JQUERY, TAGS.EMBER]
-  },
+    {
+      name: 'offsetHeight triggers reflow',
+      issueNumber: 30,
+      description: 'Test the affect of forcing a reflow by calling offsetHeight',
+      filename: 'tests/offsetreflow.html',
+      runs: [
+        ['100 Reflows', 100],
+        ['1000 Reflows', 1000],
+        ['10000 Reflows', 10000]
+      ],
+      weight: 3,
+      baselineTime: 587.35,
+      tags: ['DOM', 'G_SPREADSHEETS', 'YUI', 'JQUERY', 'EMBER'],
+      extended: false
+    },
 
-  {
+    {
       name: 'DOM Range API',
       issueNumber: 9,
       description: 'Test replacing a number of DOM nodes using the Range API',
@@ -337,37 +318,40 @@ var benchmarks = [
       ],
       weight: 1,
       baselineTime: 105.99,
-      tags: [TAGS.DOM, TAGS.YUI, TAGS.METAMORPH]
-  },
+      tags: ['DOM', 'YUI', 'METAMORPH'],
+      extended: false
+    },
 
-  {
-    name: 'Write to localStorage',
-    issueNumber: 23,
-    description: 'Test the localStorage write performance',
-    filename: 'tests/localstorage_write.html',
-    runs: [
-      ['50 Writes', 50],
-      ['100 Writes', 100],
-      ['1000 Writes', 1000]
-    ],
-    weight: 2,
-    baselineTime: 43.34,
-    tags: [TAGS.JS, TAGS.YUI]
-  },
+    {
+      name: 'Write to localStorage',
+      issueNumber: 23,
+      description: 'Test the localStorage write performance',
+      filename: 'tests/localstorage_write.html',
+      runs: [
+        ['50 Writes', 50],
+        ['100 Writes', 100],
+        ['1000 Writes', 1000]
+      ],
+      weight: 2,
+      baselineTime: 43.34,
+      tags: ['JS', 'YUI'],
+      extended: false
+    },
 
-  {
-    name: 'Read from localStorage',
-    issueNumber: 24,
-    description: 'Test the localStorage read performance',
-    filename: 'tests/localstorage_read.html',
-    runs: [
-      ['50 Reads', 50],
-      ['100 Reads', 100],
-      ['1000 Reads', 1000]
-    ],
-    weight: 2,
-    baselineTime: 33.48,
-    tags: [TAGS.JS, TAGS.YUI]
-  }
-];
-
+    {
+      name: 'Read from localStorage',
+      issueNumber: 24,
+      description: 'Test the localStorage read performance',
+      filename: 'tests/localstorage_read.html',
+      runs: [
+        ['50 Reads', 50],
+        ['100 Reads', 100],
+        ['1000 Reads', 1000]
+      ],
+      weight: 2,
+      baselineTime: 33.48,
+      tags: ['JS', 'YUI'],
+      extended: false
+    }
+  ]
+};

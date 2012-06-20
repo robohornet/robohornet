@@ -3,9 +3,8 @@
     <head>
         <title>RoboHornet</title>
         <script>
-          if (location.host.toLowerCase().indexOf("robohornet.com") != -1) {
-            location.replace("http://www.robohornet.org");
-          }
+          if (document.location.host.toLowerCase().indexOf('robohornet.com') != -1)
+            document.location.replace('http://www.robohornet.org');
         </script>
         <script src="third_party/benchmark.js/benchmark.js"></script>
         <script src="third_party/classList.js/classList.min.js"></script>
@@ -53,7 +52,7 @@
         </section>
 
         <script>
-            var __robohornet__ = new robohornet.Runner(BENCHMARK_VERSION, benchmarks);
+            var __robohornet__ = new robohornet.Runner(ROBOHORNET_DATA);
         </script>
     </body>
 </html>

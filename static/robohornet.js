@@ -6,8 +6,14 @@ robohornet.Status = {
   RUNNING: 2
 };
 
-robohornet.BenchmarkStatus = {
-  NO_STATUS: -1,
+// Captions for the run button based on the robohornet.Status enum.
+robohornet.RunButtonCaption = {
+  0: 'Loading...',
+  1: 'Run',
+  2: 'Running...'
+};
+
+robohornet.enabledBenchmarks = {
   SUCCESS: 0,
   LOADING: 1,
   RUNNING: 2,
@@ -16,14 +22,26 @@ robohornet.BenchmarkStatus = {
   RUN_FAILED: 5,
   SKIPPED: 6,
   POPUP_BLOCKED: 7,
-  ABORTED: 8,
-  NON_CORE: 9
+  ABORTED: 8
+};
+
+// Descriptions for the robohornet.enabledBenchmarks enum.
+robohornet.enabledBenchmarksDescription = {
+  0: 'Completed successfully',
+  1: 'Loading...',
+  2: 'Running...',
+  3: 'Pending',
+  4: 'Failed to load',
+  5: 'Failed to run',
+  6: 'Skipped',
+  7: 'Benchmark window blocked',
+  8: 'Aborted by user'
 };
 
 robohornet.TagType = {
-  SPECIAL : 'special',
-  TECHNOLOGY : 'technology',
-  APP : 'app'
+  SPECIAL: 'special',
+  TECHNOLOGY: 'technology',
+  APP: 'app'
 };
 
 
@@ -34,7 +52,7 @@ robohornet.TagType = {
  * @param {Array.<Object>} benchmarks Array of benchmark json objects.
  * @constructor
  */
-robohornet.Runner = function(version, benchmarks) {
+robohornet.Runner = function(data) {
   this.testsContainer = document.getElementById('tests');
   this.statusElement_ = document.getElementById('status');
   this.runElement_ = document.getElementById('runButton');
@@ -44,14 +62,14 @@ robohornet.Runner = function(version, benchmarks) {
   this.tagsTechElement_ = document.getElementById('tags-technology');
   this.tagsAppElement_ = document.getElementById('tags-app');
 
-
-  document.getElementById('index-prefix').textContent = version + ':';
+  document.getElementById('index-prefix').textContent = data.version + ':';
 
   this.hasExtendedBenchmark_ = false;
 
-  this.initBenchmarks_(benchmarks);
-  this.init_();
-  this.installBenchmarks_();
+  this.initTags_(data.technologyTags, data.productTags);
+  this.initBenchmarks_(data.benchmarks);
+  this.initTagUi_();
+  this.initBenchmarkUi_();
   this.digestHash_();
 
   this.setStatus_(robohornet.Status.READY);
@@ -63,88 +81,56 @@ robohornet.Runner = function(version, benchmarks) {
 
 (function() {
 
+  var IS_WEBKIT = window.navigator.userAgent.indexOf('WebKit') != -1;
+
+  var TRANSITION_END_EVENT = IS_WEBKIT ? 'webkitTransitionEnd' : 'transitionend';
+
   var requestAnimationFrameFunction = window.mozRequestAnimationFrame ||
       window.msRequestAnimationFrame ||
       window.webkitRequestAnimationFrame ||
       window.oRequestAnimationFrame;
 
+  function formatNumber(n, minWidth, decimalPlaces) {
+    return Array(Math.max((minWidth + 1) - n.toFixed(0).length, 0)).join('0') +
+            n.toFixed(decimalPlaces);
+  }
+
+  function enableClass(element, className, enabled) {
+    if (element.classList.contains(className) != enabled)
+        element.classList.toggle(className);
+  }
+
+  function createElement(tagName, textContent, opt_className) {
+    var element = document.createElement(tagName);
+    if (opt_className)
+      element.className = opt_className;
+    element.appendChild(document.createTextNode(textContent));
+    return element;
+  }
+
+  function addChildren(element, children) {
+    for (var i = 0; i < children.length; i++) {
+      element.appendChild(children[i]);
+    }
+  }
+
   var _p = robohornet.Runner.prototype;
 
-  _p.init_ = function() {
-
-    //If there are no benchmarks in the extended set, we pretend like it doesn't exist
-    //Otherwise, it will basically behave the same as 'Core', which is confusing.
-    var needExtended = this.hasExtendedBenchmark_;
-
-    // First create the special core/extended/none tags.
-    var coreTag = {
-      name: 'CORE',
-      prettyName: 'Core',
-      type: robohornet.TagType.SPECIAL
-    };
-
-    var extendedTag = {
-      name: "EXTENDED",
-      prettyName: "Extended",
-      type: robohornet.TagType.SPECIAL
-    }
-
-    var noneTag = {
-      name: 'NONE',
-      prettyName: 'None',
-      type: robohornet.TagType.SPECIAL
-    };
-
-    // Pretend like the Core tag was added to every benchmark that's not in extended set.
-    coreTag.benchmarks = [];
-    extendedTag.benchmarks = this.benchmarks_;
-    noneTag.benchmarks = [];
-
-    for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
-      if(!benchmark.extended) {
-        benchmark.tags.push(coreTag);
-        coreTag.benchmarks.push(benchmark);
+  _p.initTagUi_ = function() {
+    for (var tag, i = 0; tag = this.tags_[i]; i++) {
+      tag.element = this.makeTagElement_(tag);
+      if (tag.type == robohornet.TagType.TECHNOLOGY) {
+        this.tagsTechElement_.appendChild(tag.element);
       }
-      if (needExtended) benchmark.tags.push(extendedTag);
+      else if (tag.type == robohornet.TagType.APP) {
+        this.tagsAppElement_.appendChild(tag.element);
+      }
+      else {
+        if (tag.id == 'EXTENDED' && !this.hasExtendedBenchmark_)
+          continue;
+        this.tagsSpecialElement_.appendChild(tag.element);
+      }
     }
-
-    // Put the core/extended/none tags first.
-    var ele = this.makeTagElement_(coreTag);
-    this.tagsSpecialElement_.appendChild(ele);
-    coreTag.primaryElement = ele;
-
-    if (needExtended) {
-      ele = this.makeTagElement_(extendedTag);
-      this.tagsSpecialElement_.appendChild(ele);
-      extendedTag.primaryElement = ele;
-    }
-
-    ele = this.makeTagElement_(noneTag);
-    this.tagsSpecialElement_.appendChild(ele);
-    noneTag.primaryElement = ele;
-
-    // First enumerate all technology tags...
-    for (var tagName in TAGS) {
-      var tag = TAGS[tagName];
-      if (tag.type != robohornet.TagType.TECHNOLOGY) continue;
-      var ele = this.makeTagElement_(tag);
-      this.tagsTechElement_.appendChild(ele);
-      tag.primaryElement = ele;
-    }
-
-    // Then all app tags.
-    for (var tagName in TAGS) {
-      var tag = TAGS[tagName];
-      if (tag.type == robohornet.TagType.TECHNOLOGY) continue;
-      var ele = this.makeTagElement_(tag);
-      this.tagsAppElement_.appendChild(ele);
-      tag.primaryElement = ele;
-    }
-
-    TAGS['CORE'] = coreTag;
-    if (needExtended) TAGS['EXTENDED'] = extendedTag;
-    TAGS['NONE'] = noneTag;
-
   };
 
   _p.run = function() {
@@ -164,13 +150,13 @@ robohornet.Runner = function(version, benchmarks) {
       if (!benchmark)
         break;
       if (!benchmark.enabled) {
-        this.setBenchmarkStatus_(benchmark, benchmark.extended ? robohornet.BenchmarkStatus.NON_CORE : robohornet.BenchmarkStatus.SKIPPED);
+        this.setBenchmarkStatus_(benchmark, robohornet.enabledBenchmarks.SKIPPED);
         benchmark = null;
       }
     }
 
     var progressAmount = (this.currentIndex_ / this.benchmarks_.length) * 100;
-    this.progressElement_.style.marginLeft = "-" + (100 - progressAmount).toString() + "%";
+    this.progressElement_.style.marginLeft = '-' + (100 - progressAmount).toString() + '%';
 
     this.activeBenchmark_ = benchmark;
     if (benchmark) {
@@ -181,24 +167,23 @@ robohornet.Runner = function(version, benchmarks) {
   };
 
   _p.done_ = function() {
-    this.progressElement_.addEventListener("webkitTransitionEnd", this.progressCallback_, false);
-    this.progressElement_.addEventListener("transitionend", this.progressCallback_, false);
+    this.progressElement_.addEventListener(TRANSITION_END_EVENT, this.progressCallback_, false);
     this.progressElement_.style.opacity = '0.0';
-    this.progressElement_.style.opacity = '0.0';
+    var skippedExtendedRuns = 0;
 
-    var successfulRuns = 0, failedRuns = 0, blockedRuns = 0, nonCoreRuns = 0;
+    var successfulRuns = 0, failedRuns = 0, blockedRuns = 0;
     for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
-      if (benchmark.status == robohornet.BenchmarkStatus.SUCCESS)
+      if (benchmark.status == robohornet.enabledBenchmarks.SUCCESS)
         successfulRuns++;
-      else if (benchmark.status == robohornet.BenchmarkStatus.NON_CORE)
-        nonCoreRuns++;
-      else if (benchmark.status == robohornet.BenchmarkStatus.POPUP_BLOCKED)
+      else if (benchmark.extended)
+        skippedExtendedRuns++;
+      else if (benchmark.status == robohornet.enabledBenchmarks.POPUP_BLOCKED)
         blockedRuns++;
-      else if (benchmark.status != robohornet.BenchmarkStatus.SKIPPED)
+      else if (benchmark.status != robohornet.enabledBenchmarks.SKIPPED)
         failedRuns++;
     }
 
-    if (successfulRuns + nonCoreRuns == this.benchmarks_.length) {
+    if (successfulRuns + skippedExtendedRuns == this.benchmarks_.length) {
       this.setScore_(true /* opt_finalScore */);
       this.statusElement_.innerHTML = 'The RoboHornet index is normalized to 100 and roughly shows your browser\'s performance compared to other modern browsers on reference hardware. <a href="https://code.google.com/p/robohornet/wiki/BenchmarkScoring" target="_blank">Learn more</a>';
     } else if (blockedRuns) {
@@ -213,9 +198,8 @@ robohornet.Runner = function(version, benchmarks) {
 
   _p.progressTransitionDone_ = function() {
     // Wait until the progress bar fades out to put it back to the left.
-    this.progressElement_.style.marginLeft = "-100%";
-    this.progressElement_.removeEventListener("webkitTransitionEnd", this.progressCallback_, false);
-    this.progressElement_.removeEventListener("transitionend", this.progressCallback_, false);
+    this.progressElement_.style.marginLeft = '-100%';
+    this.progressElement_.removeEventListener(TRANSITION_END_EVENT, this.progressCallback_, false);
   }
 
   _p.benchmarkLoaded = function() {
@@ -261,8 +245,34 @@ robohornet.Runner = function(version, benchmarks) {
       });
     }
 
-    this.setBenchmarkStatus_(benchmark, robohornet.BenchmarkStatus.RUNNING);
+    this.setBenchmarkStatus_(benchmark, robohornet.enabledBenchmarks.RUNNING);
     suite.run(true);
+  };
+
+  _p.initTags_ = function(technologyTags, productTags) {
+    this.tags_ = [];
+    this.tagsById_ = {};
+
+    var f = function(tags, type) {
+      for (var id in tags) {
+        var tag = tags[id];
+        tag.id = id;
+        tag.type = type;
+        tag.benchmarks = [];
+        this.tags_.push(tag);
+        this.tagsById_[id] = tag;
+      }
+    };
+
+    var specialTags = {
+      CORE: { name: 'Core' },
+      EXTENDED: { name: 'Extended' },
+      NONE: { name: 'None' }
+    }
+
+    f.call(this, technologyTags, robohornet.TagType.TECHNOLOGY);
+    f.call(this, productTags, robohornet.TagType.APP);
+    f.call(this, specialTags, robohornet.TagType.SPECIAL);
   };
 
   _p.initBenchmarks_ = function(benchmarks) {
@@ -279,21 +289,27 @@ robohornet.Runner = function(version, benchmarks) {
       benchmark = new robohornet.Benchmark(details);
       benchmark.index = i;
       benchmark.computedWeight = (benchmark.weight / totalWeight) * 100;
+
+      for (var tagId, j = 0; tagId = details.tags[j]; j++) {
+        var tag = this.tagsById_[tagId];
+        benchmark.tags.push(tag);
+        tag.benchmarks.push(benchmark);
+      }
+
+      // Add all benchmarks to special CORE or EXTENDED tag.
+      var allTag = this.tagsById_[benchmark.extended ? 'EXTENDED' : 'CORE'];
+      benchmark.tags.push(allTag);
+      allTag.benchmarks.push(benchmark);
+      
       this.benchmarks_.push(benchmark);
       this.benchmarksById_[benchmark.id] = benchmark;
-      if (benchmark.extended) this.hasExtendedBenchmark_ = true;
-      for (var tag, k = 0; tag = benchmark.tags[k]; k++) {
-        if (tag.benchmarks) {
-          tag.benchmarks.push(benchmark);
-        } else {
-          tag.benchmarks = [benchmark];
-        }
-      }
-    }
 
+      if (benchmark.extended)
+        this.hasExtendedBenchmark_ = true;
+    }
   };
 
-  _p.installBenchmarks_ = function() {
+  _p.initBenchmarkUi_ = function() {
     for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
       this.registerBenchmark_(benchmark);
     }
@@ -317,7 +333,7 @@ robohornet.Runner = function(version, benchmarks) {
       this.benchmarkWindow_ = null
     }
 
-    this.setBenchmarkStatus_(benchmark, robohornet.BenchmarkStatus.LOADING);
+    this.setBenchmarkStatus_(benchmark, robohornet.enabledBenchmarks.LOADING);
     this.activeBenchmark_ = benchmark;
 
     //  We want to position the popup window on top, ideally with its bottom right corner in the bottom right of the screen.
@@ -335,17 +351,17 @@ robohornet.Runner = function(version, benchmarks) {
 
     if (!this.benchmarkWindow_) {
       this.activeBenchmark_ = null;
-      this.setBenchmarkStatus_(benchmark, robohornet.BenchmarkStatus.POPUP_BLOCKED);
+      this.setBenchmarkStatus_(benchmark, robohornet.enabledBenchmarks.POPUP_BLOCKED);
       window.setTimeout(bind(this.next_, this), 25);
     }
 
   };
 
   _p.onBenchmarkAbort_ = function(suite, benchmark) {
-      if (benchmark.status == robohornet.BenchmarkStatus.ABORTED)
+      if (benchmark.status == robohornet.enabledBenchmarks.ABORTED)
         return;
 
-      this.setBenchmarkStatus_(benchmark, robohornet.BenchmarkStatus.ABORTED);
+      this.setBenchmarkStatus_(benchmark, robohornet.enabledBenchmarks.ABORTED);
       if (this.benchmarkWindow_)
         this.benchmarkWindow_.close();
       this.benchmarkWindow_ = null;
@@ -370,28 +386,21 @@ robohornet.Runner = function(version, benchmarks) {
       });
     }
     benchmark.results = results;
-    this.setBenchmarkStatus_(benchmark, robohornet.BenchmarkStatus.SUCCESS);
+    this.setBenchmarkStatus_(benchmark, robohornet.enabledBenchmarks.SUCCESS);
     this.showBenchmarkResults_(benchmark);
     window.setTimeout(bind(this.next_, this), 25);
   };
 
-  _p.setBenchmarkEnabled_ = function(benchmark, enabled, opt_skipUpdateHash) {
-    benchmark.toggleElement_.checked = enabled;
-    this.onBenchmarkToggle_(benchmark, opt_skipUpdateHash);
+  _p.onBenchmarkToggle_ = function(benchmark, event) {
+    this.setBenchmarkEnabled_(benchmark, benchmark.toggleElement_.checked);
+    this.updateHash_();
   }
 
-  _p.onBenchmarkToggle_ = function(benchmark, opt_skipUpdateHash) {
-    benchmark.enabled = benchmark.toggleElement_.checked;
-    if (benchmark.enabled) {
-      benchmark.detailsElement_.classList.remove("disabled");
-      benchmark.summaryRow_.classList.remove("disabled");
-    } else {
-      benchmark.detailsElement_.classList.add("disabled");
-      benchmark.summaryRow_.classList.add("disabled");
-    }
-    //opt_skipUpdateHash may be a MouseEvent sometimes, but only skip if it's explicitly 'true'
-    if (opt_skipUpdateHash != true)
-      this.updateHash_();
+  _p.setBenchmarkEnabled_ = function(benchmark, enabled) {
+    benchmark.toggleElement_.checked = enabled;
+    benchmark.enabled = enabled;
+    enableClass(benchmark.detailsElement_, 'disabled', !benchmark.enabled);
+    enableClass(benchmark.summaryRow_, 'disabled', !benchmark.enabled);
   }
 
   _p.registerBenchmark_ = function(benchmark) {
@@ -417,11 +426,13 @@ robohornet.Runner = function(version, benchmarks) {
 
     row.appendChild(cell);
 
-    addCell(row, '-');
-    addCell(row, '-', 'number');
-    addCell(row, benchmark.baselineTime.toFixed(2) + 'ms', 'number');
-    addCell(row, benchmark.computedWeight.toFixed(2) + '%', 'number');
-    addCell(row, '-', 'number');
+    addChildren(row, [
+      createElement('td', '-'),
+      createElement('td', '-', 'number'),
+      createElement('td', benchmark.baselineTime.toFixed(2) + 'ms', 'number'),
+      createElement('td', benchmark.computedWeight.toFixed(2) + '%', 'number'),
+      createElement('td', '-', 'number')
+    ]);
     this.testsContainer.tBodies[0].appendChild(row);
     benchmark.summaryRow_ = row;
 
@@ -445,9 +456,10 @@ robohornet.Runner = function(version, benchmarks) {
     detailsElement.appendChild(document.createElement("br"));
 
     if (benchmark.extended)
-      detailsElement.appendChild(this.makeTagElement_(TAGS['EXTENDED']));
+      detailsElement.appendChild(this.makeTagElement_(this.tagsById_['EXTENDED']));
+      
     for (var tag, i = 0; tag = benchmark.tags[i]; i++) {
-      if (tag.type == robohornet.TagType.SPECIAL) continue;
+      if (tag.type != robohornet.TagType.SPECIAL)
       detailsElement.appendChild(this.makeTagElement_(tag));
     }
 
@@ -458,19 +470,23 @@ robohornet.Runner = function(version, benchmarks) {
     runsTable.appendChild(document.createElement('thead'));
 
     var headerRow = document.createElement('tr');
-    addCell(headerRow, 'Parameters');
-    addCell(headerRow, 'Runs', 'number');
-    addCell(headerRow, 'Error', 'number');
-    addCell(headerRow, 'Mean', 'number');
+    addChildren(headerRow, [
+      createElement('td', 'Parameters'),
+      createElement('td', 'Runs', 'number'),
+      createElement('td', 'Error', 'number'),
+      createElement('td', 'Mean', 'number')
+    ]);
     runsTable.tHead.appendChild(headerRow);
 
     runsTable.appendChild(document.createElement('tbody'));
     for (i = 0; i < benchmark.runs.length; i++) {
       var runsRow = document.createElement('tr');
-      addCell(runsRow, benchmark.runs[i][0], 'name');
-      addCell(runsRow, '0', 'number');
-      addCell(runsRow, '0', 'number');
-      addCell(runsRow, '0', 'number');
+      addChildren(runsRow, [
+        createElement('td', benchmark.runs[i][0], 'name'),
+        createElement('td', '0', 'number'),
+        createElement('td', '0', 'number'),
+        createElement('td', '0', 'number')
+      ]);
       runsTable.tBodies[0].appendChild(runsRow);
     }
     detailsElement.appendChild(runsTable);
@@ -516,95 +532,36 @@ robohornet.Runner = function(version, benchmarks) {
     row.cells[5].textContent = score.toFixed(2);
   };
 
-
   _p.setBenchmarkStatus_ = function(benchmark, status) {
     benchmark.status = status;
-    switch (benchmark.status) {
-      case robohornet.BenchmarkStatus.SUCCESS:
-        caption = 'Completed successfully';
-        break;
-      case robohornet.BenchmarkStatus.LOADING:
-        caption = 'Loading...';
-        break;
-      case robohornet.BenchmarkStatus.RUNNING:
-        caption = 'Running...';
-        break;
-      case robohornet.BenchmarkStatus.PENDING:
-        caption = 'Pending';
-        break;
-      case robohornet.BenchmarkStatus.LOAD_FAILED:
-        caption = 'Failed to load';
-        break;
-      case robohornet.BenchmarkStatus.RUN_FAILED:
-        caption = 'Failed to run';
-        break;
-      case robohornet.BenchmarkStatus.SKIPPED:
-        caption = 'Skipped';
-        break;
-      case robohornet.BenchmarkStatus.POPUP_BLOCKED:
-        caption = 'Benchmark window blocked';
-        break;
-      case robohornet.BenchmarkStatus.ABORTED:
-        caption = 'Aborted by user';
-        break;
-      case robohornet.BenchmarkStatus.NON_CORE:
-        caption = "Not a part of the core suite"
-        break;
-      case robohornet.BenchmarkStatus.NO_STATUS:
-        caption = '-';
-        break;
-      default:
-        caption = 'Unknown failure';
-    }
-
-    var row = benchmark.summaryRow_;
-    row.cells[1].textContent = caption;
+    var caption = robohornet.enabledBenchmarksDescription[benchmark.status] ||
+            'Unknown failure';
+    benchmark.summaryRow_.cells[1].textContent = caption;
   };
 
   _p.setStatus_ = function(status) {
     this.status_ = status;
-    switch (this.status_) {
-      case robohornet.Status.READY:
-        caption = 'Run';
-        break;
-      case robohornet.Status.RUNNING:
-        caption = 'Running...';
-        break;
-      default:
-        caption = 'Loading...';
-    }
 
+    var isRunning = status == robohornet.Status.RUNNING;
     for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
-      benchmark.toggleElement_.disabled = status == robohornet.Status.RUNNING;
-      if (status == robohornet.Status.RUNNING)
-        this.setBenchmarkStatus_(benchmark, robohornet.BenchmarkStatus.PENDING);
+      benchmark.toggleElement_.disabled = isRunning;
+      if (isRunning)
+        this.setBenchmarkStatus_(benchmark, robohornet.enabledBenchmarks.PENDING);
     }
 
     document.body.className = this.status_ == robohornet.Status.READY ? 'ready' : 'running';
-    this.runElement_.textContent = caption;
+    this.runElement_.textContent = robohornet.RunButtonCaption[status];
     this.runElement_.disabled = this.status_ != robohornet.Status.READY;
   };
 
   _p.setScore_ = function(opt_finalScore) {
     // Ensure that we have 4 digits in front of the dot and 2 after.
-    var parts = (Math.round(this.score_ * 100) / 100).toString().split('.');
-    if (parts.length < 2)
-      parts.push('00');
-    while (!opt_finalScore && parts[0].length < 3) {
-      parts[0] = '0' + parts[0];
-    }
-    while (parts[1].length < 2) {
-      parts[1] = parts[1] + '0';
-    }
-    this.indexElement_.textContent = '';
-    this.indexElement_.textContent = parts.join('.');
+    this.indexElement_.textContent = formatNumber(this.score_, 4, 2);
     this.indexElement_.className = opt_finalScore ? 'final' : '';
     this.rawScoreElement_.textContent = this.rawScore_.toFixed(2);
-    if (opt_finalScore) {
-      this.rawScoreElement_.classList.add('final');
-    } else {
-      this.rawScoreElement_.classList.remove('final');
-    }
+
+    if (this.rawScoreElement_.classList.contains('final') != opt_finalScore)
+        this.rawScoreElement_.classList.toggle('final');
   }
 
   _p.toggleBenchmarkDetails_ = function(benchmark, e) {
@@ -613,93 +570,57 @@ robohornet.Runner = function(version, benchmarks) {
     benchmark.summaryRow_.classList.toggle("expanded");
   };
 
-  _p.enableAllBenchmarks = function() {
-    for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
-      this.setBenchmarkEnabled_(benchmark, true, true);
-    }
-    this.updateHash_();
-  }
-
-  _p.disableAllBenchmarks = function(opt_skipUpdateHash) {
-    for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
-      this.setBenchmarkEnabled_(benchmark, false, true);
-    }
-    if (opt_skipUpdateHash != true)
-      this.updateHash_();
-  }
-
   _p.makeTagElement_ = function(tag) {
-      var tagElement = document.createElement("span");
-      tagElement.className = "tag " + tag.type;
-      tagElement.appendChild(document.createTextNode(tag.prettyName));
-      var self = this;
-      var func = function(evt) {
-        if (evt.shiftKey) {
-          self.addBenchmarksToSelectionByTag(tag);
-        } else {
-          self.selectBenchmarksByTag(tag);
-        }
-        // Undo the text selection from a shift-click.
-        window.getSelection().removeAllRanges();
+    var tagElement = createElement('span', tag.name, 'tag ' + tag.type);
+    var callback = function(tag, event) {
+      if (event.shiftKey) {
+        this.addBenchmarksToSelectionByTag(tag);
+      } else {
+        this.selectBenchmarksByTag(tag);
       }
-      tagElement.addEventListener('click', func, false);
-      return tagElement;
+      // Undo the text selection from a shift-click.
+      window.getSelection().removeAllRanges();
+    };
+    tagElement.addEventListener('click', bind(callback, this, tag), false);
+    return tagElement;
   }
 
-  _p.selectBenchmarksByTag = function(tagToSelect) {
-    this.disableAllBenchmarks(true);
-    this.addBenchmarksToSelectionByTag(tagToSelect);
-  }
-
-  _p.addBenchmarksToSelectionByTag = function(tagToSelect) {
+  _p.selectBenchmarksByTag = function(tag) {
     for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
-      for (var tag, k = 0; tag = benchmark.tags[k]; k++) {
-        if (tag == tagToSelect) {
-          this.setBenchmarkEnabled_(benchmark, true, true);
-          break;
-        }
-      }
+      this.setBenchmarkEnabled_(benchmark, false);
+    }
+    this.addBenchmarksToSelectionByTag(tag);
+  }
+
+  _p.addBenchmarksToSelectionByTag = function(tag) {
+    for (var benchmark, i = 0; benchmark = tag.benchmarks[i]; i++) {
+      this.setBenchmarkEnabled_(benchmark, true);
     }
     this.updateHash_();
   }
 
   _p.updateTagSelection_ = function() {
-    for(var tagName in TAGS) {
-      var tag = TAGS[tagName];
-      var isActive = false, isFullyActive = true;
-      if (tag.benchmarks.length == 0 && tag.type == robohornet.TagType.SPECIAL) {
-        // Special case the none case.
-        isFullyActive = true;
-        for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
-          if (benchmark.enabled) {
-            isFullyActive = false;
-            break;
-          }
-        }
-      } else {
-        for (var benchmark, i = 0; benchmark = tag.benchmarks[i]; i++) {
-          if (benchmark.enabled) {
-            isActive = true;
-          } else {
-            isFullyActive = false;
-          }
-        }
-      }
-      if (isFullyActive) {
-        tag.primaryElement.classList.remove('partially-inactive');
-        tag.primaryElement.classList.remove('inactive');
-      } else if (isActive) {
-        tag.primaryElement.classList.add('partially-inactive');
-        tag.primaryElement.classList.remove('inactive');
-      } else {
-        tag.primaryElement.classList.remove('partially-inactive');
-        tag.primaryElement.classList.add('inactive');
+    // Get number of enabled benchmarks per tag.
+    var enabledBenchmarksByTag = [];
+    for (var benchmark, i = 0; benchmark = this.benchmarks_[i]; i++) {
+      if (!benchmark.enabled)
+        continue;
+      for (var tag, j = 0; tag = benchmark.tags[j]; j++) {
+        enabledBenchmarksByTag[tag.name] = (enabledBenchmarksByTag[tag.name] || 0) + 1;
       }
     }
-  }
+
+    // Highlight tags based on selection.
+    for (var identifier in this.tagsById_) {
+      var tag = this.tagsById_[identifier];
+      var n = enabledBenchmarksByTag[identifier];
+      enableClass(tag.element, 'partially-inactive', n && n != tag.benchmarks.length);
+      enableClass(tag.element, 'inactive', !n);
+    }
+  };
 
   _p.updateHash_ = function() {
-    //We'll keep track of how many benchmarks each of the tag has enabled.
+    // We'll keep track of how many benchmarks each of the tag has enabled.
     var enabledTagCount = {};
     var enabledBenchmarkIDs = [];
     var disabledBenchmarkIDs = [];
@@ -707,7 +628,7 @@ robohornet.Runner = function(version, benchmarks) {
       if (benchmark.enabled) {
         enabledBenchmarkIDs.push(benchmark.id);
         for (var tag, k = 0; tag = benchmark.tags[k]; k++) {
-          enabledTagCount[tag.name] = (enabledTagCount[tag.name] || 0) + 1;
+          enabledTagCount[tag.id] = (enabledTagCount[tag.id] || 0) + 1;
         }
       }
       else {
@@ -716,42 +637,38 @@ robohornet.Runner = function(version, benchmarks) {
     }
 
     if (enabledBenchmarkIDs.length == 0) {
-      window.location.hash = "#et=none";
+      window.location.hash = '#et=none';
       this.updateTagSelection_();
       return;
     }
 
-    var maxTagName = "NONE"
+    var maxTagId = 'NONE'
     var maxTagCount = 0;
 
-    //See which of the tags has the most coverage.
-    for (var tagName in enabledTagCount) {
-      if (enabledTagCount[tagName] < TAGS[tagName].benchmarks.length) {
-        //This tag doesn't ahve full coverage so it can't be the best answer.
+    // See which of the tags has the most coverage.
+    for (var tagId in enabledTagCount) {
+      if (enabledTagCount[tagId] < this.tagsById_[tagId].benchmarks.length) {
         continue;
       }
-      if (enabledTagCount[tagName] > maxTagCount) {
-        maxTagCount = enabledTagCount[tagName];
-        maxTagName = tagName;
+      if (enabledTagCount[tagId] > maxTagCount) {
+        maxTagCount = enabledTagCount[tagId];
+        maxTagId = tagId;
       }
     }
 
-    //Check if that maxTagName has coverage of all enabled benchmarks.
+    // Check if that maxTagId has coverage of all enabled benchmarks.
     if (maxTagCount == enabledBenchmarkIDs.length) {
-      if (maxTagName == "CORE") {
-        //We don't need to explicitly enable it because it's enabled by default.
-        window.location.hash = "";
+      if (maxTagId == 'CORE') {
+        // All is the default.
+        window.location.hash = '';
       } else {
-        window.location.hash = "#et=" + maxTagName.toLowerCase();
+        window.location.hash = '#et=' + maxTagId.toLowerCase();
       }
     } else {
-      //Okay, fall back on covering the benchmarks one by one, because no tag
-      //covered all enabled benchmarks perfectly.
-
+      // Fall back on covering the benchmarks one by one.
       // We want to encode as few IDs as possible in the hash.
       // This also gives us a good default to follow for new benchmarks.
       if (disabledBenchmarkIDs.length) {
-        // At least one benchmark is disabled. Are the majority disabled?
         if (disabledBenchmarkIDs.length < enabledBenchmarkIDs.length) {
           window.location.hash = '#d=' + disabledBenchmarkIDs.join(',');
         } else {
@@ -761,6 +678,7 @@ robohornet.Runner = function(version, benchmarks) {
         window.location.hash = '';
       }
     }
+
     this.updateTagSelection_();
   }
 
@@ -769,7 +687,7 @@ robohornet.Runner = function(version, benchmarks) {
 
     if (!hash) {
       //The core set should be selected by default.
-      this.selectBenchmarksByTag(TAGS['CORE']);
+      this.selectBenchmarksByTag(this.tagsById_['CORE']);
       return;
     }
     hash = hash.replace('#', '').toLowerCase().split('&');
@@ -781,21 +699,20 @@ robohornet.Runner = function(version, benchmarks) {
     for (segment, i = 0; segment = hash[i]; i++) {
       hash[i] = hash[i].split('=');
       if (hash[i][0] == "et") {
-        var tag = TAGS[hash[i][1].toUpperCase()];
+        var tag = this.tagsById_[hash[i][1].toUpperCase()];
         if (!tag) continue;
         this.selectBenchmarksByTag(tag);
         return;
       }
     }
 
-    //There wasn't a single enabled tag. Let's see if there are any individual enabled/disabled benchmarks.
+    // There wasn't a single enabled tag. Let's see if there are any individual enabled/disabled benchmarks.
     for (var segment, i = 0; segment = hash[i]; i++) {
-
       enableBenchmarks = false;
       switch (hash[i][0]) {
         case 'e':
           enableBenchmarks = true;
-          //We set all benchmarks to disable and then only enable some.
+          // We set all benchmarks to disable and then only enable some.
           for (var k = 0; benchmark = this.benchmarks_[k]; k++) {
             this.setBenchmarkEnabled_(benchmark, false, true);
           }
@@ -839,8 +756,9 @@ robohornet.Benchmark = function(details) {
   this.baselineTime = details.baselineTime;
   this.tags = details.tags;
   this.issueNumber = details.issueNumber;
+  this.extended = details.extended;
   this.enabled = true;
-  this.extended = details.extended || false;
+  this.tags = [];
 
   this.id = this.filename.match(/\/([A-z]+)\./)[1].toLowerCase();
 };
@@ -858,12 +776,3 @@ function bind(fn, opt_scope, var_args) {
     fn.apply(scope, a);
   };
 }
-
-function addCell(rowElement, textContent, opt_className) {
-  var cell = document.createElement('td');
-  if (opt_className)
-    cell.className = opt_className;
-  cell.appendChild(document.createTextNode(textContent));
-  rowElement.appendChild(cell);
-}
-
