@@ -345,16 +345,17 @@ robohornet.Runner = function(data) {
     var top = window.screen.availHeight + window.screen.availTop - TARGET_WINDOW_HEIGHT;
     var left = window.screen.availWidth + window.screen.availLeft - TARGET_WINDOW_WIDTH;
 
-    this.benchmarkWindow_ = window.open(benchmark.filename + '?use_test_runner', 'robohornet',
-        'left=' + left + ',top=' + top +
-        ',width='+ TARGET_WINDOW_WIDTH + ',height=' + TARGET_WINDOW_HEIGHT);
+    window.setTimeout(bind(function() {
+      this.benchmarkWindow_ = window.open(benchmark.filename + '?use_test_runner', 'robohornet',
+          'left=' + left + ',top=' + top +
+          ',width='+ TARGET_WINDOW_WIDTH + ',height=' + TARGET_WINDOW_HEIGHT);
 
-    if (!this.benchmarkWindow_) {
-      this.activeBenchmark_ = null;
-      this.setBenchmarkStatus_(benchmark, robohornet.enabledBenchmarks.POPUP_BLOCKED);
-      window.setTimeout(bind(this.next_, this), 25);
-    }
-
+      if (!this.benchmarkWindow_) {
+        this.activeBenchmark_ = null;
+        this.setBenchmarkStatus_(benchmark, robohornet.enabledBenchmarks.POPUP_BLOCKED);
+        window.setTimeout(bind(this.next_, this), 25);
+      }
+    }, this), 25);
   };
 
   _p.onBenchmarkAbort_ = function(suite, benchmark) {
