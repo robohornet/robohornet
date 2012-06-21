@@ -95,9 +95,11 @@ robohornet.Runner = function(data) {
             n.toFixed(decimalPlaces);
   }
 
-  function enableClass(element, className, enabled) {
-    if (element.classList.contains(className) != enabled)
-        element.classList.toggle(className);
+  function enableClass(element, className, enable) {
+    if (enable)
+      element.classList.add(className);
+    else
+      element.classList.remove(className);
   }
 
   function createElement(tagName, textContent, opt_className) {
@@ -112,6 +114,11 @@ robohornet.Runner = function(data) {
     for (var i = 0; i < children.length; i++) {
       element.appendChild(children[i]);
     }
+  }
+
+  function addToTag(benchmark, tag) {
+    benchmark.tags.push(tag);
+    tag.benchmarks.push(benchmark);
   }
 
   var _p = robohornet.Runner.prototype;
@@ -291,15 +298,11 @@ robohornet.Runner = function(data) {
       benchmark.computedWeight = (benchmark.weight / totalWeight) * 100;
 
       for (var tagId, j = 0; tagId = details.tags[j]; j++) {
-        var tag = this.tagsById_[tagId];
-        benchmark.tags.push(tag);
-        tag.benchmarks.push(benchmark);
+        addToTag(benchmark, this.tagsById_[tagId]);
       }
-
-      // Add all benchmarks to special CORE or EXTENDED tag.
-      var allTag = this.tagsById_[benchmark.extended ? 'EXTENDED' : 'CORE'];
-      benchmark.tags.push(allTag);
-      allTag.benchmarks.push(benchmark);
+      if (!benchmark.extended)
+        addToTag(benchmark, this.tagsById_['CORE']);
+      addToTag(benchmark, this.tagsById_['EXTENDED']);
       
       this.benchmarks_.push(benchmark);
       this.benchmarksById_[benchmark.id] = benchmark;
@@ -607,16 +610,16 @@ robohornet.Runner = function(data) {
       if (!benchmark.enabled)
         continue;
       for (var tag, j = 0; tag = benchmark.tags[j]; j++) {
-        enabledBenchmarksByTag[tag.name] = (enabledBenchmarksByTag[tag.name] || 0) + 1;
+        enabledBenchmarksByTag[tag.id] = (enabledBenchmarksByTag[tag.id] || 0) + 1;
       }
     }
 
     // Highlight tags based on selection.
     for (var identifier in this.tagsById_) {
       var tag = this.tagsById_[identifier];
-      var n = enabledBenchmarksByTag[identifier];
+      var n = enabledBenchmarksByTag[identifier] || 0;
       enableClass(tag.element, 'partially-inactive', n && n != tag.benchmarks.length);
-      enableClass(tag.element, 'inactive', !n);
+      enableClass(tag.element, 'inactive', n == 0);
     }
   };
 
