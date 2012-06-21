@@ -7,10 +7,10 @@
 </style>
 </head>
 <body>
-<table id="main-table"><tbody></tbody></table>
+<div id="table-container"></div>
 <script>
     
-    var tableBody;
+    var tableContainer;
     var tableString;
     var DEFAULT_SIZE = [200, 100];
     
@@ -20,8 +20,8 @@
         var rowCount = size[0];
         var colCount = size[1];
 
-        tableBody = document.getElementById('main-table').firstChild;
-        var htmlBuffer = [];
+        tableContainer = document.getElementById('table-container');
+        var htmlBuffer = ['<table><tbody>'];
         htmlBuffer.push('<tr>');
         for (var col = 0; col < colCount; col++) {
             // Build table headers
@@ -37,23 +37,24 @@
             }
             htmlBuffer.push('</tr>');
         }
+        htmlBuffer.push('</tbody></table>');
         tableString = htmlBuffer.join('');
     }
 
     function reset() {
-        tableBody.innerHTML = '';
+        tableContainer.innerHTML = '';
     }
 
     function tearDown()
     {
-        tableBody.innerHTML = '';
-        tableBody = null;
+        tableContainer.innerHTML = '';
+        tableContainer = null;
         tableString = null;
     }
 
     function test()
     {
-        tableBody.innerHTML = tableString;
+        tableContainer.innerHTML = tableString;
     }
 </script>
 <script src="../test.js"></script>
