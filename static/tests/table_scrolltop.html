@@ -9,11 +9,10 @@
 </style>
 </head>
 <body>
-<div id="container"><table id="main-table"><tbody></tbody></table></div>
+<div id="container"></div>
 <script>
 
     var container;
-    var tableBody;
 
     var DEFAULT_SIZE = [1000, 100];
 
@@ -24,8 +23,7 @@
         var colCount = size[1];
 
         container = document.getElementById('container')
-        tableBody = document.getElementById('main-table').firstChild;
-        var htmlBuffer = [];
+        var htmlBuffer = ['<table id="main-table"><tbody>'];
         htmlBuffer.push('<tr>');
         for (var col = 0; col < colCount; col++) {
             // Build table headers
@@ -41,18 +39,18 @@
             }
             htmlBuffer.push('</tr>');
         }
-        tableBody.innerHTML = htmlBuffer.join('');
+        htmlBuffer.push('</tbody></table>');
+        container.innerHTML = htmlBuffer.join('');
     }
 
     function reset() {
-        tableBody.innerHTML = '';
+        container.innerHTML = '';
         container.scrollTop = 0;
     }
 
     function tearDown()
     {
-        tableBody.innerHTML = '';
-        tableBody = null;
+        container.innerHTML = '';
         container.scrollTop = 0;
     }
 

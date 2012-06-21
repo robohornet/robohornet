@@ -9,7 +9,7 @@
 <body>
 <script>
     
-    var tableElement;
+    var container;
     var DEFAULT_SIZE = [500, 100];
     
     function setUp(opt_size)
@@ -19,7 +19,7 @@
         var colCount = size[1];
 
         var buff = [];
-        buff.push('<tbody>');
+        buff.push('<table><tbody>');
         buff.push('<tr>');
         for (var col = 0; col < colCount; col++) {
             // Build table headers
@@ -35,21 +35,21 @@
             }
             buff.push('</tr>');
         }
-        buff.push('</tbody>');
+        buff.push('</tbody></table>');
 
-        tableElement = document.createElement('table');
-        tableElement.innerHTML = buff.join('');
-        document.body.appendChild(tableElement);
+        container = document.createElement('div');
+        container.innerHTML = buff.join('');
+        document.body.appendChild(container);
     }
 
     function tearDown()
     {
-        tableElement.parentNode.removeChild(tableElement);
-        tableElement = null;
+        container.parentNode.removeChild(container);
+        container = null;
     }
 
     function reset() {
-        var tbody = tableElement.firstChild;
+        var tbody = container.firstChild.firstChild;
         var firstRow = tbody.firstChild;
         for (var i = 0; i < size[1] /** colCount */; i++) {
             firstRow.cells[i].style.width = '200px';
@@ -60,7 +60,7 @@
     function test(opt_size)
     {
         var size = opt_size || DEFAULT_SIZE;
-        var tbody = tableElement.firstChild;
+        var tbody = container.firstChild.firstChild;
         var firstRow = tbody.firstChild;
         for (var i = 0; i < size[1] /** colCount */; i++) {
             firstRow.cells[i].style.width = '50px';
