@@ -11,6 +11,7 @@ FILE_TYPES = {
 	"css" : "text/css",
 	"html" : "text/html",
 	"js" : "application/javascript",
+	"json" : "application/json",
 	"png" : "image/png",
 	"woff" : "application/font-woff"
 }
