@@ -341,12 +341,13 @@ robohornet.Runner = function(data) {
 
     //  We want to position the popup window on top, ideally with its bottom right corner in the bottom right of the screen.
     //  For most browsers and platforms, if we overshoot it's fine; the popup will be moved to be fully on screen.
+    //  However, because of a bug in some browsers for now we just try to center in the window.
 
     var TARGET_WINDOW_WIDTH = 800;
     var TARGET_WINDOW_HEIGHT = 600;
 
-    var top = window.screen.availHeight + window.screen.availTop - TARGET_WINDOW_HEIGHT;
-    var left = window.screen.availWidth + window.screen.availLeft - TARGET_WINDOW_WIDTH;
+    var left = (window.screen.availWidth / 2) - (TARGET_WINDOW_WIDTH / 2) + window.screen.availLeft;
+    var top = (window.screen.availHeight / 2) - (TARGET_WINDOW_HEIGHT / 2) + window.screen.availTop;
 
     window.setTimeout(bind(function() {
       this.benchmarkWindow_ = window.open(benchmark.filename + '?use_test_runner', 'robohornet',
