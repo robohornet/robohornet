@@ -67,7 +67,7 @@
     function test(opt_numSvgs)
     {
         var numSvgs = opt_numSvgs || DEFAULT_NUM_SVGS;
-        for (var i = 0; i < 1000; i++) {
+        for (var i = 0; i < 10; i++) {
             var size = Math.random() * 300 + 100;
             container.style.width = size + 'px';
             contentContainer.setAttribute('transform', 'scale(' + (size / 180) + ')');
