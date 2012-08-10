@@ -35,6 +35,7 @@
     }
 
     function reset() {
+        if (!tableElement) return;
         for (var i = 0; i < tableElement.rows.length; i++) {
             var tableRow = tableElement.rows[i];
             if (tableRow.lastChild != tableRow.firstChild) {
