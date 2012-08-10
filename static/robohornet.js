@@ -248,7 +248,8 @@ robohornet.Runner = function(data) {
         defer: true,
         fn: bind(callTest, suite, win, arg),
         setup: bind(callFunction, suite, win, 'setUp', arg),
-        teardown: bind(callFunction, suite, win, 'tearDown', arg)
+        teardown: bind(callFunction, suite, win, 'tearDown', arg),
+        reset: bind(callFunction, suite, win, "reset", arg)
       });
     }
 
