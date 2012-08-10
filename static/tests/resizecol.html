@@ -49,6 +49,7 @@
     }
 
     function reset() {
+        if (!container) return;
         var tbody = container.firstChild.firstChild;
         var firstRow = tbody.firstChild;
         for (var i = 0; i < size[1] /** colCount */; i++) {
