@@ -16,8 +16,7 @@ function setUp(canvasSize)
 
     // set the container
     container = document.getElementById('container');
-    container.style.width = container.style.height = size;
-    container.width = container.height = size;
+    container.style.width = container.style.height = size + 'px';
 
     // create a canvas
     canvas = document.createElement('canvas');
@@ -48,7 +47,7 @@ function test() {
 </script>
 </head>
 <body>
-<div id="container" style="position: absolute; overflow:hidden; border: 1px solid black;"></div>
+<div id="container" style="position: absolute; width: 256px; height: 256px; overflow:hidden; border: 1px solid black;"></div>
 </body>
 <script src="../test.js"></script>
 </html>
