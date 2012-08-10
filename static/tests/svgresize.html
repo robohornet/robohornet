@@ -81,7 +81,7 @@
         copy.setAttribute('transform', 'translate(0,' + (180 * index) + ')');
         contentContainer.appendChild(copy);
         var newSvg = makeSvg(NUM_ELEMENTS, index);
-        var svgContainer = copy.getElementsByClassName('content')[0];
+        var svgContainer = copy.querySelectorAll('.content')[0];
         svgContainer.innerHTML = '';
         svgContainer.appendChild(newSvg);
     }
