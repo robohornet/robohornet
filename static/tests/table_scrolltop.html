@@ -44,6 +44,7 @@
     }
 
     function reset() {
+        if (!container) return;
         container.innerHTML = '';
         container.scrollTop = 0;
     }
