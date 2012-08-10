@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Canvas clearing benchmark</title>
+<script>
+
+var canvas = null, context = null, size = 0;
+var DEFAULT_SIZE = 512;
+
+function setUp(canvasSize)
+{
+    var container = null, canvasStyle = null;
+
+    // ensure we have a canvas size
+    size = canvasSize || DEFAULT_SIZE;
+
+    // set the container
+    container = document.getElementById('container');
+    container.style.width = container.style.height = size;
+    container.width = container.height = size;
+
+    // create a canvas
+    canvas = document.createElement('canvas');
+    context = canvas.getContext('2d');
+    canvasStyle = canvas.style;
+
+    // set its width and height using CSS
+    canvasStyle.position = 'absolute';
+    canvasStyle.left = '0px';
+    canvasStyle.top = '0px';
+
+    // and then set the backing store
+    canvas.width = canvas.height = size;
+    canvasStyle.width = canvasStyle.height = size + 'px';
+    container.appendChild(canvas);
+}
+
+function tearDown()
+{
+  var container = document.getElementById('container');
+  while (container.firstChild) { container.removeChild(container.lastChild); }
+}
+
+function test() {
+  context.clearRect(0, 0, size, size);
+}
+
+</script>
+</head>
+<body>
+<div id="container" style="position: absolute; overflow:hidden; border: 1px solid black;"></div>
+</body>
+<script src="../test.js"></script>
+</html>
