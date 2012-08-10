@@ -166,7 +166,7 @@ var ROBOHORNET_DATA = {
 
     {
       name: '2D Canvas clearRect',
-      issueNumber: 31,
+      issueNumber: 43,
       description: 'Test clearing a 2D canvas',
       filename: 'tests/canvasclear.html',
       runs: [
