@@ -139,8 +139,8 @@ var ROBOHORNET_DATA = {
       description: 'Test 2D canvas line painting.',
       filename: 'tests/canvasdrawline.html',
       runs: [
-        ['500 lines', 500],
-        ['2500 lines', 2500]
+        ['100 lines', 100],
+        ['500 lines', 500]
       ],
       weight: 3.5,
       baselineTime: 97.79,

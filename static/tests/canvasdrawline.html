@@ -38,14 +38,19 @@ function test(opt_numberOfVertices) {
     var context = canvas.getContext('2d');
 
     context.lineCap = context.lineJoin = 'round';
-
-    context.moveTo(path[0], path[1]);
-    for (var i = 2, I = path.length; i < I; ) {
-        context.lineTo(path[i++], path[i++]);
-    }
     context.strokeStyle = 'rgba(255, 170, 85, 0.2)';
     context.lineWidth = 1;
-    context.stroke();
+    
+    var x = path[0];
+    var y = path[1]
+    for (var i = 2, I = path.length; i < I; ) {
+        context.moveTo(x, y);
+        x = path[i];
+        y = path[i + 1];
+        context.lineTo(x, y);
+        context.stroke();
+        i += 2;
+    }
 }
  
 function makeRandomPath(width, height, numVerts) {
