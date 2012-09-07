@@ -127,7 +127,7 @@ var ROBOHORNET_DATA = {
       runs: [
         ['1000 nodes deep', 1000]
       ],
-      weight: 2.5,
+      weight: 2,
       baselineTime: 87.19,
       tags: ['DOM', 'CSS_SELECTORS', 'YUI'],
       extended: false
