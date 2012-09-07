@@ -134,21 +134,6 @@ var ROBOHORNET_DATA = {
     },
 
     {
-      name: '2D Canvas Draw',
-      issueNumber: 13,
-      description: 'Test 2D canvas line painting.',
-      filename: 'tests/canvasdrawline.html',
-      runs: [
-        ['100 lines', 100],
-        ['500 lines', 500]
-      ],
-      weight: 3.5,
-      baselineTime: 97.79,
-      tags: ['CANVAS', 'G_PRESENTATIONS', 'YUI'],
-      extended: false
-    },
-
-    {
       name: '2D Canvas toDataURL',
       issueNumber: 14,
       description: 'Test converting a 2D canvas to a data URI',
