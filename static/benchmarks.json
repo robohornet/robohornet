@@ -99,7 +99,7 @@ var ROBOHORNET_DATA = {
         ['1000 rows', 1000]
       ],
       weight: 2,
-      baselineTime: 43.61,
+      baselineTime: 49.68,
       tags: ['G_SPREADSHEETS', 'TABLE', 'DOM', 'YUI', 'JQUERY', 'EMBER'],
       extended: false
     },
@@ -114,7 +114,7 @@ var ROBOHORNET_DATA = {
         ['1000 columns', 1000]
       ],
       weight: 1.5,
-      baselineTime: 73.25,
+      baselineTime: 45.29,
       tags: ['G_SPREADSHEETS', 'TABLE', 'DOM', 'YUI'],
       extended: false
     },
@@ -128,7 +128,7 @@ var ROBOHORNET_DATA = {
         ['1000 nodes deep', 1000]
       ],
       weight: 2.5,
-      baselineTime: 35.27,
+      baselineTime: 87.19,
       tags: ['DOM', 'CSS_SELECTORS', 'YUI'],
       extended: false
     },
@@ -143,7 +143,7 @@ var ROBOHORNET_DATA = {
         ['512x512, 1000 lines', [512, 1000]]
       ],
       weight: 2,
-      baselineTime: 724.78,
+      baselineTime: 304.56,
       tags: ['CANVAS', 'G_PRESENTATIONS'],
       extended: false
     },
@@ -158,7 +158,7 @@ var ROBOHORNET_DATA = {
         ['512x512', 512]
       ],
       weight: 2,
-      baselineTime: 28.99,
+      baselineTime: 16.73,
       tags: ['CANVAS', 'G_PRESENTATIONS'],
       extended: false
     },
@@ -174,7 +174,7 @@ var ROBOHORNET_DATA = {
         ['200x100', [200, 100]]
       ],
       weight: 2,
-      baselineTime: 392.75,
+      baselineTime: 283.53,
       tags: ['DOM', 'G_SPREADSHEETS', 'TABLE', 'YUI', 'JQUERY', 'EMBER'],
       extended: false
     },
@@ -191,7 +191,7 @@ var ROBOHORNET_DATA = {
         ['1000,50', [1000, 50]]
       ],
       weight: 2,
-      baselineTime: 1306.62,
+      baselineTime: 964.37,
       tags: ['DOM', 'G_SPREADSHEETS', 'TABLE', 'SCROLLING', 'YUI'],
       extended: false
     },
@@ -206,7 +206,7 @@ var ROBOHORNET_DATA = {
         ['500x50', [500, 50]]
       ],
       weight: 2,
-      baselineTime: 1944.59,
+      baselineTime: 2739.90,
       tags: ['DOM', 'TABLE', 'G_SPREADSHEETS', 'YUI'],
       extended: false
     },
@@ -221,7 +221,7 @@ var ROBOHORNET_DATA = {
         ['100 SVGs', 100]
       ],
       weight: 2,
-      baselineTime: 234.91,
+      baselineTime: 502.73,
       tags: ['SVG', 'G_PRESENTATIONS', 'YUI'],
       extended: false
     },
@@ -237,7 +237,7 @@ var ROBOHORNET_DATA = {
         ['Combined', '']
       ],
       weight: 1,
-      baselineTime: 84.50,
+      baselineTime: 89.57,
       tags: ['JS', 'EMBER'],
       extended: false
     },
@@ -253,7 +253,7 @@ var ROBOHORNET_DATA = {
         ['Primes up to 100000', 100000]
       ],
       weight: 1,
-      baselineTime: 98.52,
+      baselineTime: 96.83,
       tags: ['MATH', 'G_MAPS', 'JQUERY', 'EMBER', 'HANDLEBARS'],
       extended: false
     },
@@ -269,7 +269,7 @@ var ROBOHORNET_DATA = {
         ['1000000 Instantiations', 1000000]
       ],
       weight: 2,
-      baselineTime: 272.89,
+      baselineTime: 315.13,
       tags: ['JS', 'YUI', 'JQUERY', 'EMBER'],
       extended: false
     },
@@ -285,7 +285,7 @@ var ROBOHORNET_DATA = {
         ['100x100 GIFs', [100, 100]]
       ],
       weight: 0.25,
-      baselineTime: 187.83,
+      baselineTime: 127.69,
       tags: ['DOM', 'SCROLLING'],
       extended: false
     },
@@ -301,7 +301,7 @@ var ROBOHORNET_DATA = {
         ['10000 Reflows', 10000]
       ],
       weight: 3,
-      baselineTime: 587.35,
+      baselineTime: 723.69,
       tags: ['DOM', 'G_SPREADSHEETS', 'YUI', 'JQUERY', 'EMBER'],
       extended: false
     },
@@ -316,7 +316,7 @@ var ROBOHORNET_DATA = {
         ['100 Nodes', 100]
       ],
       weight: 1,
-      baselineTime: 105.99,
+      baselineTime: 103.79,
       tags: ['DOM', 'YUI', 'METAMORPH'],
       extended: false
     },
@@ -332,7 +332,7 @@ var ROBOHORNET_DATA = {
         ['1000 Writes', 1000]
       ],
       weight: 2,
-      baselineTime: 43.34,
+      baselineTime: 49.84,
       tags: ['JS', 'YUI'],
       extended: false
     },
@@ -348,7 +348,7 @@ var ROBOHORNET_DATA = {
         ['1000 Reads', 1000]
       ],
       weight: 2,
-      baselineTime: 33.48,
+      baselineTime: 33.93,
       tags: ['JS', 'YUI'],
       extended: false
     }
