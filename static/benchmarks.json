@@ -35,6 +35,9 @@ var ROBOHORNET_DATA = {
     },
     METAMORPH: {
       name: 'Metamorph.js'
+    },
+    CAPPUCCINO: {
+      name: 'Cappuccino'
     }
   },
 
@@ -159,7 +162,7 @@ var ROBOHORNET_DATA = {
       ],
       weight: 2,
       baselineTime: 16.73,
-      tags: ['CANVAS', 'G_PRESENTATIONS'],
+      tags: ['CANVAS', 'G_PRESENTATIONS', 'CAPPUCCINO'],
       extended: false
     },
 
@@ -254,7 +257,7 @@ var ROBOHORNET_DATA = {
       ],
       weight: 1,
       baselineTime: 96.83,
-      tags: ['MATH', 'G_MAPS', 'JQUERY', 'EMBER', 'HANDLEBARS'],
+      tags: ['MATH', 'G_MAPS', 'JQUERY', 'EMBER', 'HANDLEBARS', 'CAPPUCCINO'],
       extended: false
     },
 
@@ -270,7 +273,7 @@ var ROBOHORNET_DATA = {
       ],
       weight: 2,
       baselineTime: 315.13,
-      tags: ['JS', 'YUI', 'JQUERY', 'EMBER'],
+      tags: ['JS', 'YUI', 'JQUERY', 'EMBER', 'CAPPUCCINO'],
       extended: false
     },
 
