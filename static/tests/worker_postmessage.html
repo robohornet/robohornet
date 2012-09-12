@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Worker PostMessage</title>
+    <script src="worker_postmessage_data.js">
+    </script>
+    <script>
+        var worker;
+        var dataObj;
+
+        function setUp() {
+            worker = new Worker('worker_postmessage_woker.js');
+            dataObj = JSON.parse(jsonPayload);
+        }
+
+        function tearDown() {}
+
+        function test() {
+            worker.postMessage(dataObj);
+        }
+
+        function reset() {
+            worker = null;
+            dataObj = null;
+        }
+    </script>
+</head>
+<body>
+</body>
+<script src="../test.js"></script>
+</html>
