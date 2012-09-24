@@ -356,8 +356,10 @@ robohornet.Runner = function(data) {
           ',width='+ TARGET_WINDOW_WIDTH + ',height=' + TARGET_WINDOW_HEIGHT);
 
       if (this.benchmarkWindow_) {
-        if (this.benchmarkWindow_.innerHeight <= 0)
-          this.onPopupBlock_();
+        this.benchmarkWindow_.onload = function(){
+          if (this.benchmarkWindow_.innerHeight <= 0)
+            this.onPopupBlock_();
+        };
       } else {
           this.onPopupBlock_();
       }
@@ -366,7 +368,7 @@ robohornet.Runner = function(data) {
 
   _p.onPopupBlock_ = function() {
       // Reclaim window's name so we can use it again
-      //this.benchmarkWindow_ && this.benchmarkWindow_.close();
+      this.benchmarkWindow_ && this.benchmarkWindow_.close();
 
       this.setBenchmarkStatus_(this.activeBenchmark_, robohornet.enabledBenchmarks.POPUP_BLOCKED);
       this.activeBenchmark_ = null;
