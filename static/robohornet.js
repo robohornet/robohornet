@@ -364,7 +364,10 @@ robohornet.Runner = function(data) {
     }, this), 25);
   };
 
-  _p.onPopupBlock_ = function(){
+  _p.onPopupBlock_ = function() {
+      // Reclaim window's name so we can use it again
+      this.benchmarkWindow_ && this.benchmarkWindow_.close();
+
       this.setBenchmarkStatus_(this.activeBenchmark_, robohornet.enabledBenchmarks.POPUP_BLOCKED);
       this.activeBenchmark_ = null;
       window.setTimeout(bind(this.next_, this), 25);
