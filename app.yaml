@@ -16,4 +16,4 @@ handlers:
   upload: static/robohornet.html
 - url: /(.*)
   static_files: static/\1
-  upload: .*
+  upload: static/.*

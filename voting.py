@@ -36,7 +36,7 @@ LATO = ImageFont.truetype("static/fonts/Lato-Regular.ttf", 46)
 LATO_BLACK = ImageFont.truetype("static/fonts/Lato-Black.ttf", 46)
 
 #TODO: express the resizing in terms of constants
-LOGO = Image.open("static/robohornet.png").resize((46,46))
+LOGO = Image.open("robohornet.png").resize((46,46))
 
 def draw_invalid_issue_image():
 	message = "No such issue"
