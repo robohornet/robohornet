@@ -192,7 +192,7 @@ robohornet.Runner = function(data) {
 
     if (successfulRuns + skippedExtendedRuns == this.benchmarks_.length) {
       this.setScore_(true /* opt_finalScore */);
-      this.statusElement_.innerHTML = 'The RoboHornet index is normalized to 100 and roughly shows your browser\'s performance compared to other modern browsers on reference hardware. <a href="https://code.google.com/p/robohornet/wiki/BenchmarkScoring" target="_blank">Learn more</a>';
+      this.statusElement_.innerHTML = 'The RoboHornet index is normalized to 100 and roughly shows your browser\'s performance compared to other modern browsers on reference hardware. <a href="https://github.com/robohornet/robohornet/wiki/Benchmark-Scoring" target="_blank">Learn more</a>';
     } else if (blockedRuns) {
       this.statusElement_.textContent = "Your browser's popup blocker prevented some of the benchmarks from running. Disable your popup blocker and run the test again to see the index.";
     } else if (failedRuns) {
