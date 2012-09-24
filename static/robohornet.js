@@ -207,7 +207,7 @@ robohornet.Runner = function(data) {
     // Wait until the progress bar fades out to put it back to the left.
     this.progressElement_.style.marginLeft = '-100%';
     this.progressElement_.removeEventListener(TRANSITION_END_EVENT, this.progressCallback_, false);
-  }
+  };
 
   _p.benchmarkLoaded = function() {
     var benchmark = this.activeBenchmark_;
@@ -304,7 +304,7 @@ robohornet.Runner = function(data) {
       if (!benchmark.extended)
         addToTag(benchmark, this.tagsById_['CORE']);
       addToTag(benchmark, this.tagsById_['EXTENDED']);
-      
+
       this.benchmarks_.push(benchmark);
       this.benchmarksById_[benchmark.id] = benchmark;
 
@@ -355,12 +355,22 @@ robohornet.Runner = function(data) {
           'left=' + left + ',top=' + top +
           ',width='+ TARGET_WINDOW_WIDTH + ',height=' + TARGET_WINDOW_HEIGHT);
 
-      if (!this.benchmarkWindow_) {
-        this.activeBenchmark_ = null;
-        this.setBenchmarkStatus_(benchmark, robohornet.enabledBenchmarks.POPUP_BLOCKED);
-        window.setTimeout(bind(this.next_, this), 25);
+      if (this.benchmarkWindow_) {
+        if (this.benchmarkWindow_.innerHeight <= 0)
+          this.onPopupBlock_();
+      } else {
+          this.onPopupBlock_();
       }
     }, this), 25);
+  };
+
+  _p.onPopupBlock_ = function() {
+      // Reclaim window's name so we can use it again
+      this.benchmarkWindow_ && this.benchmarkWindow_.close();
+
+      this.setBenchmarkStatus_(this.activeBenchmark_, robohornet.enabledBenchmarks.POPUP_BLOCKED);
+      this.activeBenchmark_ = null;
+      window.setTimeout(bind(this.next_, this), 25);
   };
 
   _p.onBenchmarkAbort_ = function(suite, benchmark) {
@@ -463,7 +473,7 @@ robohornet.Runner = function(data) {
 
     if (benchmark.extended)
       detailsElement.appendChild(this.makeTagElement_(this.tagsById_['EXTENDED']));
-      
+
     for (var tag, i = 0; tag = benchmark.tags[i]; i++) {
       if (tag.type != robohornet.TagType.SPECIAL)
       detailsElement.appendChild(this.makeTagElement_(tag));
