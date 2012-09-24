@@ -32,8 +32,8 @@ VERY_LIGHT_YELLOW = (254, 241, 202, 255)
 YELLOW = (252, 207, 77, 255)
 LIGHT_ORANGE = (246, 148, 61, 255)
 
-LATO = ImageFont.truetype("static/fonts/Lato-Regular.ttf", 46)
-LATO_BLACK = ImageFont.truetype("static/fonts/Lato-Black.ttf", 46)
+LATO = ImageFont.truetype("fonts/Lato-Regular.ttf", 46)
+LATO_BLACK = ImageFont.truetype("fonts/Lato-Black.ttf", 46)
 
 #TODO: express the resizing in terms of constants
 LOGO = Image.open("robohornet.png").resize((46,46))
