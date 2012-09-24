@@ -222,8 +222,7 @@ class AuthPage(RoboHornetVotingPage):
 				self.response.headers['Set-Cookie'] = "%s=%s; expires=Thu, 31-Dec-2020 23:59:59 GMT; path=/" % (GH_COOKIE_NAME, access_token)
 			else:
 				#Okay, this is the first request
-				#TODO: once this is public, we no longer need the repo scope to access the issues on RoboHornet.
-				self.redirect("https://github.com/login/oauth/authorize?client_id=%s&redirect_uri=%s&scope=repo" % (CLIENT_ID, self.request.url), False)
+				self.redirect("https://github.com/login/oauth/authorize?client_id=%s&redirect_uri=%s" % (CLIENT_ID, self.request.url), False)
 				return
 		self.redirect("/issue/%s/" % issue_number)
 

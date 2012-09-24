@@ -11,14 +11,9 @@ libraries:
 handlers:
 - url: /issue.*
   script: voting.app
-# TEMPORARILY SHUNT ALL OTHER REQUESTS THROUGH THE ACL HANDLER
-# Once this is public, flip back to fully static handlers
-- url: .*
-  script: simple-acl-server.app
-  login: required
-#- url: /
-#  static_files: static/robohornet.html
-#  upload: static/robohornet.html
-#- url: /(.*)
-#  static_files: static/\1
-#  upload: .*
+- url: /
+  static_files: static/robohornet.html
+  upload: static/robohornet.html
+- url: /(.*)
+  static_files: static/\1
+  upload: .*
