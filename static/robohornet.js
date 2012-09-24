@@ -366,7 +366,7 @@ robohornet.Runner = function(data) {
 
   _p.onPopupBlock_ = function() {
       // Reclaim window's name so we can use it again
-      this.benchmarkWindow_ && this.benchmarkWindow_.close();
+      //this.benchmarkWindow_ && this.benchmarkWindow_.close();
 
       this.setBenchmarkStatus_(this.activeBenchmark_, robohornet.enabledBenchmarks.POPUP_BLOCKED);
       this.activeBenchmark_ = null;
