@@ -21,6 +21,7 @@ function setUp(canvasSize)
     // create a canvas
     canvas = document.createElement('canvas');
     context = canvas.getContext('2d');
+    context.fillStyle = "#000000";
     canvasStyle = canvas.style;
 
     // set its width and height using CSS
@@ -41,6 +42,7 @@ function tearDown()
 }
 
 function test() {
+  context.fillRect(0, 0, 1, 1);
   context.clearRect(0, 0, size, size);
 }
 
