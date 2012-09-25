@@ -135,19 +135,27 @@ a {
   margin-left: 16px;
   font-weight: bold;
   cursor: pointer;
+  position: relative;
+  padding-left: 19px;
 }
 
 #tests > tbody > tr td > span::before {
   content: "\25BA";
   font-size: 10px;
   margin-right: 10px;
-  position: relative;
-  top: -2px;
+  position: absolute;
+  top: 4px;
+  left: 0;
   cursor: pointer;
+  display: inline-block;
 }
 
 #tests > tbody > tr.expanded td > span::before {
-  content: "\25BC";
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
 }
 
 div[id^=tags] {
