@@ -230,6 +230,22 @@ var ROBOHORNET_DATA = {
     },
 
     {
+      name: 'Object Scope Access',
+      issueNumber: 31,
+      description: 'Test different methods to access variables from an object',
+      filename: 'tests/object_scope.html',
+      runs: [
+        ['100,000 runs', 100000],
+        ['1,000,000 runs', 1000000],
+        ['10,000,000 runs', 10000000]
+      ],
+      weight: 1,
+      baselineTime: 100.0,
+      tags: ['JS'],
+      extended: false
+    },
+
+    {
       name: 'ES5 Property Accessors',
       issueNumber: 19,
       description: 'Test ES5 getter/setters',
