@@ -25,7 +25,7 @@ Comments that are without content, or merely express the sentiment of “+1” w
 
 ## Providing benchmarks
 
-Issues that already have proposed benchmarks are more likely to be included in the next update of the benchmark suite.  You can help out by [creating proposed benchmarks](Adding-A-Benchmark) to address performance issues.
+Issues that already have proposed benchmarks are more likely to be included in the next update of the benchmark suite.  You can help out by [creating proposed benchmarks](https://github.com/robohornet/robohornet/wiki/Adding-A-Benchmark) to address performance issues.
 
 ## Proposing new issues
 
@@ -45,4 +45,4 @@ E-mail robohornet-discuss@googlegroups.com with suggestions or other comments.
 
 ## Providing technical advice
 
-If you represent a browser or have advice about how some benchmarks can be improved to better measure the performance pain point, you might be interested in the [Technical Advisors](Technical-Advisors) program.
+If you represent a browser or have advice about how some benchmarks can be improved to better measure the performance pain point, you might be interested in the [Technical Advisors](https://github.com/robohornet/robohornet/wiki/Technical-Advisors) program.
