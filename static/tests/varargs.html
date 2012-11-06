@@ -34,8 +34,8 @@
         }
     }
 
-    function checkArgs(var_args) {
-        return !arguments.length && arguments.length != 0;
+    function checkArgs() {
+        return Array.prototype.slice.call(arguments);
     }
 </script>
 <script src="../test.js"></script>
