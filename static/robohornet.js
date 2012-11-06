@@ -351,7 +351,7 @@ robohornet.Runner = function(data) {
 
       // create fresh test environment iframe
       var iframe = document.createElement('iframe');
-      document.body.appendChild(iframe);
+      document.getElementById('test-container').appendChild(iframe);
       iframe.src = benchmark.filename + '?use_test_runner';
       this.benchmarkWindow_ = iframe.contentWindow;
 

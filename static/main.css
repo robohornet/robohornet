@@ -90,9 +90,6 @@ a {
 }
 
 iframe {
-  position: absolute;
-  top: 577px;
-  left: 60px;
   height: 300px;
 }
 
@@ -319,6 +316,13 @@ div.results {
   margin: 120px 0;
   text-align: center;
   width: 100%;
+  -webkit-transition: opacity .3s ease;
+  -moz-transition: opacity .3s ease;
+  -o-transition: opacity .3s ease;
+}
+
+.running div.results {
+  margin: 0;
 }
 
 header > div > div {
@@ -440,7 +444,7 @@ body.ready header img {
     -webkit-transform: translate(0, 0);
   }
   10% {
-  -  webkit-transform: translate(0, 0) rotate(34deg);
+    -webkit-transform: translate(0, 0) rotate(34deg);
   }
   17% {
     -webkit-transform: translate(-50%, 0) rotate(45deg);
@@ -499,7 +503,7 @@ body.ready header img {
 
 @-moz-keyframes button-flourish {
   from {
-   -moz-transform: scale(1.0);
+    -moz-transform: scale(1.0);
   }
   10% {
     -moz-transform: scale(1.15);
