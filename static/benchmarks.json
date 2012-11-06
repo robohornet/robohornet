@@ -246,22 +246,6 @@ var ROBOHORNET_DATA = {
     },
 
     {
-      name: 'Calculate primes',
-      issueNumber: 20,
-      description: 'Test calculating primes from 2 to N',
-      filename: 'tests/primes.html',
-      runs: [
-        ['Primes up to 1000', 1000],
-        ['Primes up to 10000', 10000],
-        ['Primes up to 100000', 100000]
-      ],
-      weight: 1,
-      baselineTime: 96.83,
-      tags: ['MATH', 'G_MAPS', 'JQUERY', 'EMBER', 'HANDLEBARS', 'CAPPUCCINO'],
-      extended: false
-    },
-
-    {
       name: 'Argument instantiation',
       issueNumber: 21,
       description: 'Test referencing the arguments array',
