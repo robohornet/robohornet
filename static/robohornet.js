@@ -147,7 +147,7 @@ robohornet.Runner = function(data) {
     this.rawScore_ = 0;
     this.progressElement_.style.opacity = '0.1';
     this.statusElement_.textContent = 'Please wait while the benchmark runs. For best results, close all other programs and pages while the test is running.';
-    window.setTimeout(bind(this.next_, this), 25);
+    window.setTimeout(bind(this.next_, this), 1000);
   };
 
   _p.next_ = function() {
@@ -344,10 +344,7 @@ robohornet.Runner = function(data) {
     window.setTimeout(bind(function() {
 
       // clear old test iframes
-      var iframes = document.querySelectorAll('iframe');
-      [].forEach.call(iframes, function(elem){
-        elem.parentNode.removeChild(elem);
-      });
+      _p.clearTestIframes_();
 
       // create fresh test environment iframe
       var iframe = document.createElement('iframe');
@@ -365,6 +362,14 @@ robohornet.Runner = function(data) {
       }
     }, this), 25);
   };
+
+  _p.clearTestIframes_ = function() {
+    var iframes = document.querySelectorAll('iframe');
+    [].forEach.call(iframes, function(elem){
+      elem.parentNode.removeChild(elem);
+    });
+  };
+
 
   _p.onPopupBlock_ = function() {
       // Reclaim window's name so we can use it again
@@ -392,8 +397,9 @@ robohornet.Runner = function(data) {
       return;
     }
 
-    this.benchmarkWindow_.close();
+    _p.clearTestIframes_();
     this.benchmarkWindow_ = null;
+
     var results = [];
     for (var run, i = 0; run = suite[i]; i++) {
       results.push({
@@ -545,7 +551,7 @@ robohornet.Runner = function(data) {
 
     this.setScore_();
 
-    row.cells[1].textContent = 'Completed successfully ';
+    row.cells[1].textContent = 'Completed';
     row.cells[2].textContent = accumulatedMean.toFixed(2) + 'ms';
     row.cells[5].textContent = score.toFixed(2);
   };
