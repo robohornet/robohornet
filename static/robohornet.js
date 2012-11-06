@@ -147,7 +147,7 @@ robohornet.Runner = function(data) {
     this.rawScore_ = 0;
     this.progressElement_.style.opacity = '0.1';
     this.statusElement_.textContent = 'Please wait while the benchmark runs. For best results, close all other programs and pages while the test is running.';
-    window.setTimeout(bind(this.next_, this), 25);
+    window.setTimeout(bind(this.next_, this), 1000);
   };
 
   _p.next_ = function() {
@@ -340,20 +340,17 @@ robohornet.Runner = function(data) {
     this.setBenchmarkStatus_(benchmark, robohornet.enabledBenchmarks.LOADING);
     this.activeBenchmark_ = benchmark;
 
-    //  We want to position the popup window on top, ideally with its bottom right corner in the bottom right of the screen.
-    //  For most browsers and platforms, if we overshoot it's fine; the popup will be moved to be fully on screen.
-    //  However, because of a bug in some browsers for now we just try to center in the window.
-
-    var TARGET_WINDOW_WIDTH = 800;
-    var TARGET_WINDOW_HEIGHT = 600;
-
-    var left = (window.screen.availWidth / 2) - (TARGET_WINDOW_WIDTH / 2) + window.screen.availLeft;
-    var top = (window.screen.availHeight / 2) - (TARGET_WINDOW_HEIGHT / 2) + window.screen.availTop;
-
+    // delay each execution to yield for UI
     window.setTimeout(bind(function() {
-      this.benchmarkWindow_ = window.open(benchmark.filename + '?use_test_runner', 'robohornet',
-          'left=' + left + ',top=' + top +
-          ',width='+ TARGET_WINDOW_WIDTH + ',height=' + TARGET_WINDOW_HEIGHT);
+
+      // clear old test iframes
+      _p.clearTestIframes_();
+
+      // create fresh test environment iframe
+      var iframe = document.createElement('iframe');
+      document.getElementById('iframe-wrap').appendChild(iframe);
+      iframe.src = benchmark.filename + '?use_test_runner';
+      this.benchmarkWindow_ = iframe.contentWindow;
 
       if (this.benchmarkWindow_) {
         this.benchmarkWindow_.onload = function(){
@@ -365,6 +362,14 @@ robohornet.Runner = function(data) {
       }
     }, this), 25);
   };
+
+  _p.clearTestIframes_ = function() {
+    var iframes = document.querySelectorAll('iframe');
+    [].forEach.call(iframes, function(elem){
+      elem.parentNode.removeChild(elem);
+    });
+  };
+
 
   _p.onPopupBlock_ = function() {
       // Reclaim window's name so we can use it again
@@ -392,8 +397,10 @@ robohornet.Runner = function(data) {
       return;
     }
 
-    this.benchmarkWindow_.close();
+    _p.clearTestIframes_();
+
     this.benchmarkWindow_ = null;
+
     var results = [];
     for (var run, i = 0; run = suite[i]; i++) {
       results.push({
@@ -545,7 +552,7 @@ robohornet.Runner = function(data) {
 
     this.setScore_();
 
-    row.cells[1].textContent = 'Completed successfully ';
+    row.cells[1].textContent = 'Completed';
     row.cells[2].textContent = accumulatedMean.toFixed(2) + 'ms';
     row.cells[5].textContent = score.toFixed(2);
   };

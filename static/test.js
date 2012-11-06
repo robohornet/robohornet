@@ -8,9 +8,9 @@ var requestAnimationFrameFunction =
       window.setTimeout(callback, 1000 / 60);
     };
 
-if (window.opener && window.opener.__robohornet__ && window.location.search == '?use_test_runner') {
+if (window.parent && window.parent.__robohornet__ && window.location.search == '?use_test_runner') {
   document.body.appendChild(document.createTextNode('Running test using test runner...'));
-  window.opener.__robohornet__.benchmarkLoaded();
+  window.parent.__robohornet__.benchmarkLoaded();
 } else {
 
   document.body.appendChild(document.createTextNode('Running test standalone...'));
