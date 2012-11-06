@@ -90,28 +90,26 @@ a {
 }
 
 #test-container {
-  display: -webkit-box;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: reverse;
   margin: 0 auto;
   width: 1050px;
-
-  display: -webkit-flex;
-  -webkit-flex-flow: row-reverse;
-  -webkit-justify-content: center;
-  -webkit-align-content: center;
-  -webkit-align-items: flex-start;
-
 }
 
-#tests-wrap, iframe {
- -webkit-box-flex: 1;
+#iframe-wrap {
+  height: 300px;
+  margin: 9px 23px 0 0;
+  overflow: hidden;
+  width: 300px;
+  display: inline-block;
+  vertical-align: top;
 }
 
 iframe {
   height: 300px;
-  margin: 9px 23px 0 0;
   width: 300px;
+}
+
+#tests-wrap {
+  display: inline-block;
 }
 
 #tests > thead > tr > td {

@@ -348,7 +348,7 @@ robohornet.Runner = function(data) {
 
       // create fresh test environment iframe
       var iframe = document.createElement('iframe');
-      document.getElementById('test-container').appendChild(iframe);
+      document.getElementById('iframe-wrap').appendChild(iframe);
       iframe.src = benchmark.filename + '?use_test_runner';
       this.benchmarkWindow_ = iframe.contentWindow;
 
@@ -398,6 +398,7 @@ robohornet.Runner = function(data) {
     }
 
     _p.clearTestIframes_();
+
     this.benchmarkWindow_ = null;
 
     var results = [];
