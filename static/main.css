@@ -310,6 +310,7 @@ header img {
   -webkit-transition: opacity 3s ease;
   -moz-transition: opacity 3s ease;
   -o-transition: opacity 3s ease;
+  transition: opacity 3s ease;
 }
 
 div.results {
@@ -319,6 +320,7 @@ div.results {
   -webkit-transition: opacity .3s ease;
   -moz-transition: opacity .3s ease;
   -o-transition: opacity .3s ease;
+  transition: opacity .3s ease;
 }
 
 .running div.results {
@@ -346,6 +348,7 @@ header > div > div {
   -webkit-transition: opacity 2s;
   -moz-transition: opacity 2s;
   -o-transition: opacity 2s;
+  transition: opacity 2s;
 }
 
 #index.final {
@@ -361,6 +364,7 @@ header > div > div {
   background-image: -webkit-linear-gradient(top, #F05A2A, #F6943D);
   background-image: -moz-linear-gradient(top, #F05A2A, #F6943D);
   background-image: -o-linear-gradient(top, #F05A2A, #F6943D);
+  background-image: linear-gradient(top, #F05A2A, #F6943D);
   color: #FDE7A7;
   font-size: 26px;
   /* Large enough so the size doesn't change for any of the messages */
@@ -388,12 +392,20 @@ header > div > div {
   -o-animation-timing-function: ease;
   /* we ideally want to flourish just as the logo crosses on load. */
   -o-animation-delay: 1s;
+
+  animation-name: button-flourish;
+  animation-duration: 2s;
+  animation-iteration-count: 1;
+  animation-timing-function: ease;
+  /* we ideally want to flourish just as the logo crosses on load. */
+  animation-delay: 1s;
 }
 
 #runButton:active {
   background-image: -webkit-linear-gradient(top, #F6943D, #F05A2A);
   background-image: -moz-linear-gradient(top, #F6943D, #F05A2A);
   background-image: -o-linear-gradient(top, #F6943D, #F05A2A);
+  background-image: linear-gradient(top, #F6943D, #F05A2A);
 }
 
 #runButton:hover {
@@ -421,6 +433,7 @@ header img {
   -webkit-transform-origin: 30% 65%;
   -moz-transform-origin: 30% 65%;
   -o-transform-origin: 30% 65%;
+  transform-origin: 30% 65%;
   /* Trigger compositing now so we don't get a flash when it does */
   -webkit-transform: translate(0,0,0);
   /* Show over top of the Run button */
