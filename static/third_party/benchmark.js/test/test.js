@@ -1,13 +1,20 @@
-(function(window, undefined) {
+;(function(window, undefined) {
+  'use strict';
 
   /** Use a single load function */
   var load = typeof require == 'function' ? require : window.load;
+
+  /** The `platform` object to check */
+  var platform =
+    window.platform ||
+    load('../vendor/platform.js/platform.js') ||
+    window.platform;
 
   /** The unit testing framework */
   var QUnit =
     window.QUnit || (
       window.setTimeout || (window.addEventListener = window.setTimeout = / /),
-      window.QUnit = load('../vendor/qunit/qunit/qunit.js') || window.QUnit,
+      window.QUnit = load('../vendor/qunit/qunit/qunit' + (platform.name == 'Narwhal' ? '-1.8.0' : '') + '.js') || window.QUnit,
       load('../vendor/qunit-clib/qunit-clib.js'),
       (window.addEventListener || 0).test && delete window.addEventListener,
       window.QUnit
@@ -62,9 +69,10 @@
    * Skips a given number of tests with a passing result.
    *
    * @private
-   * @param {Number} count The number of tests to skip.
+   * @param {Number} [count=1] The number of tests to skip.
    */
   function skipTest(count) {
+    count || (count = 1);
     while (count--) {
       ok(true, 'test skipped');
     }
@@ -78,7 +86,7 @@
   // set a shorter max time
   Benchmark.options.maxTime = Benchmark.options.minTime * 5;
 
-  // must explicitly use `QUnit.module` instead of `module()`
+  // explicitly call `QUnit.module()` instead of `module()`
   // in case we are in a CLI environment
   QUnit.module('Benchmark');
 
@@ -149,7 +157,7 @@
     });
   }());
 
- /*--------------------------------------------------------------------------*/
+  /*--------------------------------------------------------------------------*/
 
   QUnit.module('Benchmark compilation');
 
@@ -163,7 +171,7 @@
 
       var compiled = bench.compiled;
       if (/setup\(\)/.test(compiled)) {
-        skipTest(1);
+        skipTest();
       }
       else {
         ok(/var a\s*=\s*1/.test(compiled) && /throw a/.test(compiled) && /a\s*=\s*2/.test(compiled));
@@ -184,7 +192,7 @@
 
       var compiled = bench.compiled;
       if (/setup\(\)/.test(compiled)) {
-        skipTest(1);
+        skipTest();
       }
       else {
         ok(/var a\s*=\s*1/.test(compiled) && /throw a/.test(compiled) && /a\s*=\s*2/.test(compiled));
@@ -200,7 +208,7 @@
 
       var compiled = bench.compiled;
       if (/setup\(\)/.test(compiled)) {
-        skipTest(1);
+        skipTest();
       }
       else {
         ok(/var a\s*=\s*1/.test(compiled) && /throw a/.test(compiled) && /a\s*=\s*2/.test(compiled));
@@ -217,16 +225,16 @@
 
     var tests = {
       'inlined "setup", "fn", and "teardown"': (
-        'if(this instanceof Benchmark)this._fn=true;'
+        'if(/ops/.test(this))this._fn=true;'
       ),
       'called "fn" and inlined "setup"/"teardown" reached by error': function() {
         count++;
-        if (this instanceof Benchmark) {
+        if (/ops/.test(this)) {
           this._fn = true;
         }
       },
       'called "fn" and inlined "setup"/"teardown" reached by `return` statement': function() {
-        if (this instanceof Benchmark) {
+        if (/ops/.test(this)) {
           this._fn = true;
         }
         return;
@@ -236,9 +244,9 @@
     forOwn(tests, function(fn, title) {
       test('has correct binding for ' + title, function() {
         var bench = Benchmark({
-          'setup': 'if(this instanceof Benchmark)this._setup=true;',
+          'setup': 'if(/ops/.test(this))this._setup=true;',
           'fn': fn,
-          'teardown': 'if(this instanceof Benchmark)this._teardown=true;',
+          'teardown': 'if(/ops/.test(this))this._teardown=true;',
           'onCycle': function() { this.abort(); }
         }).run();
 
@@ -272,8 +280,10 @@
     }
 
     function Klass() {
-      // no-op
+      this.a = 1;
     }
+
+    Klass.prototype = { 'b': 1 };
 
     var notCloneable = {
       'an arguments object': arguments,
@@ -300,8 +310,6 @@
 
     objects['an array'].length = 5;
 
-    Klass.prototype = { 'x': 1 };
-
     forOwn(objects, function(object, key) {
       test('clones ' + key + ' correctly', function() {
         var kind = toString.call(object),
@@ -315,7 +323,7 @@
         if (object === Object(object)) {
           ok(clone !== object);
         } else {
-          skipTest(1);
+          skipTest();
         }
       });
     });
@@ -326,13 +334,14 @@
       });
     });
 
-    Klass.prototype.deepClone = function() { return new Klass; };
-
     test('clones using Klass#deepClone', function() {
-      var object = new Klass,
-          clone = Benchmark.deepClone(object);
+      var object = new Klass;
+      Klass.prototype.deepClone = function() { return new Klass; };
 
+      var clone = Benchmark.deepClone(object);
       ok(clone !== object && clone instanceof Klass);
+
+      delete Klass.prototype.clone;
     });
 
     test('clones problem JScript properties', function() {
@@ -430,32 +439,6 @@
         skipTest(1)
       }
     });
-
-    test('avoids call stack limits', function() {
-      var count = 0,
-          object = {},
-          recurse = function() { count++; recurse(); };
-
-      if (toString.call(window.java) == '[object JavaPackage]') {
-        // Java throws uncatchable errors on call stack overflows, so to avoid
-        // them I chose a number higher than Rhino's call stack limit without
-        // dynamically testing for the actual limit
-        count = 3e3;
-      } else {
-        try { recurse(); } catch(e) { }
-      }
-      // exceed limit
-      count++;
-      for (var i = 0, sub = object; i <= count; i++) {
-        sub = sub[i] = {};
-      }
-      try {
-        for (var i = 0, sub = Benchmark.deepClone(object); sub = sub[i]; i++) { }
-        result = --i == count;
-      } catch(e) { }
-
-      ok(result, 'avoids call stack limits (stack limit is ' + (count - 1) + ')');
-    });
   }());
 
   /*--------------------------------------------------------------------------*/
@@ -505,7 +488,7 @@
           ok(actual === object);
         }
         else {
-          skipTest(1);
+          skipTest();
         }
       });
 
@@ -519,7 +502,7 @@
           deepEqual(values, key == 'xpath snapshot' ? xpathResult : ['a', 'b', 'c', '']);
         }
         else {
-          skipTest(1);
+          skipTest();
         }
       });
 
@@ -534,7 +517,7 @@
           deepEqual(values, key == 'xpath snapshot' ? xpathResult.slice(0, 2) : ['a', 'b']);
         }
         else {
-          skipTest(1);
+          skipTest();
         }
       });
     });
@@ -1070,6 +1053,32 @@
       var clone = bench.clone({ 'fn': '', 'name': 'foo' });
       ok(clone.fn === '' && clone.options.fn === '');
       ok(clone.name == 'foo' && clone.options.name == 'foo');
+    });
+  }());
+
+  /*--------------------------------------------------------------------------*/
+
+  QUnit.module('Benchmark#run');
+
+  (function() {
+    var data = { 'onComplete': 0, 'onCycle': 0, 'onStart': 0 };
+
+    var bench = Benchmark({
+      'fn': function() {
+        this.count += 0;
+      },
+      'onStart': function() {
+        data.onStart++;
+      },
+      'onComplete': function() {
+        data.onComplete++;
+      }
+    })
+    .run();
+
+    test('onXYZ callbacks should not be triggered by internal benchmark clones', function() {
+      equal(data.onStart, 1);
+      equal(data.onComplete, 1);
     });
   }());
 
@@ -1669,6 +1678,17 @@
       deepEqual(slice.call(suite), [0]);
     });
 
+    test('works with only the `start` argument', function() {
+      var suite = Benchmark.Suite();
+      suite[0] = 0;
+      suite[1] = 1;
+      suite.length = 2;
+
+      var actual = suite.splice(1);
+      deepEqual(actual, [1]);
+      deepEqual(slice.call(suite), [0]);
+    });
+
     test('should have no elements when length is 0 after splice', function() {
       var suite = Benchmark.Suite();
       suite[0] = 0;
@@ -1943,22 +1963,36 @@
   (function() {
     asyncTest('should run a deferred benchmark correctly', function() {
       Benchmark(function(deferred) {
-        setTimeout(function() { deferred.resolve(); }, 10);
+        setTimeout(function() { deferred.resolve(); }, 1e3);
       }, {
         'defer': true,
         'onComplete': function() {
-          ok(this.cycles);
+          equal(this.hz.toFixed(0), 1);
           QUnit.start();
         }
       })
       .run();
     });
 
-    asyncTest('works with string values for "fn", "setup", and "teardown"', function() {
+    asyncTest('should run with string values for "fn", "setup", and "teardown"', function() {
       Benchmark({
         'defer': true,
         'setup': 'var x = [3, 2, 1];',
-        'fn': 'x.sort(); deferred.resolve();',
+        'fn': 'setTimeout(function() { x.sort(); deferred.resolve(); }, 10);',
+        'teardown': 'x.length = 0;',
+        'onComplete': function() {
+          ok(true);
+          QUnit.start();
+        }
+      })
+      .run();
+    });
+
+    asyncTest('should run recursively', function() {
+      Benchmark({
+        'defer': true,
+        'setup': 'var x = [3, 2, 1];',
+        'fn': 'for (var i = 0; i < 100; i++) x[ i % 2 ? "sort" : "reverse" ](); deferred.resolve();',
         'teardown': 'x.length = 0;',
         'onComplete': function() {
           ok(true);
@@ -1995,7 +2029,45 @@
 
   /*--------------------------------------------------------------------------*/
 
-  // explicitly call `QUnit.start()` in a CLI environment
+  QUnit.module('Benchmark.deepClone');
+
+  (function() {
+    asyncTest('avoids call stack limits', function() {
+      var result,
+          count = 0,
+          object = {},
+          recurse = function() { count++; recurse(); };
+
+      setTimeout(function() {
+        ok(result, 'avoids call stack limits (stack limit is ' + (count - 1) + ')');
+        QUnit.start();
+      }, 15);
+
+      if (toString.call(window.java) == '[object JavaPackage]') {
+        // Java throws uncatchable errors on call stack overflows, so to avoid
+        // them I chose a number higher than Rhino's call stack limit without
+        // dynamically testing for the actual limit
+        count = 3e3;
+      } else {
+        try { recurse(); } catch(e) { }
+      }
+
+      // exceed limit
+      count++;
+      for (var i = 0, sub = object; i <= count; i++) {
+        sub = sub[i] = {};
+      }
+
+      try {
+        for (var i = 0, sub = Benchmark.deepClone(object); sub = sub[i]; i++) { }
+        result = --i == count;
+      } catch(e) { }
+    });
+  }());
+
+  /*--------------------------------------------------------------------------*/
+
+  // explicitly call `QUnit.start()` for Narwhal, Rhino, and RingoJS
   if (!window.document) {
     QUnit.start();
   }
