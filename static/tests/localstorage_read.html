@@ -9,16 +9,20 @@
 <script>
 
     var DEFAULT_ITEMS = 100;
+    var keySet = {};
 
     function setUp(opt_items)
     {
         var items = opt_items || DEFAULT_ITEMS;
         for (var i = 0; i < items; i++) {
-            localStorage.setItem('key' + i, i);
+            var key = 'key' + i;
+            keySet[i] = key;
+            localStorage.setItem(key, i);
         }
     }
 
     function reset() {
+        keySet = {};
         localStorage.clear();
     }
 
@@ -31,7 +35,7 @@
     {
         var items = opt_items || DEFAULT_ITEMS;
         for (var i = 0; i < items; i++) {
-            localStorage.getItem('key' + i);
+            localStorage.getItem(keySet[i]);
         }
     }
 </script>
