@@ -342,7 +342,7 @@ header > div > div {
 
 #runButton {
   float: right;
-  margin-left: 10px;
+  margin: 0 130px 0 10px;
   padding: 5px;
   border-radius: 5px;
   background-color: #F05A2A;
@@ -499,4 +499,16 @@ body.ready header img {
   to {
     -moz-transform: scale(1.0);
   }
+}
+
+footer #fork {
+  -webkit-animation: button-flourish 2s ease 1.02s 1;
+     -moz-animation: button-flourish 2s ease 1.02s 1;
+       -o-animation: button-flourish 2s ease 1.02s 1;
+          animation: button-flourish 2s ease 1.02s 1;
+
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 0;
 }
