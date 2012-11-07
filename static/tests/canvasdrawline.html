@@ -7,52 +7,50 @@
 var canvas, vertices;
 var DEFAULT_NUMBER_OF_VERTICES = 2500;
 
-function setUp(opt_numberOfVertices)
-{
-    var numberOfVertices = opt_numberOfVertices || DEFAULT_NUMBER_OF_VERTICES;
-    var container = document.getElementById('container');
-    container.style.overflow = 'hidden';
+function setUp(opt_numberOfVertices) {
+  var numberOfVertices = opt_numberOfVertices || DEFAULT_NUMBER_OF_VERTICES;
+  var container = document.getElementById('container');
+  container.style.overflow = 'hidden';
 
-    vertices = makeRandomPath(512, 512, numberOfVertices);
+  vertices = makeRandomPath(512, 512, numberOfVertices);
 
-    canvas = document.createElement('canvas');
-    var canvasStyle = canvas.style;
-    canvasStyle.position = 'absolute';
-    canvasStyle.left = '0px';
-    canvasStyle.top = '0px';
-    canvas.width = canvas.height = 512;
-    canvasStyle.width = canvasStyle.height = '512px';
+  canvas = document.createElement('canvas');
+  var canvasStyle = canvas.style;
+  canvasStyle.position = 'absolute';
+  canvasStyle.left = '0px';
+  canvasStyle.top = '0px';
+  canvas.width = canvas.height = 512;
+  canvasStyle.width = canvasStyle.height = '512px';
 
-    container.appendChild(canvas);
+  container.appendChild(canvas);
 }
 
-function tearDown()
-{
+function tearDown() {
   var container = document.getElementById('container');
   while (container.firstChild) { container.removeChild(container.lastChild); }
 }
  
 function test(opt_numberOfVertices) {
-    var numberOfVertices = opt_numberOfVertices || DEFAULT_NUMBER_OF_VERTICES;
-    var path = vertices;
-    var context = canvas.getContext('2d');
+  var numberOfVertices = opt_numberOfVertices || DEFAULT_NUMBER_OF_VERTICES;
+  var path = vertices;
+  var context = canvas.getContext('2d');
 
-    context.lineCap = context.lineJoin = 'round';
-    context.strokeStyle = 'rgba(255, 170, 85, 0.2)';
-    context.lineWidth = 1;
-    
-    var x = path[0];
-    var y = path[1]
-    for (var i = 2, I = path.length; i < I; ) {
-        context.moveTo(x, y);
-        x = path[i];
-        y = path[i + 1];
-        context.lineTo(x, y);
-        context.stroke();
-        i += 2;
-    }
+  context.lineCap = context.lineJoin = 'round';
+  context.strokeStyle = 'rgba(255, 170, 85, 0.2)';
+  context.lineWidth = 1;
+  
+  var x = path[0];
+  var y = path[1]
+  for (var i = 2, I = path.length; i < I;) {
+    context.moveTo(x, y);
+    x = path[i];
+    y = path[i + 1];
+    context.lineTo(x, y);
+    context.stroke();
+    i += 2;
+  }
 }
- 
+
 function makeRandomPath(width, height, numVerts) {
   var path = [];
   for (var i = 0; i < numVerts; ++i) {
@@ -61,7 +59,6 @@ function makeRandomPath(width, height, numVerts) {
   }
   return path;
 }
-
 </script> 
 </head> 
 <body>

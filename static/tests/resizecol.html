@@ -3,71 +3,68 @@
 <head>
 <title>Resizing columns in a table</title>
 <style>
-    td { border: 1px; margin: 5px; }
+  td { border: 1px; margin: 5px; }
 </style>
 </head>
 <body>
 <script>
-    
-    var container;
-    var DEFAULT_SIZE = [500, 100];
-    
-    function setUp(opt_size)
-    {
-        var size = opt_size || DEFAULT_SIZE;
-        var rowCount = size[0];
-        var colCount = size[1];
 
-        var buff = [];
-        buff.push('<table><tbody>');
-        buff.push('<tr>');
-        for (var col = 0; col < colCount; col++) {
-            // Build table headers
-            buff.push('<th style="width:200px;">H</th>');
-        }
-        buff.push('</tr>');
-        for (var i = 0; i < rowCount; i++) {
-            buff.push('<tr>');
-            for (var j = 0; j < colCount; j++) {
-                buff.push('<td>');
-                buff.push(i + ', ' + j);
-                buff.push('</td>');
-            }
-            buff.push('</tr>');
-        }
-        buff.push('</tbody></table>');
+var container;
+var DEFAULT_SIZE = [500, 100];
 
-        container = document.createElement('div');
-        container.innerHTML = buff.join('');
-        document.body.appendChild(container);
+function setUp(opt_size) {
+  var size = opt_size || DEFAULT_SIZE;
+  var rowCount = size[0];
+  var colCount = size[1];
+
+  var buff = [];
+  buff.push('<table><tbody>');
+  buff.push('<tr>');
+  for (var col = 0; col < colCount; col++) {
+    // Build table headers
+    buff.push('<th style="width:200px;">H</th>');
+  }
+  buff.push('</tr>');
+  for (var i = 0; i < rowCount; i++) {
+    buff.push('<tr>');
+    for (var j = 0; j < colCount; j++) {
+      buff.push('<td>');
+      buff.push(i + ', ' + j);
+      buff.push('</td>');
     }
+    buff.push('</tr>');
+  }
+  buff.push('</tbody></table>');
 
-    function tearDown()
-    {
-        container.parentNode.removeChild(container);
-        container = null;
-    }
+  container = document.createElement('div');
+  container.innerHTML = buff.join('');
+  document.body.appendChild(container);
+}
 
-    function reset() {
-        if (!container) return;
-        var tbody = container.firstChild.firstChild;
-        var firstRow = tbody.firstChild;
-        for (var i = 0; i < size[1] /** colCount */; i++) {
-            firstRow.cells[i].style.width = '200px';
-            var forceLayout = tbody.offsetTop;
-        }
-    }
+function tearDown() {
+  container.parentNode.removeChild(container);
+  container = null;
+}
 
-    function test(opt_size)
-    {
-        var size = opt_size || DEFAULT_SIZE;
-        var tbody = container.firstChild.firstChild;
-        var firstRow = tbody.firstChild;
-        for (var i = 0; i < size[1] /** colCount */; i++) {
-            firstRow.cells[i].style.width = '50px';
-            var forceLayout = tbody.offsetTop;
-        }
-    }
+function reset() {
+  if (!container) return;
+  var tbody = container.firstChild.firstChild;
+  var firstRow = tbody.firstChild;
+  for (var i = 0; i < size[1] /** colCount */; i++) {
+    firstRow.cells[i].style.width = '200px';
+    var forceLayout = tbody.offsetTop;
+  }
+}
+
+function test(opt_size) {
+  var size = opt_size || DEFAULT_SIZE;
+  var tbody = container.firstChild.firstChild;
+  var firstRow = tbody.firstChild;
+  for (var i = 0; i < size[1] /** colCount */; i++) {
+    firstRow.cells[i].style.width = '50px';
+    var forceLayout = tbody.offsetTop;
+  }
+}
 </script>
 <script src="../test.js"></script>
 </body>

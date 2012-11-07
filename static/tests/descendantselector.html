@@ -13,37 +13,34 @@ div { padding: 1px; }
 <body>
 <script>
 
-    var rootElement;
-    var totalHeight;
-    var DEFAULT_DEPTH = 1000;
-    
-    function setUp(opt_depth)
-    {
-        var depth = opt_depth || DEFAULT_DEPTH;
-        rootElement = document.createElement('div');
-        var parentElement = rootElement;
-        for (var i = 0; i < depth; i++) {
-            var element = document.createElement('div');
-                        element.appendChild(document.createTextNode(i));
-            parentElement.appendChild(element);
-            parentElement = element;
-        }
-        document.body.appendChild(rootElement);
-        totalHeight = 0
-    }
+var rootElement;
+var totalHeight;
+var DEFAULT_DEPTH = 1000;
 
-    function tearDown()
-    {
-        rootElement.parentNode.removeChild(rootElement);
-        rootElement = null;
-    }
+function setUp(opt_depth) {
+  var depth = opt_depth || DEFAULT_DEPTH;
+  rootElement = document.createElement('div');
+  var parentElement = rootElement;
+  for (var i = 0; i < depth; i++) {
+    var element = document.createElement('div');
+    element.appendChild(document.createTextNode(i));
+    parentElement.appendChild(element);
+    parentElement = element;
+  }
+  document.body.appendChild(rootElement);
+  totalHeight = 0
+}
 
-    function test(opt_depth)
-    {
-        var depth = opt_depth || DEFAULT_DEPTH;
-        rootElement.className = rootElement.className == 'test' ? 'test2' : 'test';
-        totalHeight += rootElement.offsetHeight;
-    }
+function tearDown() {
+  rootElement.parentNode.removeChild(rootElement);
+  rootElement = null;
+}
+
+function test(opt_depth) {
+  var depth = opt_depth || DEFAULT_DEPTH;
+  rootElement.className = rootElement.className == 'test' ? 'test2' : 'test';
+  totalHeight += rootElement.offsetHeight;
+}
 </script>
 <script src="../test.js"></script>
 </body>
