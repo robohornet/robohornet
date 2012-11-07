@@ -51,8 +51,6 @@
         return !localStorage.getItem(+new Date);
       } catch(e) { }
     }(),
-    // detects Opera Mini
-    'operaMini': platform.name == 'Opera Mini',
     // used to distinguish between a regular test page and an embedded chart
     'runner': !!$('runner')
   };
@@ -74,12 +72,13 @@
 
   /** The options object for Benchmark.Suite#run */
   var runOptions = {
-    'async': !has.operaMini,
+    'async': true,
     'queued': true
   };
 
   /** API shortcuts */
   var each = Benchmark.each,
+      extend = Benchmark.extend,
       filter = Benchmark.filter,
       forOwn = Benchmark.forOwn,
       formatNumber = Benchmark.formatNumber,
@@ -100,7 +99,7 @@
       var bench = this,
           size = bench.stats.sample.length;
 
-      if (!bench.aborted && !has.operaMini) {
+      if (!bench.aborted) {
         setStatus(bench.name + ' &times; ' + formatNumber(bench.count) + ' (' +
           size + ' sample' + (size == 1 ? '' : 's') + ')');
       }
@@ -370,19 +369,15 @@
   /*--------------------------------------------------------------------------*/
 
   /**
-   * Copies own/inherited properties of a source object to the destination object.
+   * Gets the Hz, i.e. operations per second, of `bench` adjusted for the
+   * margin of error.
    *
    * @private
-   * @param {Object} destination The destination object.
-   * @param {Object} [source={}] The source object.
-   * @returns {Object} The destination object.
+   * @param {Object} bench The benchmark object.
+   * @returns {Number} Returns the adjusted Hz.
    */
-  function extend(destination, source) {
-    source || (source = {});
-    for (var key in source) {
-      destination[key] = source[key];
-    }
-    return destination;
+  function getHz(bench) {
+    return 1 / (bench.stats.mean + bench.stats.moe);
   }
 
   /**
@@ -552,10 +547,8 @@
     }
   })
   .on('start cycle', function() {
-    if (!has.operaMini) {
-      ui.render();
-      setHTML('run', texts.run.running);
-    }
+    ui.render();
+    setHTML('run', texts.run.running);
   })
   .on('complete', function() {
     var benches = filter(ui.benchmarks, 'successful'),
@@ -568,9 +561,10 @@
 
     // highlight result cells
     each(benches, function(bench) {
-      var percent,
-          cell = $(prefix + (indexOf(ui.benchmarks, bench) + 1)),
-          hz = bench.hz,
+      var cell = $(prefix + (indexOf(ui.benchmarks, bench) + 1)),
+          fastestHz = getHz(fastest[0]),
+          hz = getHz(bench),
+          percent = (1 - (hz / fastestHz)) * 100,
           span = cell.getElementsByTagName('span')[0],
           text = 'fastest';
 
@@ -579,8 +573,9 @@
         addClass(cell, text);
       }
       else {
-        percent = Math.round((1 - hz / fastest[0].hz) * 100);
-        text = isFinite(hz) ? percent + '% slower' : '';
+        text = isFinite(hz)
+          ? formatNumber(percent < 1 ? percent.toFixed(2) : Math.round(percent)) + '% slower'
+          : '';
 
         // mark slowest
         if (indexOf(slowest, bench) > -1) {

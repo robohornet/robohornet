@@ -87,9 +87,28 @@ class Generator {
    * @returns {String} The formatted string.
    */
   private static function format($string) {
-    // mark numbers as code and italicize parentheses
-    return trim(preg_replace('/(^|\s)(\([^)]+\))/', '$1*$2*',
-      preg_replace('/ (-?\d+(?:.\d+)?)(?!\.[^\n])/', ' `$1`', $string)));
+    $counter = 0;
+
+    // tokenize inline code snippets
+    preg_match_all('/`[^`]+`/', $string, $tokenized);
+    $tokenized = $tokenized[0];
+    foreach ($tokenized as $snippet) {
+      $string = str_replace($snippet, '__token' . ($counter++) .'__', $string);
+    }
+
+    // italicize parentheses
+    $string = preg_replace('/(^|\s)(\([^)]+\))/', '$1*$2*', $string);
+
+    // mark numbers as inline code
+    $string = preg_replace('/ (-?\d+(?:.\d+)?)(?!\.[^\n])/', ' `$1`', $string);
+
+    // detokenize inline code snippets
+    $counter = 0;
+    foreach ($tokenized as $snippet) {
+      $string = str_replace('__token' . ($counter++) . '__', $snippet, $string);
+    }
+
+    return trim($string);
   }
 
   /**
@@ -142,7 +161,11 @@ class Generator {
   private function getHash( $entry, $member = '' ) {
     $entry = is_numeric($entry) ? $this->entries[$entry] : $entry;
     $member = !$member ? $entry->getMembers(0) : $member;
-    return ($member ? str_replace('#', ':', $member) . ($entry->isPlugin() ? ':' : '.') : '') . $entry->getName();
+    $result = ($member ? $member . ($entry->isPlugin() ? 'prototype' : '') : '') . $entry->getCall();
+    $result = preg_replace('/\(\[|\[\]/', '', $result);
+    $result = preg_replace('/[ =\'"{}.()\]]/', '', $result);
+    $result = preg_replace('/[[#,]/', '-', $result);
+    return strtolower($result);
   }
 
   /**
@@ -168,14 +191,14 @@ class Generator {
    */
   private function getSeparator( $entry ) {
     $entry = is_numeric($entry) ? $this->entries($entry) : $entry;
-    return $entry->isPlugin() ? '#' : '.';
+    return $entry->isPlugin() ? '.prototype.' : '.';
   }
 
   /*--------------------------------------------------------------------------*/
 
   /**
    * Generates Markdown from JSDoc entries.
-   * 
+   *
    * @memberOf Generator
    * @returns {String} The rendered Markdown.
    */
@@ -185,6 +208,7 @@ class Generator {
     $openTag = "\n<!-- div -->\n";
     $closeTag = "\n<!-- /div -->\n";
     $result = array('# ' . $this->options['title']);
+    $toc = 'toc';
 
     // initialize $api array
     foreach ($this->entries as $entry) {
@@ -274,15 +298,22 @@ class Generator {
       $entry->hash = $this->getHash($entry);
       $entry->href = $this->getLineUrl($entry);
 
-      $member = str_replace(':', '#', $entry->hash);
+      $member = $entry->getMembers(0);
+      $member = ($member ? $member . ($entry->isPlugin() ? '.prototype.' : '.') : '') . $entry->getName();
+
       $entry->member = preg_replace('/' . $entry->getName() . '$/', '', $member);
 
       $compiling = $compiling ? ($result[] = $closeTag) : true;
 
+      // assign TOC hash
+      if (count($result) == 2) {
+        $toc = $member;
+      }
+
       // add root entry
       array_push(
         $result,
-        $openTag, '## `' . $member . '`',
+        $openTag, '## ' . (count($result) == 2 ? '<a id="' . $toc . '"></a>' : '') . '`' . $member . '`',
         Generator::interpolate('* [`' . $member . '`](##{hash})', $entry)
       );
 
@@ -325,15 +356,15 @@ class Generator {
         $subentries = is_string($kind) ? $entry->{$kind} : array($kind);
 
         // title
-        if ($entry->getType() != 'Object' && count($subentries) && $subentries[0] != $kind) {
+        if ($kind != 'static' && $entry->getType() != 'Object' &&
+              count($subentries) && $subentries[0] != $kind) {
           if ($kind == 'plugin') {
             $result[] = $closeTag;
           }
           array_push(
             $result,
             $openTag,
-            '## `' . $member . ($kind == 'plugin' ? '.prototype`' : '`'),
-            Generator::interpolate("### <a id=\"#{hash}\" href=\"#{href}\" title=\"View in source\">`#{member}#{call}`</a>\n#{desc}\n[&#9650;][1]", $entry)
+            '## `' . $member . ($kind == 'plugin' ? '.prototype`' : '`')
           );
         }
 
@@ -343,7 +374,7 @@ class Generator {
           array_push(
             $result,
             $openTag,
-            Generator::interpolate("### <a id=\"#{hash}\" href=\"#{href}\" title=\"View in source\">`#{member}#{separator}#{call}`</a>\n#{desc}\n[&#9650;][1]", $subentry)
+            Generator::interpolate("### <a id=\"#{hash}\"></a>`#{member}#{separator}#{call}`\n<a href=\"##{hash}\">#</a> [&#x24C8;](#{href} \"View in source\") [&#x24C9;][1]\n\n#{desc}", $subentry)
           );
 
           // @param
@@ -370,13 +401,13 @@ class Generator {
           if ($example = $subentry->getExample()) {
             array_push($result, '', '#### Example', $example);
           }
-          array_push($result, $closeTag);
+          array_push($result, "\n* * *", $closeTag);
         }
       }
     }
 
     // close tags add TOC link reference
-    array_push($result, $closeTag, $closeTag, '', '  [1]: #readme "Jump back to the TOC."');
+    array_push($result, $closeTag, $closeTag, '', '  [1]: #' . $toc . ' "Jump back to the TOC."');
 
     // cleanup whitespace
     return trim(preg_replace('/ +\n/', "\n", join($result, "\n")));
