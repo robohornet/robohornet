@@ -3,14 +3,14 @@
 <head>
 <title>Resize an SVG</title>
 <style>
-    #container { width: 200px; height: 800px; overflow-y: scroll; }
-    .slide { width: 180px; height: 180px; }
-    td { border: 1px; margin: 5px; overflow:hidden; }
+  #container { width: 200px; height: 800px; overflow-y: scroll; }
+  .slide { width: 180px; height: 180px; }
+  td { border: 1px; margin: 5px; overflow:hidden; }
 </style>
 </head>
 <body>
 <div id="container">
-    <svg version="1.1" fill-rule="evenodd" fill="none" stroke="none"
+  <svg version="1.1" fill-rule="evenodd" fill="none" stroke="none"
       stroke-linecap="square" stroke-miterlimit="10" overflow="hidden" preserveAspectRatio="none"
       width="100%" height="100%" shape-rendering="optimize-speed">
     <g id="content"></g>
@@ -23,105 +23,102 @@
   </g>
 </svg>
 <script>
-    
-    var COLORS = [
-      '#fa8',
-      '#f8a',
-      '#af8',
-      '#a8f',
-      '#8af',
-      '#8fa'
-    ];
-    var NUM_ELEMENTS = 500;
-    var DEFAULT_NUM_SVGS = 500;
 
-    var container;
-    var contentContainer;
-    var template;
-    
-    function setUp(opt_numSvgs)
-    {
-        var numSvgs = opt_numSvgs || DEFAULT_NUM_SVGS;
-        container = document.getElementById('container');
-        contentContainer = document.getElementById('content');
-        template = document.getElementsByClassName('slide')[0];
-        for (var i = 0; i < numSvgs; i++) {
-            render(i);
-        }
-    }
+var COLORS = [
+  '#fa8',
+  '#f8a',
+  '#af8',
+  '#a8f',
+  '#8af',
+  '#8fa'
+];
+var NUM_ELEMENTS = 500;
+var DEFAULT_NUM_SVGS = 500;
 
-    function reset() {
-        if (!contentContainer) return;
-        contentContainer.innerHTML = '';
-    }
+var container;
+var contentContainer;
+var template;
 
-    function tearDown()
-    {
-        while(contentContainer.firstChild) {
-            contentContainer.firstChild.parentNode.removeChild(contentContainer.firstChild);
-        }
-        container = null;
-        contentContainer = null;
-        template = null;
-    }
+function setUp(opt_numSvgs) {
+  var numSvgs = opt_numSvgs || DEFAULT_NUM_SVGS;
+  container = document.getElementById('container');
+  contentContainer = document.getElementById('content');
+  template = document.getElementsByClassName('slide')[0];
+  for (var i = 0; i < numSvgs; i++) {
+    render(i);
+  }
+}
 
-    function test(opt_numSvgs)
-    {
-        var numSvgs = opt_numSvgs || DEFAULT_NUM_SVGS;
-        for (var i = 0; i < 10; i++) {
-            var size = Math.random() * 300 + 100;
-            container.style.width = size + 'px';
-            contentContainer.setAttribute('transform', 'scale(' + (size / 180) + ')');
-        }
-    }
+function reset() {
+  if (!contentContainer) return;
+  contentContainer.innerHTML = '';
+}
 
-    // Utility functions below
-    function render(index) {
-        var copy = template.cloneNode(true);
-        // The number being multipled by the index should match the height in the .slide class above.
-        copy.setAttribute('transform', 'translate(0,' + (180 * index) + ')');
-        contentContainer.appendChild(copy);
-        var newSvg = makeSvg(NUM_ELEMENTS, index);
-        var svgContainer = copy.querySelectorAll('.content')[0];
-        svgContainer.innerHTML = '';
-        svgContainer.appendChild(newSvg);
-    }
+function tearDown() {
+  while(contentContainer.firstChild) {
+    contentContainer.firstChild.parentNode.removeChild(contentContainer.firstChild);
+  }
+  container = null;
+  contentContainer = null;
+  template = null;
+}
 
-    function makeSvg(numElements, index) {
-        var points = [[71, 0], [100, 0]];
-        var str = '<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">';
-        var elemCount = numElements;
-        while (elemCount > 0) {
-            var p = points.shift();
-            var q = points.shift();
-            var next = nextPoints(p, q);
-            str += createPath(COLORS[index & COLORS.length], p, q, next[2], next[0]);
-            points.push(next[0], next[1], next[1], next[2]);
-            elemCount--;
-        }
-        str += "</svg>"
-        var svgDoc = new DOMParser().parseFromString(str, 'text/xml');
-        return svgDoc.removeChild(svgDoc.firstChild);
-    }
+function test(opt_numSvgs) {
+  var numSvgs = opt_numSvgs || DEFAULT_NUM_SVGS;
+  for (var i = 0; i < 10; i++) {
+    var size = Math.random() * 300 + 100;
+    container.style.width = size + 'px';
+    contentContainer.setAttribute('transform', 'scale(' + (size / 180) + ')');
+  }
+}
 
-    function nextPoints(p, q) {
-        var d = [p[1] - q[1], q[0] - p[0]];
-        var pPrime = [p[0] + d[0], p[1] + d[1]];
-        var qPrime = [q[0] + d[0], q[1] + d[1]];
-        var t = [(pPrime[0] + qPrime[0] + d[0]) / 2, (pPrime[1] + qPrime[1] + d[1]) / 2];
-        return [pPrime, t, qPrime];
-    }
+// Utility functions below
+function render(index) {
+  var copy = template.cloneNode(true);
+  // The number being multipled by the index should match the height in the .slide class above.
+  copy.setAttribute('transform', 'translate(0,' + (180 * index) + ')');
+  contentContainer.appendChild(copy);
+  var newSvg = makeSvg(NUM_ELEMENTS, index);
+  var svgContainer = copy.querySelectorAll('.content')[0];
+  svgContainer.innerHTML = '';
+  svgContainer.appendChild(newSvg);
+}
 
-    function createPath(color, a, b, c, d) {
-        var id = Math.random();
-        return '<path id="' + id + '" stroke="#000" stroke-width="1" stroke-opacity=".5" fill-opacity=".5" ' +
-            'fill="' + color + '" d="' +
-            'M' + a[0] + ' ' + a[1] +
-            'L' + b[0] + ' ' + b[1] +
-            'L' + c[0] + ' ' + c[1] +
-            'L' + d[0] + ' ' + d[1] +
-            'Z"></path>';
-    }
+function makeSvg(numElements, index) {
+  var points = [[71, 0], [100, 0]];
+  var str = '<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">';
+  var elemCount = numElements;
+  while (elemCount > 0) {
+    var p = points.shift();
+    var q = points.shift();
+    var next = nextPoints(p, q);
+    str += createPath(COLORS[index & COLORS.length], p, q, next[2], next[0]);
+    points.push(next[0], next[1], next[1], next[2]);
+    elemCount--;
+  }
+  str += "</svg>"
+  var svgDoc = new DOMParser().parseFromString(str, 'text/xml');
+  return svgDoc.removeChild(svgDoc.firstChild);
+}
+
+function nextPoints(p, q) {
+  var d = [p[1] - q[1], q[0] - p[0]];
+  var pPrime = [p[0] + d[0], p[1] + d[1]];
+  var qPrime = [q[0] + d[0], q[1] + d[1]];
+  var t = [(pPrime[0] + qPrime[0] + d[0]) / 2, (pPrime[1] + qPrime[1] + d[1]) / 2];
+  return [pPrime, t, qPrime];
+}
+
+function createPath(color, a, b, c, d) {
+  var id = Math.random();
+  return '<path id="' + id + '" stroke="#000" stroke-width="1" stroke-opacity=".5" fill-opacity=".5" ' +
+      'fill="' + color + '" d="' +
+      'M' + a[0] + ' ' + a[1] +
+      'L' + b[0] + ' ' + b[1] +
+      'L' + c[0] + ' ' + c[1] +
+      'L' + d[0] + ' ' + d[1] +
+      'Z"></path>';
+}
 </script>
 <script src="../test.js"></script>
 </body>

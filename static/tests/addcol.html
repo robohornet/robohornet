@@ -8,57 +8,54 @@
 </head>
 <body>
 <script>
-    var DEFAULT_ROW_COUNT = 1000;
-    var tableElement;
-    
-    function setUp(opt_rowCount)
-    {
-        var rowCount = opt_rowCount || DEFAULT_ROW_COUNT;
-        var tableBody = document.createElement('tbody');
-        for (var i = 0; i < rowCount; i++) {
-            var tableRow = document.createElement('tr');
-            tableBody.appendChild(tableRow);
-            var tableCell = document.createElement('td');
-            tableCell.appendChild(document.createTextNode(i));
-            tableRow.appendChild(tableCell);
-        }
+var DEFAULT_ROW_COUNT = 1000;
+var tableElement;
 
-        tableElement = document.createElement('table');
-        tableElement.appendChild(tableBody);
-        document.body.appendChild(tableElement);
-    }
+function setUp(opt_rowCount) {
+  var rowCount = opt_rowCount || DEFAULT_ROW_COUNT;
+  var tableBody = document.createElement('tbody');
+  for (var i = 0; i < rowCount; i++) {
+    var tableRow = document.createElement('tr');
+    tableBody.appendChild(tableRow);
+    var tableCell = document.createElement('td');
+    tableCell.appendChild(document.createTextNode(i));
+    tableRow.appendChild(tableCell);
+  }
 
-    function tearDown()
-    {
-        tableElement.parentNode.removeChild(tableElement);
-        tableElement = null;
-    }
+  tableElement = document.createElement('table');
+  tableElement.appendChild(tableBody);
+  document.body.appendChild(tableElement);
+}
 
-    function reset() {
-        if (!tableElement) return;
-        for (var i = 0; i < tableElement.rows.length; i++) {
-            var tableRow = tableElement.rows[i];
-            if (tableRow.lastChild != tableRow.firstChild) {
-                tableRow.removeChild(tableRow.lastChild);
-            }
-        }
-    }
+function tearDown() {
+  tableElement.parentNode.removeChild(tableElement);
+  tableElement = null;
+}
 
-    function test(opt_rowCount)
-    {
-        var rowCount = opt_rowCount || DEFAULT_ROW_COUNT;
-        for (var i = 0; i < tableElement.rows.length; i++) {
-            var tableRow = tableElement.rows[i];
-            var tableCell = document.createElement('td');
-            tableCell.appendChild(document.createTextNode(i));
-            tableRow.appendChild(tableCell);
-        }
-        var tableRow = document.createElement('tr');
-        tableElement.tBodies[0].appendChild(tableRow);
-        var tableCell = document.createElement('td');
-        tableCell.appendChild(document.createTextNode(tableElement.offsetHeight));
-        tableRow.appendChild(tableCell);
+function reset() {
+  if (!tableElement) return;
+  for (var i = 0; i < tableElement.rows.length; i++) {
+    var tableRow = tableElement.rows[i];
+    if (tableRow.lastChild != tableRow.firstChild) {
+        tableRow.removeChild(tableRow.lastChild);
     }
+  }
+}
+
+function test(opt_rowCount) {
+  var rowCount = opt_rowCount || DEFAULT_ROW_COUNT;
+  for (var i = 0; i < tableElement.rows.length; i++) {
+      var tableRow = tableElement.rows[i];
+      var tableCell = document.createElement('td');
+      tableCell.appendChild(document.createTextNode(i));
+      tableRow.appendChild(tableCell);
+  }
+  var tableRow = document.createElement('tr');
+  tableElement.tBodies[0].appendChild(tableRow);
+  var tableCell = document.createElement('td');
+  tableCell.appendChild(document.createTextNode(tableElement.offsetHeight));
+    tableRow.appendChild(tableCell);
+  }
 
 </script>
 <script src="../test.js"></script>
