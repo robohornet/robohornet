@@ -8,36 +8,33 @@
 <body>
 <script>
 
-    var DEFAULT_ITEMS = 100;
-    var keySet = {};
+var DEFAULT_ITEMS = 100;
+var keySet = {};
 
-    function setUp(opt_items)
-    {
-        var items = opt_items || DEFAULT_ITEMS;
-        for (var i = 0; i < items; i++) {
-            var key = 'key' + i;
-            keySet[i] = key;
-            localStorage.setItem(key, i);
-        }
-    }
+function setUp(opt_items) {
+  var items = opt_items || DEFAULT_ITEMS;
+  for (var i = 0; i < items; i++) {
+    var key = 'key' + i;
+    keySet[i] = key;
+    localStorage.setItem(key, i);
+  }
+}
 
-    function reset() {
-        keySet = {};
-        localStorage.clear();
-    }
+function reset() {
+  keySet = {};
+  localStorage.clear();
+}
 
-    function tearDown()
-    {
-        localStorage.clear();
-    }
+function tearDown() {
+  localStorage.clear();
+}
 
-    function test(opt_items)
-    {
-        var items = opt_items || DEFAULT_ITEMS;
-        for (var i = 0; i < items; i++) {
-            localStorage.getItem(keySet[i]);
-        }
-    }
+function test(opt_items) {
+  var items = opt_items || DEFAULT_ITEMS;
+  for (var i = 0; i < items; i++) {
+    localStorage.getItem(keySet[i]);
+  }
+}
 </script>
 <script src="../test.js"></script>
 </body>

@@ -12,58 +12,55 @@
 <div id="container"></div>
 <script>
 
-    var container;
+var container;
 
-    var DEFAULT_SIZE = [1000, 100];
+var DEFAULT_SIZE = [1000, 100];
 
-    function setUp(opt_size)
-    {
-        var size = opt_size || DEFAULT_SIZE;
-        var rowCount = size[0];
-        var colCount = size[1];
+function setUp(opt_size) {
+  var size = opt_size || DEFAULT_SIZE;
+  var rowCount = size[0];
+  var colCount = size[1];
 
-        container = document.getElementById('container')
-        var htmlBuffer = ['<table id="main-table"><tbody>'];
-        htmlBuffer.push('<tr>');
-        for (var col = 0; col < colCount; col++) {
-            // Build table headers
-            htmlBuffer.push('<th style="width:200px;">H</th>');
-        }
-        htmlBuffer.push('</tr>');
-        for (var i = 0; i < rowCount; i++) {
-            htmlBuffer.push('<tr>');
-            for (var j = 0; j < colCount; j++) {
-                htmlBuffer.push('<td>');
-                htmlBuffer.push(i + ', ' + j);
-                htmlBuffer.push('</td>');
-            }
-            htmlBuffer.push('</tr>');
-        }
-        htmlBuffer.push('</tbody></table>');
-        container.innerHTML = htmlBuffer.join('');
+  container = document.getElementById('container')
+  var htmlBuffer = ['<table id="main-table"><tbody>'];
+  htmlBuffer.push('<tr>');
+  for (var col = 0; col < colCount; col++) {
+    // Build table headers
+    htmlBuffer.push('<th style="width:200px;">H</th>');
+  }
+  htmlBuffer.push('</tr>');
+  for (var i = 0; i < rowCount; i++) {
+    htmlBuffer.push('<tr>');
+    for (var j = 0; j < colCount; j++) {
+      htmlBuffer.push('<td>');
+      htmlBuffer.push(i + ', ' + j);
+      htmlBuffer.push('</td>');
     }
+    htmlBuffer.push('</tr>');
+  }
+  htmlBuffer.push('</tbody></table>');
+  container.innerHTML = htmlBuffer.join('');
+}
 
-    function reset() {
-        if (!container) return;
-        container.innerHTML = '';
-        container.scrollTop = 0;
-    }
+function reset() {
+  if (!container) return;
+  container.innerHTML = '';
+  container.scrollTop = 0;
+}
 
-    function tearDown()
-    {
-        container.innerHTML = '';
-        container.scrollTop = 0;
-    }
+function tearDown() {
+  container.innerHTML = '';
+  container.scrollTop = 0;
+}
 
-    function testAsync(deferred, opt_size)
-    {
-        var size = opt_size || DEFAULT_SIZE;
-        var maxScroll = container.firstChild.offsetHeight - container.offsetHeight;
-        while (container.scrollTop < maxScroll) {
-            container.scrollTop = container.scrollTop + 1000;
-        }
-        requestAnimationFrameFunction(function() { deferred.resolve(); });
-    }
+function testAsync(deferred, opt_size) {
+  var size = opt_size || DEFAULT_SIZE;
+  var maxScroll = container.firstChild.offsetHeight - container.offsetHeight;
+  while (container.scrollTop < maxScroll) {
+    container.scrollTop = container.scrollTop + 1000;
+  }
+  requestAnimationFrameFunction(function() { deferred.resolve(); });
+}
 </script>
 <script src="../test.js"></script>
 </body>

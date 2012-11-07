@@ -9,54 +9,51 @@
 <body>
 <div id="table-container"></div>
 <script>
-    
-    var tableContainer;
-    var tableString;
-    var DEFAULT_SIZE = [200, 100];
-    
-    function setUp(opt_size)
-    {
-        var size = opt_size || DEFAULT_SIZE;
-        var rowCount = size[0];
-        var colCount = size[1];
 
-        tableContainer = document.getElementById('table-container');
-        var htmlBuffer = ['<table><tbody>'];
-        htmlBuffer.push('<tr>');
-        for (var col = 0; col < colCount; col++) {
-            // Build table headers
-            htmlBuffer.push('<th style="width:200px;">H</th>');
-        }
-        htmlBuffer.push('</tr>');
-        for (var i = 0; i < rowCount; i++) {
-            htmlBuffer.push('<tr>');
-            for (var j = 0; j < colCount; j++) {
-                htmlBuffer.push('<td>');
-                htmlBuffer.push(i + ', ' + j);
-                htmlBuffer.push('</td>');
-            }
-            htmlBuffer.push('</tr>');
-        }
-        htmlBuffer.push('</tbody></table>');
-        tableString = htmlBuffer.join('');
-    }
+var tableContainer;
+var tableString;
+var DEFAULT_SIZE = [200, 100];
 
-    function reset() {
-        if (!tableContainer) return;
-        tableContainer.innerHTML = '';
-    }
+function setUp(opt_size) {
+  var size = opt_size || DEFAULT_SIZE;
+  var rowCount = size[0];
+  var colCount = size[1];
 
-    function tearDown()
-    {
-        tableContainer.innerHTML = '';
-        tableContainer = null;
-        tableString = null;
+  tableContainer = document.getElementById('table-container');
+  var htmlBuffer = ['<table><tbody>'];
+  htmlBuffer.push('<tr>');
+  for (var col = 0; col < colCount; col++) {
+    // Build table headers
+    htmlBuffer.push('<th style="width:200px;">H</th>');
+  }
+  htmlBuffer.push('</tr>');
+  for (var i = 0; i < rowCount; i++) {
+    htmlBuffer.push('<tr>');
+    for (var j = 0; j < colCount; j++) {
+        htmlBuffer.push('<td>');
+        htmlBuffer.push(i + ', ' + j);
+        htmlBuffer.push('</td>');
     }
+    htmlBuffer.push('</tr>');
+  }
+  htmlBuffer.push('</tbody></table>');
+  tableString = htmlBuffer.join('');
+}
 
-    function test()
-    {
-        tableContainer.innerHTML = tableString;
-    }
+function reset() {
+  if (!tableContainer) return;
+  tableContainer.innerHTML = '';
+}
+
+function tearDown() {
+  tableContainer.innerHTML = '';
+  tableContainer = null;
+  tableString = null;
+}
+
+function test() {
+  tableContainer.innerHTML = tableString;
+}
 </script>
 <script src="../test.js"></script>
 </body>
