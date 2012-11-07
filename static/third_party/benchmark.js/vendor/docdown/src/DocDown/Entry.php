@@ -140,7 +140,7 @@ class Entry {
     preg_match('#\*\s*@example\s+([\s\S]*?)(?=\*\s\@[a-z]|\*/)#', $this->entry, $result);
     if (count($result)) {
       $result = trim(preg_replace('/(?:^|\n)\s*\* ?/', "\n", $result[1]));
-      $result = '~~~ ' . $this->lang . "\n" . $result . "\n~~~";
+      $result = '```' . $this->lang . "\n" . $result . "\n```";
     }
     return $result;
   }
@@ -196,7 +196,7 @@ class Entry {
    * @returns {Array} The entry `param` data.
    */
   public function getParams( $index = null ) {
-    preg_match_all('#\*\s*@param\s+\{([^}]+)\}\s+(\[[^]]+\]|[$\w]+)\s+([\s\S]*?)(?=\*\s\@[a-z]|\*/)#i', $this->entry, $result);
+    preg_match_all('#\*\s*@param\s+\{([^}]+)\}\s+(\[.+\]|[$\w]+)\s+([\s\S]*?)(?=\*\s\@[a-z]|\*/)#i', $this->entry, $result);
     if (count($result = array_filter(array_slice($result, 1)))) {
       // repurpose array
       foreach ($result as $param) {
