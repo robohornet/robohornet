@@ -89,8 +89,27 @@ a {
   margin-right: 10px;
 }
 
-#tests {
-  margin: 5px auto;
+#test-container {
+  margin: 0 auto;
+  width: 1050px;
+}
+
+#iframe-wrap {
+  height: 300px;
+  margin: 9px 23px 0 0;
+  overflow: hidden;
+  width: 300px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+iframe {
+  height: 300px;
+  width: 300px;
+}
+
+#tests-wrap {
+  display: inline-block;
 }
 
 #tests > thead > tr > td {
@@ -137,6 +156,10 @@ a {
   cursor: pointer;
   position: relative;
   padding-left: 19px;
+}
+
+#tests > tbody > tr td > span:hover {
+ color: black;
 }
 
 #tests > tbody > tr td > span::before {
@@ -305,12 +328,21 @@ header img {
   -webkit-transition: opacity 3s ease;
   -moz-transition: opacity 3s ease;
   -o-transition: opacity 3s ease;
+  transition: opacity 3s ease;
 }
 
 div.results {
   margin: 120px 0;
   text-align: center;
   width: 100%;
+  -webkit-transition: .3s ease;
+  -moz-transition: .3s ease;
+  -o-transition: .3s ease;
+  transition: .3s ease;
+}
+
+.running div.results {
+  margin: 0;
 }
 
 header > div > div {
@@ -334,6 +366,7 @@ header > div > div {
   -webkit-transition: opacity 2s;
   -moz-transition: opacity 2s;
   -o-transition: opacity 2s;
+  transition: opacity 2s;
 }
 
 #index.final {
@@ -349,6 +382,7 @@ header > div > div {
   background-image: -webkit-linear-gradient(top, #F05A2A, #F6943D);
   background-image: -moz-linear-gradient(top, #F05A2A, #F6943D);
   background-image: -o-linear-gradient(top, #F05A2A, #F6943D);
+  background-image: linear-gradient(top, #F05A2A, #F6943D);
   color: #FDE7A7;
   font-size: 26px;
   /* Large enough so the size doesn't change for any of the messages */
@@ -376,12 +410,20 @@ header > div > div {
   -o-animation-timing-function: ease;
   /* we ideally want to flourish just as the logo crosses on load. */
   -o-animation-delay: 1s;
+
+  animation-name: button-flourish;
+  animation-duration: 2s;
+  animation-iteration-count: 1;
+  animation-timing-function: ease;
+  /* we ideally want to flourish just as the logo crosses on load. */
+  animation-delay: 1s;
 }
 
 #runButton:active {
   background-image: -webkit-linear-gradient(top, #F6943D, #F05A2A);
   background-image: -moz-linear-gradient(top, #F6943D, #F05A2A);
   background-image: -o-linear-gradient(top, #F6943D, #F05A2A);
+  background-image: linear-gradient(top, #F6943D, #F05A2A);
 }
 
 #runButton:hover {
@@ -409,6 +451,7 @@ header img {
   -webkit-transform-origin: 30% 65%;
   -moz-transform-origin: 30% 65%;
   -o-transform-origin: 30% 65%;
+  transform-origin: 30% 65%;
   /* Trigger compositing now so we don't get a flash when it does */
   -webkit-transform: translate(0,0,0);
   /* Show over top of the Run button */
@@ -432,7 +475,7 @@ body.ready header img {
     -webkit-transform: translate(0, 0);
   }
   10% {
-  -  webkit-transform: translate(0, 0) rotate(34deg);
+    -webkit-transform: translate(0, 0) rotate(34deg);
   }
   17% {
     -webkit-transform: translate(-50%, 0) rotate(45deg);
@@ -491,7 +534,7 @@ body.ready header img {
 
 @-moz-keyframes button-flourish {
   from {
-   -moz-transform: scale(1.0);
+    -moz-transform: scale(1.0);
   }
   10% {
     -moz-transform: scale(1.15);
