@@ -213,7 +213,7 @@ var ROBOHORNET_DATA = {
       tags: ['DOM', 'TABLE', 'G_SPREADSHEETS', 'YUI'],
       extended: false
     },
-
+/*
     {
       name: 'SVG resize',
       issueNumber: 18,
@@ -228,7 +228,7 @@ var ROBOHORNET_DATA = {
       tags: ['SVG', 'G_PRESENTATIONS', 'YUI'],
       extended: false
     },
-
+*/
     {
       name: 'Object Scope Access',
       issueNumber: 31,
