@@ -71,6 +71,9 @@ var ROBOHORNET_DATA = {
     },
     MATH: {
       name: 'Math'
+    },
+    WORKER: {
+      name: 'Web Worker'
     }
   },
 
@@ -353,6 +356,21 @@ var ROBOHORNET_DATA = {
       weight: 2,
       baselineTime: 33.93,
       tags: ['JS', 'YUI'],
+      extended: false
+    },
+
+    {
+      name: 'Send to webworker',
+      issueNumber: 25,
+      description: 'Send a large Javascript message to a webworker',
+      filename: 'tests/worker_postmessage.html',
+      runs: [
+        ['1 PostMessage', 1],
+        ['10 PostMessage', 10]
+      ],
+      weight: 1,
+      baselineTime: 400,
+      tags: ['JS', 'WORKER', 'G_SPREADSHEETS'],
       extended: false
     }
   ]
